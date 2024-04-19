@@ -37,6 +37,7 @@ Traffic controller is a training program made in C++ for a uni assignment. The s
 - [@SpaceYoshi](https://github.com/SpaceYoshi)
 - [@lrstolk](https://github.com/lrstolk)
 - [@Mosu5](https://github.com/Mosu5)
-- [@todo](https://github.com/todo)
+- [@Sam-D-C](https://github.com/Sam-D-C)
+- [@Yuichi135](https://github.com/Yuichi135)
 
 See also the list of [contributors](https://github.com/SpaceYoshi/traffic-tactician/contributors) who participated in this project.
