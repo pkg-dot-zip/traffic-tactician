@@ -26,7 +26,7 @@
 - [Authors](#authors)
 
 ## 🧐 About <a name = "about"></a>
-Traffic controller is a training program made in C++ for a uni assignment. The software uses <a href="https://opencv.org/">OpenCV</a> & <a href="https://www.opengl.org/">OpenGL</a>.
+Traffic Tactician is a training program made in C++ for a uni assignment. The software uses <a href="https://opencv.org/">OpenCV</a> & <a href="https://www.opengl.org/">OpenGL</a>.
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 - [OpenGL](https://opengl.org/) - The Industry's Foundation for High Performance Graphics
