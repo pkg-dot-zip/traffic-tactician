@@ -28,9 +28,15 @@
 ## 🧐 About <a name = "about"></a>
 Traffic Tactician is a training program made in C++ for a uni assignment. The software uses <a href="https://opencv.org/">OpenCV</a> & <a href="https://www.opengl.org/">OpenGL</a>.
 
+
+⚠ Note: Make sure to add an environment variable called "OPENCV" that leads to to your OpenCV build folder (e.g. *C:\opencv\opencv\build*).
+
 ## ⛏️ Built Using <a name = "built_using"></a>
 - [OpenGL](https://opengl.org/) - The Industry's Foundation for High Performance Graphics
 - [OpenCV](https://opencv.org/) - World's biggest computer vision library
+- [GLFW](https://www.glfw.org/) - Open Source, multi-platform library for OpenGL
+- [GLM](https://github.com/g-truc/glm) - OpenGL Mathematics (GLM)
+- [GLEW](https://github.com/nigels-com/glew) - The OpenGL Extension Wrangler Library
 
 ## ✍️ Authors <a name = "authors"></a>
 - [@OnsPetruske](https://github.com/pkg-dot-zip)
