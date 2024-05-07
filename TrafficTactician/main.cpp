@@ -5,7 +5,7 @@
 using tigl::Vertex;
 
 
-
+#pragma comment (lib, "opencv_world490d.lib")
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "opengl32.lib")
@@ -32,15 +32,15 @@ int main(void)
 
     init();
 
-	while (!glfwWindowShouldClose(window))
-	{
-		update();
-		draw();
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-	}
+    while (!glfwWindowShouldClose(window))
+    {
+        update();
+        draw();
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
 
-	glfwTerminate();
+    glfwTerminate();
 
 
     return 0;
@@ -50,10 +50,10 @@ int main(void)
 void init()
 {
     glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-    {
-        if (key == GLFW_KEY_ESCAPE)
-            glfwSetWindowShouldClose(window, true);
-    });
+        {
+            if (key == GLFW_KEY_ESCAPE)
+                glfwSetWindowShouldClose(window, true);
+        });
 
 }
 
