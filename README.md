@@ -37,6 +37,7 @@ Traffic Tactician is a training program made in C++ for a uni assignment. The so
 - [GLFW](https://www.glfw.org/) - Open Source, multi-platform library for OpenGL
 - [GLM](https://github.com/g-truc/glm) - OpenGL Mathematics (GLM)
 - [GLEW](https://github.com/nigels-com/glew) - The OpenGL Extension Wrangler Library
+- [Easylogging++](https://github.com/abumq/easyloggingpp/) - Single header efficient logging library for C++ applications
 
 ## ✍️ Authors <a name = "authors"></a>
 - [@OnsPetruske](https://github.com/pkg-dot-zip)
