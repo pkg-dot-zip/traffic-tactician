@@ -1,7 +1,15 @@
 // TrafficTactician.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
+#ifdef _DEBUG
+#pragma comment (lib, "opencv_world490d.lib")
+#else
+#pragma comment (lib, "opencv_world490.lib")
+#endif
+
 #include <iostream>
+#include <opencv2/opencv.hpp>
+#include <GL/glew.h>
 
 int main()
 {
