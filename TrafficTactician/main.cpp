@@ -3,6 +3,7 @@
 #include "tigl.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "easylogging++.h"
+#include "log.h"
 using tigl::Vertex;
 
 
@@ -52,6 +53,8 @@ int main(void)
 
 void init()
 {
+    setupLogger();
+
     glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
         {
             if (key == GLFW_KEY_ESCAPE)
