@@ -4,6 +4,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "easylogging++.h"
 #include "log.h"
+#include "imgui.h"
+#include "backends/imgui_impl_glfw.h"
 using tigl::Vertex;
 
 
@@ -33,7 +35,6 @@ int main(void)
     glfwMakeContextCurrent(window);
 
     tigl::init();
-
     init();
 
     while (!glfwWindowShouldClose(window))

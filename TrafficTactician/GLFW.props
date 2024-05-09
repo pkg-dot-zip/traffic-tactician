@@ -5,7 +5,7 @@
   <PropertyGroup />
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)lib\glm;$(SolutionDir)lib\glew-2.1.0\include;$(SolutionDir)lib\glfw-3.3.8\include;$(OPENCV)\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\glm;$(SolutionDir)lib\glew-2.1.0\include;$(SolutionDir)lib\glfw-3.3.8\include;$(OPENCV)\build\include;$(SolutionDir)lib\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
