@@ -5,11 +5,11 @@
   <PropertyGroup />
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)lib\glm;$(SolutionDir)lib\glew-2.1.0\include;$(SolutionDir)lib\glfw-3.3.8\include;$(OPENCV)\build\include;$(SolutionDir)imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\glm;$(SolutionDir)lib\glew-2.1.0\include;$(SolutionDir)lib\glfw-3.3.8\include;$(OPENCV)\build\include;$(SolutionDir)imgui;$(OPENGL)\lib\glm;$(OPENGL)\lib\glew-2.1.0\include;$(OPENGL)\lib\glfw-3.3.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\glfw-3.3.8\$(Platform);$(SolutionDir)lib\glew-2.1.0\lib\Release\$(Platform);$(OPENCV)\build\x64\vc16\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\glfw-3.3.8\$(Platform);$(SolutionDir)lib\glew-2.1.0\lib\Release\$(Platform);$(OPENCV)\build\x64\vc16\lib;$(OPENGL)\lib\glew-2.1.0\lib\Release\$(Platform);$(OPENGL)\lib\glfw-3.3.8\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opencv_world490d.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>NotSet</SubSystem>
     </Link>
