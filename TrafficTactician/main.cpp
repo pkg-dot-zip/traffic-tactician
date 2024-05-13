@@ -19,12 +19,20 @@ using tigl::Vertex;
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "opengl32.lib")
 
+INITIALIZE_EASYLOGGINGPP
+
 void init();
+void initWindow();
+void initPlayer();
+void initInputCallback();
 void update();
 void draw();
+void updateImGui();
+void onDestroy();
 
-int width = 1400;
-int height = 800;
+
+int width = 1600;
+int height = 900;
 float rotation = 0;
 float posX, posY, posZ = 0;
 float axisX, axisY, axisZ = 0;
@@ -36,94 +44,96 @@ double lastFrameTime = 0;
 std::list<std::shared_ptr<GameObject>> objects;
 std::shared_ptr<GameObject> player;
 
-INITIALIZE_EASYLOGGINGPP
-
 int main(void)
 {
-	if (!glfwInit())
-		throw "Could not initialize glwf";
-	window = glfwCreateWindow(1920, 1080, "Hello World", NULL, NULL);
-	if (!window)
-	{
-		glfwTerminate();
-		throw "Could not initialize glwf";
-	}
-	glfwMakeContextCurrent(window);
-
-	tigl::init();
 	init();
-
-
-
-	// Setup Dear ImGui context
-	IMGUI_CHECKVERSION();
-
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
-	// Setup Platform/Renderer settings
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init("#version 130");
-	// Setup Dear ImGui style
-	ImGui::StyleColorsDark();
-
 
 	while (!glfwWindowShouldClose(window))
 	{
 		update();
 		draw();
 
-		// feed imputs to dear imgui, start new frame
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-
-		// render your GUI
-		ImGui::Begin("Hello Imgui");
-
-#pragma region ImGui-Content
-		ImGui::Text("Hello Computer Graphics!");
-
-		static float translation[] = { 0, 0, 0 };
-		ImGui::SliderFloat3("position", translation, -2.0, 2.0);
-		//player position set to slider pos
-		player->position = glm::vec3(translation[0], translation[1], translation[2]);
-
-
-		static bool rotateCheck = false;
-		if (ImGui::Checkbox("Rotate?", &rotateCheck)) {
-			if (rotateCheck) {
-				player->addComponent(std::make_shared<SpinComponent>(1));
-			}
-			else {
-				player->removeComponent(player->getComponent<SpinComponent>());
-
-			}
-		}
-
-#pragma endregion ImGui-Content
-
-		ImGui::End();
-
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+		updateImGui(); // NOTE: MUST be done AFTER calling the draw() method!
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 
-	ImGui_ImplGlfw_Shutdown();
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui::DestroyContext();
-	glfwTerminate();
+	onDestroy();
 
 	return 0;
 }
 
+void onDestroy()
+{
+	LOG(INFO) << "DeInitializing.";
+	ImGui_ImplGlfw_Shutdown();
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui::DestroyContext();
+	glfwTerminate();
+}
 
+void initWindow()
+{
+	LOG(INFO) << "Initialized window.";
+
+	if (!glfwInit()) throw "Could not initialize glwf";
+	window = glfwCreateWindow(width, height, "Hello World", NULL, NULL);
+
+	if (!window)
+	{
+		glfwTerminate();
+		throw "Could not initialize glwf";
+	}
+
+	glfwMakeContextCurrent(window);
+}
+
+void initPlayer()
+{
+	LOG(INFO) << "Initialized player.";
+	player = std::make_shared<GameObject>();
+	player->position = glm::vec3(0, 1, 2);
+
+	player->addComponent(std::make_shared<CubeComponent>());
+	objects.push_back(player);
+}
+
+void initInputCallback()
+{
+	LOG(INFO) << "Initialized input callback.";
+	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+	{
+		if (key == GLFW_KEY_ESCAPE)
+			glfwSetWindowShouldClose(window, true);
+	});
+}
+
+void initImGui()
+{
+	LOG(INFO) << "Initialized ImGui.";
+
+	// Setup Dear ImGui context
+	IMGUI_CHECKVERSION();
+
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+
+	// Setup Platform/Renderer settings.
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init("#version 130");
+
+	// Setup Dear ImGui style.
+	ImGui::StyleColorsDark();
+}
 
 void init()
 {
+	setupLogger(); // MUST go first before any log entries are submitted -> Anders "kaboom".
+
+	initWindow();
+	tigl::init();
+
 	glEnable(GL_DEPTH_TEST);
 	tigl::shader->enableColor(true);
 	tigl::shader->enableLighting(true);
@@ -135,24 +145,11 @@ void init()
 	tigl::shader->setLightSpecular(0, glm::vec3(1, 1, 1));
 	tigl::shader->setShinyness(0);
 
-	// Create Player object.
-	player = std::make_shared<GameObject>();
-	player->position = glm::vec3(0, 1, 2);
-	
-	player->addComponent(std::make_shared<CubeComponent>(1.0f));
-	objects.push_back(player);
-
-
-	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-		{
-			if (key == GLFW_KEY_ESCAPE)
-				glfwSetWindowShouldClose(window, true);
-		});
-
-
+	initPlayer();
+	initInputCallback();
+	initImGui();
 }
 
-double lastTime = 0;
 void update()
 {
 	// Calculate timings.
@@ -175,14 +172,15 @@ void draw()
 
 	int viewport[4];
 	glGetIntegerv(GL_VIEWPORT, viewport);
-	glm::mat4 projection = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 1000.0f);
+	const glm::mat4 projection = glm::perspective(glm::radians(75.0f), static_cast<float>(viewport[2]) / static_cast<float>(viewport[3]), 0.01f, 1000.0f);
 
 	tigl::shader->setProjectionMatrix(projection);
 	tigl::shader->setViewMatrix(glm::lookAt(glm::vec3(0, 10, 10), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
 	tigl::shader->setModelMatrix(glm::mat4(1.0f));
 
 	tigl::shader->enableColor(true);
-	//temporary draw floor
+
+	// Temporary floor drawing.
 	tigl::begin(GL_QUADS);
 	tigl::addVertex(Vertex::PCN(glm::vec3(-50, 0, -50), glm::vec4(1, 0, 0, 1), glm::vec3(0, 1, 0)));
 	tigl::addVertex(Vertex::PCN(glm::vec3(-50, 0, 50), glm::vec4(0, 1, 0, 1), glm::vec3(0, 1, 0)));
@@ -195,4 +193,45 @@ void draw()
 	{
 		gameObject->draw();
 	}
+}
+
+void updateImGui()
+{
+	// Feed inputs to dear ImGui -> start new frame.
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+	// Render your GUI.
+	ImGui::Begin("Hello Imgui");
+
+#pragma region ImGui-Content
+	ImGui::Text("Hello Computer Graphics!");
+
+	static float translation[] = { 0, 0, 0 };
+	ImGui::SliderFloat3("position", translation, -2.0, 2.0);
+
+	// Player position set to slider pos.
+	player->position = glm::vec3(translation[0], translation[1], translation[2]);
+
+
+	static bool rotateCheck = false;
+	if (ImGui::Checkbox("Rotate?", &rotateCheck))
+	{
+		if (rotateCheck)
+		{
+			player->addComponent(std::make_shared<SpinComponent>());
+		}
+		else
+		{
+			player->removeComponent(player->getComponent<SpinComponent>());
+		}
+	}
+
+#pragma endregion ImGui-Content
+
+	ImGui::End();
+
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

@@ -9,11 +9,10 @@ using tigl::Vertex;
 class CubeComponent : public DrawComponent
 {
 	std::vector<Vertex> verts;
-public:
-	CubeComponent(float size);
-	~CubeComponent();
 
+public:
+	CubeComponent(float size = 1.0f);
+	~CubeComponent();
 
 	virtual void draw() override;
 };
-

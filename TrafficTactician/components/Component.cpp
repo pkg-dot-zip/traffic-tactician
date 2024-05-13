@@ -1,13 +1,5 @@
 #include "Component.h"
-#include <iostream>
 
-Component::Component()
-{
-	std::cout << "Component added" << std::endl;
+Component::Component() = default;
 
-}
-
-Component::~Component()
-{
-	std::cout << "Component deleted" << std::endl;
-}
+Component::~Component() = default;

@@ -4,13 +4,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "BoundingBoxComponent.h"
 
-GameObject::GameObject()
-{
-}
+GameObject::GameObject() = default;
 
-GameObject::~GameObject()
-{
-}
+GameObject::~GameObject() = default;
 
 void GameObject::addComponent(std::shared_ptr<Component> component)
 {
@@ -28,12 +24,10 @@ void GameObject::removeComponent(std::shared_ptr<Component> component)
 	components.remove(component);
 }
 
-
 std::list<std::shared_ptr<Component>> GameObject::getComponents()
 {
 	return components;
 }
-
 
 void GameObject::draw(const glm::mat4& parentMatrix)
 {

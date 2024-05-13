@@ -7,12 +7,9 @@ SpinComponent::SpinComponent(float speed)
 	this->speed = speed;
 }
 
+SpinComponent::~SpinComponent() = default;
 
-SpinComponent::~SpinComponent()
+void SpinComponent::update(float deltaTime)
 {
-}
-
-void SpinComponent::update(float elapsedTime)
-{
-	gameObject->rotation.y += elapsedTime * speed;
+	gameObject->rotation.y += deltaTime * speed;
 }

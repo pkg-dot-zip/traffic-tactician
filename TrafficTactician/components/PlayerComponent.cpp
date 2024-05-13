@@ -5,13 +5,9 @@
 extern GLFWwindow* window;
 
 
-PlayerComponent::PlayerComponent()
-{
-}
+PlayerComponent::PlayerComponent() = default;
 
-PlayerComponent::~PlayerComponent()
-{
-}
+PlayerComponent::~PlayerComponent() = default;
 
 void PlayerComponent::update(float deltaTime)
 {

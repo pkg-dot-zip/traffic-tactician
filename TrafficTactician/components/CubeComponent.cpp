@@ -44,9 +44,7 @@ CubeComponent::CubeComponent(float size)
 }
 
 
-CubeComponent::~CubeComponent()
-{
-}
+CubeComponent::~CubeComponent() = default;
 
 void CubeComponent::draw()
 {
