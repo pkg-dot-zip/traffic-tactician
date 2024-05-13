@@ -66,6 +66,7 @@ int main(void)
 
 void onDestroy()
 {
+	LOG(INFO) << "DeInitializing.";
 	ImGui_ImplGlfw_Shutdown();
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui::DestroyContext();
@@ -74,6 +75,8 @@ void onDestroy()
 
 void initWindow()
 {
+	LOG(INFO) << "Initialized window.";
+
 	if (!glfwInit()) throw "Could not initialize glwf";
 	window = glfwCreateWindow(width, height, "Hello World", NULL, NULL);
 
@@ -88,6 +91,7 @@ void initWindow()
 
 void initPlayer()
 {
+	LOG(INFO) << "Initialized player.";
 	player = std::make_shared<GameObject>();
 	player->position = glm::vec3(0, 1, 2);
 
@@ -97,6 +101,7 @@ void initPlayer()
 
 void initInputCallback()
 {
+	LOG(INFO) << "Initialized input callback.";
 	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
 		if (key == GLFW_KEY_ESCAPE)
@@ -106,6 +111,8 @@ void initInputCallback()
 
 void initImGui()
 {
+	LOG(INFO) << "Initialized ImGui.";
+
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 
@@ -122,6 +129,8 @@ void initImGui()
 
 void init()
 {
+	setupLogger(); // MUST go first before any log entries are submitted -> Anders "kaboom".
+
 	initWindow();
 	tigl::init();
 

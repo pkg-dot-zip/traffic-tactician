@@ -1,6 +1,6 @@
 #include "easylogging++.h"
 
-const std::string file_name = "logs/%datetime{%Y%M%d%H%m}.log";
+const std::string file_name = "logs/%datetime{%Y-%M-%d-%H-%m}.log";
 
 void initLogsFolder()
 {
