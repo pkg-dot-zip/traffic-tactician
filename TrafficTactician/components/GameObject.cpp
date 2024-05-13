@@ -1,6 +1,6 @@
 #include "GameObject.h"
 #include "DrawComponent.h"
-#include "../tigl.h"
+#include "tigl.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "BoundingBoxComponent.h"
 
