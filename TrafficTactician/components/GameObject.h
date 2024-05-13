@@ -23,6 +23,7 @@ public:
 	glm::vec3 scale = glm::vec3(1, 1, 1);
 
 	void addComponent(std::shared_ptr<Component> component);
+	void removeComponent(std::shared_ptr<Component> component);
 	std::list<std::shared_ptr<Component>> getComponents();
 	void update(float deltaTime);
 	void draw(const glm::mat4& = glm::mat4(1.0f));
