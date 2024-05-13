@@ -5,10 +5,10 @@
 class SpinComponent : public Component
 {
 	float speed;
+
 public:
 	SpinComponent(float speed);
 	~SpinComponent();
 
-	virtual void update(float elapsedTime) override;
+	virtual void update(float deltaTime) override;
 };
-

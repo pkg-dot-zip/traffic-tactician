@@ -2,17 +2,14 @@
 #include "GameObject.h"
 
 
-SpinComponent::SpinComponent(float speed)
+SpinComponent::SpinComponent(float speed = 1)
 {
 	this->speed = speed;
 }
 
+SpinComponent::~SpinComponent() = default;
 
-SpinComponent::~SpinComponent()
+void SpinComponent::update(float deltaTime)
 {
-}
-
-void SpinComponent::update(float elapsedTime)
-{
-	gameObject->rotation.y += elapsedTime * speed;
+	gameObject->rotation.y += deltaTime * speed;
 }

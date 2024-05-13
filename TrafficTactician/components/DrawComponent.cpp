@@ -1,9 +1,5 @@
 #include "DrawComponent.h"
 
-DrawComponent::DrawComponent()
-{
-}
+DrawComponent::DrawComponent() = default;
 
-DrawComponent::~DrawComponent()
-{
-}
+DrawComponent::~DrawComponent() = default;
