@@ -23,6 +23,12 @@ void GameObject::addComponent(std::shared_ptr<Component> component)
 	}
 }
 
+void GameObject::removeComponent(std::shared_ptr<Component> component)
+{
+	components.remove(component);
+}
+
+
 std::list<std::shared_ptr<Component>> GameObject::getComponents()
 {
 	return components;
