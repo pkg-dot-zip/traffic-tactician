@@ -10,6 +10,7 @@
 #include "GameObject.h"
 #include "log.h"
 #include "PlayerComponent.h"
+#include "CubeComponent.h"
 using tigl::Vertex;
 
 #pragma comment (lib, "opencv_world490d.lib")
@@ -135,6 +136,7 @@ void init()
     player->position = glm::vec3(0, 1, 5);
     // player->addComponent(std::make_shared<CubeComponent>(1.0f));
     player->addComponent(std::make_shared<PlayerComponent>());
+    player->addComponent(std::make_shared<CubeComponent>(1.0f));
     objects.push_back(player);
 }
 

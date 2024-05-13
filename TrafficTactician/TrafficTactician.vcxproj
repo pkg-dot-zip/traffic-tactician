@@ -134,6 +134,7 @@
   <ItemGroup>
     <ClCompile Include="BoundingBoxComponent.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="CubeComponent.cpp" />
     <ClCompile Include="DrawComponent.cpp" />
     <ClCompile Include="easylogging++.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="..\..\..\Downloads\TI2.4-CGR-Template\TI2.4-CGR-Template\tigl.h" />
     <ClInclude Include="BoundingBoxComponent.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="CubeComponent.h" />
     <ClInclude Include="DrawComponent.h" />
     <ClInclude Include="easylogging++.h" />
     <ClInclude Include="GameObject.h" />
