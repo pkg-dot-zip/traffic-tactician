@@ -95,7 +95,7 @@ void initPlayer()
 	player = std::make_shared<GameObject>();
 	player->position = glm::vec3(0, 1, 2);
 
-	player->addComponent(std::make_shared<CubeComponent>(1.0f));
+	player->addComponent(std::make_shared<CubeComponent>());
 	objects.push_back(player);
 }
 
@@ -220,7 +220,7 @@ void updateImGui()
 	{
 		if (rotateCheck)
 		{
-			player->addComponent(std::make_shared<SpinComponent>(1));
+			player->addComponent(std::make_shared<SpinComponent>());
 		}
 		else
 		{

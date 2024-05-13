@@ -2,7 +2,7 @@
 #include "GameObject.h"
 
 
-SpinComponent::SpinComponent(float speed = 1)
+SpinComponent::SpinComponent(float speed)
 {
 	this->speed = speed;
 }
