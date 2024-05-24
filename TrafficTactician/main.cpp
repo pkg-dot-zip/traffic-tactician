@@ -161,7 +161,6 @@ void init()
 void update()
 {
 	updateImGuiWindow();
-
 	// Calculate timings.
 	double currentFrameTime = glfwGetTime();
 	double deltaTime = currentFrameTime - lastFrameTime;
@@ -176,7 +175,6 @@ void update()
 
 void draw()
 {
-
 	// Set GL.
 	glClearColor(0.3f, 0.4f, 0.6f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
