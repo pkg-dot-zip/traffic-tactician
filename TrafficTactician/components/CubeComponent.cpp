@@ -46,7 +46,8 @@ CubeComponent::CubeComponent(float size)
 
 CubeComponent::~CubeComponent() = default;
 
-void CubeComponent::draw()
+void CubeComponent::draw(glm::mat4 parentMatrix)
 {
+	tigl::shader->setModelMatrix(parentMatrix);
 	tigl::drawVertices(GL_QUADS, verts);
 }

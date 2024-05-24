@@ -152,6 +152,7 @@
     <ClCompile Include="SpinComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tigl.cpp" />
+    <ClCompile Include="WorldComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="components\BoundingBoxComponent.h" />
@@ -161,6 +162,7 @@
     <ClInclude Include="components\GameObject.h" />
     <ClInclude Include="components\PlayerComponent.h" />
     <ClInclude Include="easylogging++.h" />
+    <ClInclude Include="WorldComponent.h" />
     <ClInclude Include="lib\imgui-docking\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="lib\imgui-docking\imconfig.h" />
     <ClInclude Include="lib\imgui-docking\imgui.h" />

@@ -18,7 +18,7 @@ public:
 	GameObject();
 	~GameObject();
 
-	glm::vec3 position;
+	glm::vec3 position = glm::vec3(0.0f);
 	glm::vec3 rotation = glm::vec3(0, 0, 0);
 	glm::vec3 scale = glm::vec3(1, 1, 1);
 
@@ -26,7 +26,7 @@ public:
 	void removeComponent(std::shared_ptr<Component> component);
 	std::list<std::shared_ptr<Component>> getComponents();
 	void update(float deltaTime);
-	void draw(const glm::mat4& = glm::mat4(1.0f));
+	void draw(const glm::mat4 & = glm::mat4(1.0f));
 
 	template <class T>
 	std::shared_ptr<T> getComponent()
@@ -43,9 +43,9 @@ public:
 	void removeComponent()
 	{
 		components.remove_if([](Component* c)
-		{
-			T* t = dynamic_cast<T*>(c);
-			return t != nullptr;
-		});
+			{
+				T* t = dynamic_cast<T*>(c);
+				return t != nullptr;
+			});
 	}
 };

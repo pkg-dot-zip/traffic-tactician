@@ -187,9 +187,7 @@ ModelComponent::~ModelComponent(void)
 }
 
 
-
-
-void ModelComponent::draw()
+void ModelComponent::draw(glm::mat4 parentMatrix)
 {
 	//foreach group in groups
 	//  set material texture, if available
@@ -197,6 +195,8 @@ void ModelComponent::draw()
 	//  foreach face in group
 	//    foreach vertex in face
 	//      emit vertex
+
+	tigl::shader->setModelMatrix(parentMatrix);
 
 	for (auto& group : groups)
 	{

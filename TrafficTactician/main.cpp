@@ -14,6 +14,7 @@
 #include "CubeComponent.h"
 #include "ModelComponent.h"
 #include "SpinComponent.h"
+#include "WorldComponent.h"
 using tigl::Vertex;
 
 #pragma comment (lib, "opencv_world490d.lib")
@@ -101,9 +102,22 @@ void initPlayer()
 	LOG(INFO) << "Initialized player.";
 	player = std::make_shared<GameObject>();
 	player->position = glm::vec3(0, 0, 0);
+	int size = 9;
+	//std::shared_ptr<ModelComponent> model_component = std::make_shared<ModelComponent>("models/car_kit/hatchback-sports.obj");
+	std::shared_ptr<WorldComponent> world_component = std::make_shared<WorldComponent>(size, 1.0f, std::make_shared<ModelComponent>("models/road_kit/tile_low.obj"));
 
-	std::shared_ptr<ModelComponent> model_component = std::make_shared<ModelComponent>("models/car_kit/hatchback-sports.obj");
-	player->addComponent(model_component);
+	for (int i = 0; i < size; i++)
+	{
+		if (i == size / 2)
+			continue;
+
+		world_component->setModel(size / 2, i, std::make_shared<ModelComponent>("models/road_kit/road_straight_rotated.obj"));
+		world_component->setModel(i, size / 2, std::make_shared<ModelComponent>("models/road_kit/road_straight.obj"));
+	}
+
+	world_component->setModel(size / 2, size / 2, std::make_shared<ModelComponent>("models/road_kit/road_crossroad.obj"));
+
+	player->addComponent(world_component);
 	objects.push_back(player);
 }
 
@@ -219,7 +233,7 @@ void updateImGuiWindow()
 		ImGui::Text("Hello Computer Graphics!");
 		ImGui::SliderAngle("Rotation", &player->rotation.y);
 		ImGui::SliderFloat("Rotation", &player->rotation.y, 0, 10);
-		ImGui::SliderFloat("Scale", &scale, 1.0f, 100.0f);
+		ImGui::SliderFloat("Scale", &scale, 0.5f, 50.0f);
 
 		if (ImGui::Button("Hi")) {
 			player->rotation.y += 0.1f;

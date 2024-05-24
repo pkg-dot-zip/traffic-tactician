@@ -56,5 +56,5 @@ public:
 	ModelComponent(const std::string& filename);
 	~ModelComponent(void);
 
-	virtual void draw() override;
+	virtual void draw(glm::mat4 parentMatrix) override;
 };
