@@ -148,7 +148,9 @@
     <ClCompile Include="lib\imgui-docking\imgui_widgets.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ModelComponent.cpp" />
     <ClCompile Include="SpinComponent.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tigl.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -167,7 +169,9 @@
     <ClInclude Include="lib\imgui-docking\imstb_textedit.h" />
     <ClInclude Include="lib\imgui-docking\imstb_truetype.h" />
     <ClInclude Include="log.h" />
+    <ClInclude Include="ModelComponent.h" />
     <ClInclude Include="SpinComponent.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="tigl.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

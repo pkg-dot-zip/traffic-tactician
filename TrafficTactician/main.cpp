@@ -12,6 +12,7 @@
 #include "log.h"
 #include "PlayerComponent.h"
 #include "CubeComponent.h"
+#include "ModelComponent.h"
 #include "SpinComponent.h"
 using tigl::Vertex;
 
@@ -87,6 +88,7 @@ void initWindow()
 
 	if (!window)
 	{
+
 		glfwTerminate();
 		throw "Could not initialize glwf";
 	}
@@ -98,9 +100,10 @@ void initPlayer()
 {
 	LOG(INFO) << "Initialized player.";
 	player = std::make_shared<GameObject>();
-	player->position = glm::vec3(0, 1, 2);
+	player->position = glm::vec3(0, 0, 0);
 
-	player->addComponent(std::make_shared<CubeComponent>());
+	std::shared_ptr<ModelComponent> model_component = std::make_shared<ModelComponent>("models/car_kit/hatchback-sports.obj");
+	player->addComponent(model_component);
 	objects.push_back(player);
 }
 
@@ -211,10 +214,12 @@ void updateImGuiWindow()
 	ImGui::SetNextWindowSize(ImVec2(200, 200));
 	ImGui::ShowDemoWindow(0);
 	if (ImGui::Begin("Hello Imgui")) {
+		float scale = player->scale.y;
 
 		ImGui::Text("Hello Computer Graphics!");
 		ImGui::SliderAngle("Rotation", &player->rotation.y);
 		ImGui::SliderFloat("Rotation", &player->rotation.y, 0, 10);
+		ImGui::SliderFloat("Scale", &scale, 1.0f, 100.0f);
 
 		if (ImGui::Button("Hi")) {
 			player->rotation.y += 0.1f;
@@ -225,6 +230,8 @@ void updateImGuiWindow()
 
 		// Player position set to slider pos.
 		player->position = glm::vec3(translation[0], translation[1], translation[2]);
+
+		player->scale = glm::vec3(scale);
 
 
 		static bool rotateCheck = false;
@@ -246,6 +253,6 @@ void updateImGuiWindow()
 }
 
 void drawImGuiWindow() {
-	ImGui::Render(); 
+	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
