@@ -1,4 +1,5 @@
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
@@ -27,7 +28,8 @@ void initPlayer();
 void initInputCallback();
 void update();
 void draw();
-void updateImGui();
+void updateImGuiWindow();
+void drawImGuiWindow();
 void onDestroy();
 
 
@@ -50,10 +52,13 @@ int main(void)
 
 	while (!glfwWindowShouldClose(window))
 	{
+		// Start new ImGui frame.
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
 		update();
 		draw();
-
-		updateImGui(); // NOTE: MUST be done AFTER calling the draw() method!
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -103,10 +108,10 @@ void initInputCallback()
 {
 	LOG(INFO) << "Initialized input callback.";
 	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-	{
-		if (key == GLFW_KEY_ESCAPE)
-			glfwSetWindowShouldClose(window, true);
-	});
+		{
+			if (key == GLFW_KEY_ESCAPE)
+				glfwSetWindowShouldClose(window, true);
+		});
 }
 
 void initImGui()
@@ -117,7 +122,10 @@ void initImGui()
 	IMGUI_CHECKVERSION();
 
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
 	// Setup Platform/Renderer settings.
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -129,7 +137,7 @@ void initImGui()
 
 void init()
 {
-	setupLogger(); // MUST go first before any log entries are submitted -> Anders "kaboom".
+	setupLogger(); // MUST go first before any log entries are submitted.
 
 	initWindow();
 	tigl::init();
@@ -152,6 +160,7 @@ void init()
 
 void update()
 {
+	updateImGuiWindow();
 	// Calculate timings.
 	double currentFrameTime = glfwGetTime();
 	double deltaTime = currentFrameTime - lastFrameTime;
@@ -193,45 +202,50 @@ void draw()
 	{
 		gameObject->draw();
 	}
+
+	drawImGuiWindow(); //Must be done after drawing objects.
 }
 
-void updateImGui()
+void updateImGuiWindow()
 {
-	// Feed inputs to dear ImGui -> start new frame.
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
+	ImGui::SetNextWindowSize(ImVec2(200, 200));
+	ImGui::ShowDemoWindow(0);
+	if (ImGui::Begin("Hello Imgui")) {
 
-	// Render your GUI.
-	ImGui::Begin("Hello Imgui");
+		ImGui::Text("Hello Computer Graphics!");
+		ImGui::SliderAngle("Rotation", &player->rotation.y);
+		ImGui::SliderFloat("Rotation", &player->rotation.y, 0, 10);
 
-#pragma region ImGui-Content
-	ImGui::Text("Hello Computer Graphics!");
-
-	static float translation[] = { 0, 0, 0 };
-	ImGui::SliderFloat3("position", translation, -2.0, 2.0);
-
-	// Player position set to slider pos.
-	player->position = glm::vec3(translation[0], translation[1], translation[2]);
-
-
-	static bool rotateCheck = false;
-	if (ImGui::Checkbox("Rotate?", &rotateCheck))
-	{
-		if (rotateCheck)
-		{
-			player->addComponent(std::make_shared<SpinComponent>());
+		if (ImGui::Button("Hi")) {
+			player->rotation.y += 0.1f;
 		}
-		else
+
+		static float translation[] = { 0, 0, 0 };
+		ImGui::SliderFloat3("position", translation, -2.0, 2.0);
+
+		// Player position set to slider pos.
+		player->position = glm::vec3(translation[0], translation[1], translation[2]);
+
+
+		static bool rotateCheck = false;
+		if (ImGui::Checkbox("Rotate?", &rotateCheck))
 		{
-			player->removeComponent(player->getComponent<SpinComponent>());
+			if (rotateCheck)
+			{
+				player->addComponent(std::make_shared<SpinComponent>());
+			}
+			else
+			{
+				player->removeComponent(player->getComponent<SpinComponent>());
+			}
 		}
+
+		ImGui::End();
 	}
 
-#pragma endregion ImGui-Content
+}
 
-	ImGui::End();
-
-	ImGui::Render();
+void drawImGuiWindow() {
+	ImGui::Render(); 
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
