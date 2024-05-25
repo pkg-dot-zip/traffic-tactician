@@ -20,7 +20,6 @@ GLFWwindow* window;
 #include<opencv2/highgui.hpp>
 #include "easylogging++.h"
 
-#include<iostream>
 #include<chrono>
 #include<random>
 #include<set>
@@ -40,70 +39,88 @@ void doExternalOptimizations()
 	SetPriorityClass(GetCurrentProcess(), useRealTimePriority ? REALTIME_PRIORITY_CLASS : HIGH_PRIORITY_CLASS);
 }
 
-auto camera = cv::VideoCapture(0);
-
-PoseDirection leftArmDirection = DIRECTION_UNCLEAR;
-PoseDirection rightArmDirection = DIRECTION_UNCLEAR;
+constexpr int cameraToUse = 0;
+auto camera = cv::VideoCapture(cameraToUse);
 
 void updateFromCamera(cv::Mat& input)
 {
 	camera.read(input);
 }
 
+PoseDirection leftArmDirection = DIRECTION_UNCLEAR;
+PoseDirection rightArmDirection = DIRECTION_UNCLEAR;
 std::map<std::string, std::vector<KeyPoint>> keyPointsToUseInCalculation;
+
+void setCpuOrGpu(std::string& device, cv::dnn::Net& inputNet)
+{
+	if (device == "cpu")
+	{
+		LOG(INFO) << "Using CPU device" << std::endl;
+		inputNet.setPreferableBackend(cv::dnn::DNN_TARGET_CPU);
+	}
+	else if (device == "gpu")
+	{
+		LOG(INFO) << "Using GPU device" << std::endl;
+		inputNet.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
+		inputNet.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA);
+	}
+}
+
+// TODO: Look into usage, and probably remove, since we will always run on our CPU due to our OpenCV build.
+void processCommandLineArguments(int& argc, char**& argv, std::string& device)
+{
+	LOG(INFO) << "USAGE : ./multi-person-openpose <inputFile> <device>" << std::endl;
+	if (argc == 2)
+	{
+		if (static_cast<std::string>(argv[1]) == "gpu")
+			device = "gpu";
+	}
+	else if (argc == 3)
+	{
+		if (static_cast<std::string>(argv[2]) == "gpu")
+			device = "gpu";
+	}
+}
+
+void loadDnnModel(cv::dnn::Net& inputNet)
+{
+	const std::string prototxt = "./pose/coco/pose_deploy_linevec.prototxt";
+	const std::string caffemodel = "./pose/coco/pose_iter_440000.caffemodel";
+	inputNet = cv::dnn::readNetFromCaffe(prototxt, caffemodel);
+}
+
+void displayArmDirections(cv::Mat& outputFrame)
+{
+	std::string leftArmDirectionString = getDirectionString(leftArmDirection);
+	std::string rightArmDirectionString = getDirectionString(rightArmDirection);
+
+	std::string leftArmDirectionDisplayString = "Left arm Direction is ";
+	std::string rightArmDirectionDisplayString = "Right arm Direction is ";
+
+	leftArmDirectionDisplayString.append(leftArmDirectionString);
+	rightArmDirectionDisplayString.append(rightArmDirectionString);
+
+	cv::putText(outputFrame, leftArmDirectionDisplayString, { 40, outputFrame.rows - 40 }, cv::FONT_HERSHEY_COMPLEX,
+		1.0, { 0, 0, 0, 0 });
+	cv::putText(outputFrame, rightArmDirectionDisplayString, { 40, 40 }, cv::FONT_HERSHEY_COMPLEX, 1.0, { 0, 0, 0, 0 });
+}
 
 int main(int argc, char** argv)
 {
 	doExternalOptimizations();
 
-	std::string inputFile = "./group.jpg";
-	// std::string inputFile = "./tpose.jpg";
 	std::string device = "gpu";
-	std::cout << "USAGE : ./multi-person-openpose <inputFile> <device>" << std::endl;
-	if (argc == 2)
-	{
-		if (static_cast<std::string>(argv[1]) == "gpu")
-			device = "gpu";
-		else
-			inputFile = argv[1];
-	}
-	else if (argc == 3)
-	{
-		inputFile = argv[1];
-		if (static_cast<std::string>(argv[2]) == "gpu")
-			device = "gpu";
-	}
+	processCommandLineArguments(argc, argv, device);
 
 	cv::Mat input;
-	// cv::Mat input = cv::imread(inputFile, cv::IMREAD_COLOR);
-	// cv::resize(input, input, cv::Size(), 0.1, 0.1, cv::INTER_LINEAR);
-
-
-
 	updateFromCamera(input);
 
-	cv::dnn::Net inputNet = cv::dnn::readNetFromCaffe("./pose/coco/pose_deploy_linevec.prototxt",
-		"./pose/coco/pose_iter_440000.caffemodel");
-
-	if (device == "cpu")
-	{
-		std::cout << "Using CPU device" << std::endl;
-		inputNet.setPreferableBackend(cv::dnn::DNN_TARGET_CPU);
-	}
-	else if (device == "gpu")
-	{
-		std::cout << "Using GPU device" << std::endl;
-		inputNet.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
-		inputNet.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA);
-	}
-
-	const bool isOptimized = cv::useOptimized();
-	LOG(INFO) << "Is optimized: " << isOptimized;
+	cv::dnn::Net inputNet;
+	loadDnnModel(inputNet);
+	setCpuOrGpu(device, inputNet);
 
 	constexpr double upscaleFactor = 4;
 	constexpr double downscaleFactor = 0.4;
-
-	
 
 	while (true)
 	{
@@ -112,40 +129,26 @@ int main(int argc, char** argv)
 		LOG(INFO) << "Width: " << input.rows << " | Height: " << input.cols << std::endl;
 		cv::Mat outputFrame;
 
-		auto timeStart = cv::getTickCount();
+		const auto timeStart = cv::getTickCount();
 		getCalculatedPose(keyPointsToUseInCalculation, input, outputFrame, inputNet);
-
-		leftArmDirection = getDirectionForArmLeft(keyPointsToUseInCalculation);
-		rightArmDirection = getDirectionForArmRight(keyPointsToUseInCalculation);
-
-		auto timeEnd = cv::getTickCount();
+		const auto timeEnd = cv::getTickCount();
 
 		auto time = (timeEnd - timeStart) / cv::getTickFrequency();
 
 		LOG(INFO) << "Time it took for: " << time << std::endl;
 
+		leftArmDirection = getDirectionForArmLeft(keyPointsToUseInCalculation);
+		rightArmDirection = getDirectionForArmRight(keyPointsToUseInCalculation);
 
 		cv::resize(outputFrame, outputFrame, cv::Size(), upscaleFactor, upscaleFactor, cv::INTER_LINEAR);
 		cv::flip(outputFrame, outputFrame, 1);
 
-		std::string a = getDirectionString(leftArmDirection);
-		std::string b = getDirectionString(rightArmDirection);
-
-		std::string string1 = "Left arm Direction is ";
-		std::string string2 = "Right arm Direction is ";
-
-		string1.append(a);
-		string2.append(b);
-
-		const std::string leftArmDirectionString = string1;
-		const std::string rightArmDirectionString = string2;
-		cv::putText(outputFrame, leftArmDirectionString, { 40, outputFrame.rows - 40 }, cv::FONT_HERSHEY_COMPLEX, 1.0, { 0, 0, 0, 0 });
-		cv::putText(outputFrame, rightArmDirectionString, { 40, 40 }, cv::FONT_HERSHEY_COMPLEX, 1.0, { 0, 0, 0, 0 });
+		displayArmDirections(outputFrame);
 
 		cv::imshow("Detected Pose", outputFrame);
 		cv::waitKey(1);
 
-		keyPointsToUseInCalculation.clear();
+		keyPointsToUseInCalculation.clear(); // DON'T FORGET TO CLEAR MAP; THIS LINE IS IMPORTANT!
 
 		LOG(INFO) << "Was running at " << GetPriorityClass(GetCurrentProcess()) << std::endl;
 	}

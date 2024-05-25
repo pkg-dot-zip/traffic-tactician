@@ -19,6 +19,7 @@
 #include <opencv2/videoio.hpp>
 #include <opencv2/dnn.hpp>
 
+#include "easylogging++.h"
 #include "keyPoint.h"
 #include "poseChecker.h"
 ////////////////////////////////
@@ -370,7 +371,7 @@ void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsTo
 
 		getKeyPoints(netOutputParts[i], 0.1, keyPoints);
 
-		std::cout << "Keypoints - " << keypointsMapping[i] << " : " << keyPoints << std::endl;
+		LOG(INFO) << "Keypoints - " << keypointsMapping[i] << " : " << keyPoints << std::endl;
 
 		keyPointsToUseInCalculation.insert(std::make_pair(keypointsMapping[i], keyPoints));
 
