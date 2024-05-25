@@ -90,6 +90,9 @@
     <ClCompile Include="detectionMain.cpp">
       <Filter>Source Files\poseDetection</Filter>
     </ClCompile>
+    <ClCompile Include="poseEstimation.cpp">
+      <Filter>Source Files\poseDetection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="easylogging++.h">
@@ -150,6 +153,9 @@
       <Filter>Header Files\poseDetection</Filter>
     </ClInclude>
     <ClInclude Include="keyPoint.h">
+      <Filter>Header Files\poseDetection</Filter>
+    </ClInclude>
+    <ClInclude Include="poseEstimation.h">
       <Filter>Header Files\poseDetection</Filter>
     </ClInclude>
   </ItemGroup>

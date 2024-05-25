@@ -1,3 +1,8 @@
+/**
+ * This file contains all methods to interface with poseEstimation.cpp, whose contents should not be interacted with directly.
+ * Instead, use the methods in this file.
+ */
+
 #include "poseChecker.h"
 
 #include <map>
@@ -28,6 +33,23 @@ void checkPoseForAll(std::map<std::string, std::vector<KeyPoint>>& map)
 	calculateDegreesOfElbowToWristRight(map);
 
 	printDirectionOfArms(map);
+}
+
+std::string getDirectionString(PoseDirection pose_direction)
+{
+	switch (pose_direction)
+	{
+	case DIRECTION_LEFT:
+		return "LEFT";
+	case DIRECTION_UP:
+		return "UP";
+	case DIRECTION_RIGHT:
+		return "RIGHT";
+	case DIRECTION_DOWN:
+		return "DOWN";
+	default:
+		return "UNCLEAR";
+	}
 }
 
 // Method used for debugging prints for direction of arms.

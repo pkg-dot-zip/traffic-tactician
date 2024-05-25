@@ -1,4 +1,3 @@
-
 #pragma once
 #include <string>
 #include <vector>
@@ -9,5 +8,6 @@ enum PoseDirection { DIRECTION_UNCLEAR, DIRECTION_UP, DIRECTION_RIGHT, DIRECTION
 
 
 void checkPoseForAll(std::map<std::string, std::vector<KeyPoint>>& map);
+std::string getDirectionString(PoseDirection pose_direction);
 PoseDirection getDirectionForArmLeft(std::map<std::string, std::vector<KeyPoint>>& map);
 PoseDirection getDirectionForArmRight(std::map<std::string, std::vector<KeyPoint>>& map);
