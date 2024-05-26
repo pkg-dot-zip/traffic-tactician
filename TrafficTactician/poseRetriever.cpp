@@ -32,34 +32,21 @@ PoseDirection leftArmDirection = DIRECTION_UNCLEAR;
 PoseDirection rightArmDirection = DIRECTION_UNCLEAR;
 std::map<std::string, std::vector<KeyPoint>> keyPointsToUseInCalculation;
 
-static void setCpuOrGpu(std::string& device, cv::dnn::Net& inputNet)
+
+constexpr std::string preferred_device = "gpu";
+
+static void setCpuOrGpu(cv::dnn::Net& inputNet)
 {
-	if (device == "cpu")
+	if (preferred_device == "cpu")
 	{
-		LOG(INFO) << "Using CPU device" << std::endl;
+		LOG(INFO) << "Attempting to use CPU device!" << std::endl;
 		inputNet.setPreferableBackend(cv::dnn::DNN_TARGET_CPU);
 	}
-	else if (device == "gpu")
+	else if (preferred_device == "gpu")
 	{
-		LOG(INFO) << "Using GPU device" << std::endl;
+		LOG(INFO) << "Attempting to use GPU device!" << std::endl;
 		inputNet.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
 		inputNet.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA);
-	}
-}
-
-// TODO: Look into usage, and probably remove, since we will always run on our CPU due to our OpenCV build.
-void processCommandLineArguments(int& argc, char**& argv, std::string& device)
-{
-	LOG(INFO) << "USAGE : ./multi-person-openpose <inputFile> <device>" << std::endl;
-	if (argc == 2)
-	{
-		if (static_cast<std::string>(argv[1]) == "gpu")
-			device = "gpu";
-	}
-	else if (argc == 3)
-	{
-		if (static_cast<std::string>(argv[2]) == "gpu")
-			device = "gpu";
 	}
 }
 
@@ -72,41 +59,33 @@ static void loadDnnModel(cv::dnn::Net& inputNet)
 
 void displayArmDirections(cv::Mat& outputFrame)
 {
-	std::string leftArmDirectionString = getDirectionString(leftArmDirection);
-	std::string rightArmDirectionString = getDirectionString(rightArmDirection);
+	const std::string leftArmDirectionString = getDirectionString(leftArmDirection);
+	const std::string rightArmDirectionString = getDirectionString(rightArmDirection);
 
 	std::string leftArmDirectionDisplayString = "Left arm Direction is ";
 	std::string rightArmDirectionDisplayString = "Right arm Direction is ";
 
-	leftArmDirectionDisplayString.append(leftArmDirectionString);
-	rightArmDirectionDisplayString.append(rightArmDirectionString);
-
-	cv::putText(outputFrame, leftArmDirectionDisplayString, { 40, outputFrame.rows - 40 }, cv::FONT_HERSHEY_COMPLEX,
+	cv::putText(outputFrame, leftArmDirectionDisplayString.append(leftArmDirectionString), { 40, outputFrame.rows - 40 }, cv::FONT_HERSHEY_COMPLEX,
 		1.0, { 0, 0, 0, 0 });
-	cv::putText(outputFrame, rightArmDirectionDisplayString, { 40, 40 }, cv::FONT_HERSHEY_COMPLEX, 1.0, { 0, 0, 0, 0 });
+	cv::putText(outputFrame, rightArmDirectionDisplayString.append(rightArmDirectionString), { 40, 40 }, cv::FONT_HERSHEY_COMPLEX, 1.0, { 0, 0, 0, 0 });
 }
+
+constexpr double upscaleFactor = 4;
+constexpr double downscaleFactor = 0.4;
 
 int run(int argc, char** argv)
 {
 	doExternalOptimizations();
 
-	std::string device = "gpu";
-	processCommandLineArguments(argc, argv, device);
-
 	cv::Mat input;
-	updateFromCamera(input);
-
 	cv::dnn::Net inputNet;
 	loadDnnModel(inputNet);
-	setCpuOrGpu(device, inputNet);
-
-	constexpr double upscaleFactor = 4;
-	constexpr double downscaleFactor = 0.4;
+	setCpuOrGpu(inputNet);
 
 	while (true)
 	{
 		updateFromCamera(input);
-		cv::resize(input, input, cv::Size(), downscaleFactor, downscaleFactor, cv::INTER_AREA);
+		cv::resize(input, input, cv::Size(), downscaleFactor, downscaleFactor, cv::INTER_AREA); // INTER_AREA is better than the default (INTER_LINEAR) for camera views, according to a Stackoverflow user.
 		LOG(INFO) << "Width: " << input.rows << " | Height: " << input.cols << std::endl;
 		cv::Mat outputFrame;
 
@@ -121,8 +100,8 @@ int run(int argc, char** argv)
 		leftArmDirection = getDirectionForArmLeft(keyPointsToUseInCalculation);
 		rightArmDirection = getDirectionForArmRight(keyPointsToUseInCalculation);
 
-		cv::resize(outputFrame, outputFrame, cv::Size(), upscaleFactor, upscaleFactor, cv::INTER_LINEAR);
-		cv::flip(outputFrame, outputFrame, 1);
+		cv::resize(outputFrame, outputFrame, cv::Size(), upscaleFactor, upscaleFactor);
+		cv::flip(outputFrame, outputFrame, 1); // We flip the mat here so that our cam view looks more natural; it confuses the user to see his left arm on the right side of his screen.
 
 		displayArmDirections(outputFrame);
 
@@ -130,8 +109,6 @@ int run(int argc, char** argv)
 		cv::waitKey(1);
 
 		keyPointsToUseInCalculation.clear(); // DON'T FORGET TO CLEAR MAP; THIS LINE IS IMPORTANT!
-
-		LOG(INFO) << "Was running at " << GetPriorityClass(GetCurrentProcess()) << std::endl;
 	}
 
 	return 0;
