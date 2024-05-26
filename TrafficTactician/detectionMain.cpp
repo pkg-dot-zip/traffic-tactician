@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include "easylogging++.h"
+#include "log.h"
 #include "poseEstimation.h"
 #include "poseRetriever.h"
 
@@ -21,5 +22,6 @@ INITIALIZE_EASYLOGGINGPP
 
 int main(int argc, char** argv)
 {
-	run(argc, argv);
+	setupLogger();
+	runPoseRetriever();
 }

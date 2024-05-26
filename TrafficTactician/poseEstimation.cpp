@@ -184,9 +184,9 @@ void populateInterpPoints(const cv::Point& a, const cv::Point& b, int numPoints,
 
 
 void getValidPairs(const std::vector<cv::Mat>& netOutputParts,
-	const std::vector<std::vector<KeyPoint>>& detectedKeypoints,
-	std::vector<std::vector<ValidPair>>& validPairs,
-	std::set<int>& invalidPairs)
+                   const std::vector<std::vector<KeyPoint>>& detectedKeypoints,
+                   std::vector<std::vector<ValidPair>>& validPairs,
+                   std::set<int>& invalidPairs)
 {
 	constexpr int nInterpSamples = 10;
 	constexpr float pafScoreTh = 0.1;
@@ -226,7 +226,7 @@ void getValidPairs(const std::vector<cv::Mat>& netOutputParts,
 				for (int j = 0; j < nB; ++j)
 				{
 					std::pair<float, float> distance(candB[j].point.x - candA[i].point.x,
-						candB[j].point.y - candA[i].point.y);
+					                                 candB[j].point.y - candA[i].point.y);
 
 					const float norm = std::sqrt(distance.first * distance.first + distance.second * distance.second);
 
@@ -294,8 +294,8 @@ void getValidPairs(const std::vector<cv::Mat>& netOutputParts,
 }
 
 void getPersonwiseKeypoints(const std::vector<std::vector<ValidPair>>& validPairs,
-	const std::set<int>& invalidPairs,
-	std::vector<std::vector<int>>& personwiseKeypoints)
+                            const std::set<int>& invalidPairs,
+                            std::vector<std::vector<int>>& personwiseKeypoints)
 {
 	for (int k = 0; k < mapIdx.size(); ++k)
 	{
@@ -344,13 +344,14 @@ constexpr int magicNumber = 100;
 constexpr double scaleFactor = 1.0 / 255.0;
 
 // TODO: Look into usage if UMAT & MATEXPR to see if we can optimize this further. -> Benchmark.
-void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsToUseInCalculation, cv::Mat& input, cv::Mat& outputFrame, cv::dnn::Net& inputNet)
+void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsToUseInCalculation, cv::Mat& input,
+                       cv::Mat& outputFrame, cv::dnn::Net& inputNet)
 {
 	if (!keyPointsToUseInCalculation.empty()) throw std::exception("Map to save points in is not empty.");
 
 	cv::Mat inputBlob = cv::dnn::blobFromImage(input, scaleFactor,
-		cv::Size((int)((magicNumber * input.cols) / input.rows), magicNumber),
-		cv::Scalar(0, 0, 0), false, false);
+	                                           cv::Size((int)((magicNumber * input.cols) / input.rows), magicNumber),
+	                                           cv::Scalar(0, 0, 0), false, false);
 
 	inputNet.setInput(inputBlob);
 
@@ -422,4 +423,28 @@ void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsTo
 			cv::line(outputFrame, kpA.point, kpB.point, colors[i], 3, cv::LINE_AA);
 		}
 	}
+}
+
+// Methods under here are allowed to be called by other files.
+std::map<std::string, std::vector<KeyPoint>> poseEstimationKeyPoints;
+
+std::map<std::string, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap(cv::Mat& input,
+                                                  cv::Mat& outputFrame,
+                                                  cv::dnn::Net& inputNet)
+{
+	const int64 timeStart = cv::getTickCount();
+	getCalculatedPose(poseEstimationKeyPoints, input, outputFrame, inputNet);
+	const int64 timeEnd = cv::getTickCount();
+
+	const double time = (timeEnd - timeStart) / cv::getTickFrequency();
+
+	LOG(INFO) << "Time it took to retrieve the poseEstimationKeyPoints: " << time << std::endl;
+
+	return poseEstimationKeyPoints;
+}
+
+void clearPoseEstimationKeyPointsMap()
+{
+	poseEstimationKeyPoints.clear();
+	LOG(INFO) << "Cleared the poseEstimationKeyPoints map!";
 }

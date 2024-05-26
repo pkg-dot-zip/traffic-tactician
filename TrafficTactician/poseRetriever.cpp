@@ -30,8 +30,6 @@ static void updateFromCamera(cv::Mat& input)
 
 PoseDirection leftArmDirection = DIRECTION_UNCLEAR;
 PoseDirection rightArmDirection = DIRECTION_UNCLEAR;
-std::map<std::string, std::vector<KeyPoint>> keyPointsToUseInCalculation;
-
 
 constexpr std::string preferred_device = "gpu";
 
@@ -57,7 +55,7 @@ static void loadDnnModel(cv::dnn::Net& inputNet)
 	inputNet = cv::dnn::readNetFromCaffe(prototxt, caffemodel);
 }
 
-void displayArmDirections(cv::Mat& outputFrame)
+static void displayArmDirections(cv::Mat& outputFrame)
 {
 	const std::string leftArmDirectionString = getDirectionString(leftArmDirection);
 	const std::string rightArmDirectionString = getDirectionString(rightArmDirection);
@@ -65,15 +63,22 @@ void displayArmDirections(cv::Mat& outputFrame)
 	std::string leftArmDirectionDisplayString = "Left arm Direction is ";
 	std::string rightArmDirectionDisplayString = "Right arm Direction is ";
 
-	cv::putText(outputFrame, leftArmDirectionDisplayString.append(leftArmDirectionString), { 40, outputFrame.rows - 40 }, cv::FONT_HERSHEY_COMPLEX,
-		1.0, { 0, 0, 0, 0 });
-	cv::putText(outputFrame, rightArmDirectionDisplayString.append(rightArmDirectionString), { 40, 40 }, cv::FONT_HERSHEY_COMPLEX, 1.0, { 0, 0, 0, 0 });
+	constexpr int offset = 40;
+	constexpr int fontFace = cv::FONT_HERSHEY_COMPLEX;
+	constexpr double fontScale = 1.0;
+	const cv::Scalar color = {0, 0, 0, 0};
+
+	cv::putText(outputFrame, leftArmDirectionDisplayString.append(leftArmDirectionString),
+	            {offset, outputFrame.rows - offset},
+	            fontFace, fontScale, color);
+	cv::putText(outputFrame, rightArmDirectionDisplayString.append(rightArmDirectionString), {offset, offset},
+	            fontFace, fontScale, color);
 }
 
 constexpr double upscaleFactor = 4;
 constexpr double downscaleFactor = 0.4;
 
-int run(int argc, char** argv)
+int runPoseRetriever()
 {
 	doExternalOptimizations();
 
@@ -85,23 +90,21 @@ int run(int argc, char** argv)
 	while (true)
 	{
 		updateFromCamera(input);
-		cv::resize(input, input, cv::Size(), downscaleFactor, downscaleFactor, cv::INTER_AREA); // INTER_AREA is better than the default (INTER_LINEAR) for camera views, according to a Stackoverflow user.
-		LOG(INFO) << "Width: " << input.rows << " | Height: " << input.cols << std::endl;
+		cv::resize(input, input, cv::Size(), downscaleFactor, downscaleFactor, cv::INTER_AREA);
+		// INTER_AREA is better than the default (INTER_LINEAR) for camera views, according to a Stackoverflow user.
+		LOG(INFO) << "AFTER DOWNSCALING - Width: " << input.rows << " | Height: " << input.cols << std::endl;
 		cv::Mat outputFrame;
 
-		const auto timeStart = cv::getTickCount();
-		getCalculatedPose(keyPointsToUseInCalculation, input, outputFrame, inputNet);
-		const auto timeEnd = cv::getTickCount();
+		std::map<std::string, std::vector<KeyPoint>>& keyPointsToUseInCalculation = getPoseEstimationKeyPointsMap(
+			input, outputFrame, inputNet);
 
-		auto time = (timeEnd - timeStart) / cv::getTickFrequency();
-
-		LOG(INFO) << "Time it took for: " << time << std::endl;
 
 		leftArmDirection = getDirectionForArmLeft(keyPointsToUseInCalculation);
 		rightArmDirection = getDirectionForArmRight(keyPointsToUseInCalculation);
 
 		cv::resize(outputFrame, outputFrame, cv::Size(), upscaleFactor, upscaleFactor);
-		cv::flip(outputFrame, outputFrame, 1); // We flip the mat here so that our cam view looks more natural; it confuses the user to see his left arm on the right side of his screen.
+		cv::flip(outputFrame, outputFrame, 1);
+		// We flip the mat here so that our cam view looks more natural; it confuses the user to see his left arm on the right side of his screen.
 
 		displayArmDirections(outputFrame);
 
