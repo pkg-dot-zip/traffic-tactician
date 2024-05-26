@@ -15,8 +15,9 @@
 #include "keyPoint.h"
 #include "poseChecker.h"
 #include "poseEstimation.h"
+#include "settingsFromJson.h"
 
-constexpr bool useRealTimePriority = false;
+constexpr bool useRealTimePriority = settings.useRealTimePriority;
 
 // This forces higher priority on your windows system. You can check this in task manager -> details.
 static void doExternalOptimizations()
@@ -25,7 +26,7 @@ static void doExternalOptimizations()
 	SetPriorityClass(GetCurrentProcess(), useRealTimePriority ? REALTIME_PRIORITY_CLASS : HIGH_PRIORITY_CLASS);
 }
 
-constexpr int cameraToUse = 0;
+constexpr int cameraToUse = settings.cameraToUse;
 auto camera = cv::VideoCapture(cameraToUse);
 
 static void updateFromCamera(cv::Mat& input)
@@ -36,7 +37,7 @@ static void updateFromCamera(cv::Mat& input)
 PoseDirection leftArmDirection = DIRECTION_UNCLEAR;
 PoseDirection rightArmDirection = DIRECTION_UNCLEAR;
 
-constexpr std::string preferred_device = "gpu";
+constexpr std::string_view preferred_device = settings.preferredDevice;
 
 static void setCpuOrGpu(cv::dnn::Net& inputNet)
 {
@@ -55,9 +56,7 @@ static void setCpuOrGpu(cv::dnn::Net& inputNet)
 
 static void loadDnnModel(cv::dnn::Net& inputNet)
 {
-	const std::string prototxt = "./pose/coco/pose_deploy_linevec.prototxt";
-	const std::string caffemodel = "./pose/coco/pose_iter_440000.caffemodel";
-	inputNet = cv::dnn::readNetFromCaffe(prototxt, caffemodel);
+	inputNet = cv::dnn::readNetFromCaffe(static_cast<std::string>(settings.prototxt), static_cast<std::string>(settings.caffemodel));
 }
 
 static void displayArmDirections(cv::Mat& outputFrame)
@@ -86,10 +85,10 @@ static bool shouldRun()
 	return true;
 }
 
-constexpr double upscaleFactor = 4;
-constexpr double downscaleFactor = 0.4;
+constexpr double upscaleFactor = settings.upscaleFactor;
+constexpr double downscaleFactor = settings.downscaleFactor;
 
-// Start the thread f or 
+// Start the thread for pose estimation. 
 int runPoseRetriever()
 {
 	doExternalOptimizations();

@@ -12,6 +12,7 @@
 
 #include "easylogging++.h"
 #include "keyPoint.h"
+#include "settingsFromJson.h"
 
 
 float calculateDegreesOfElbowToWristLeft(std::map<std::string, std::vector<KeyPoint>>& map);
@@ -103,11 +104,11 @@ float calculateDegreesBetweenTwoPoints(std::map<std::string, std::vector<KeyPoin
 {
 	if (map[point1].empty() || map[point2].empty()) return NAN;
 
-	int point1X = map[point1][0].point.x;
-	int point1Y = map[point1][0].point.y;
+	const int point1X = map[point1][0].point.x;
+	const int point1Y = map[point1][0].point.y;
 
-	int point2X = map[point2][0].point.x;
-	int point2Y = map[point2][0].point.y;
+	const int point2X = map[point2][0].point.x;
+	const int point2Y = map[point2][0].point.y;
 
 	LOG(INFO) << point1 << " " << point1X << "/" << point1Y << " ||| " << point2 << " " << point2X << "/" << point2Y <<
 		std::endl;
@@ -134,7 +135,7 @@ PoseDirection getDirectionForArmRight(std::map<std::string, std::vector<KeyPoint
 
 PoseDirection getDirectionForArm(const float angleInDegrees)
 {
-	constexpr float tolerance = 20.0F; // Tolerance in degrees.
+	constexpr float tolerance = settings.tolerance; // Tolerance in degrees.
 
 	if (angleInDegrees < (90.0F + tolerance) && angleInDegrees >(90.0F - tolerance))
 	{

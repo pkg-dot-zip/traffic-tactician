@@ -164,5 +164,8 @@
     <ClInclude Include="poseRetriever.h">
       <Filter>Header Files\poseDetection</Filter>
     </ClInclude>
+    <ClInclude Include="settingsFromJson.h">
+      <Filter>Header Files\poseDetection</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

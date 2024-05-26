@@ -22,6 +22,8 @@
 #include "easylogging++.h"
 #include "keyPoint.h"
 #include "poseChecker.h"
+#include "settingsFromJson.h"
+
 ////////////////////////////////
 std::ostream& operator <<(std::ostream& os, const KeyPoint& kp)
 {
@@ -32,7 +34,7 @@ std::ostream& operator <<(std::ostream& os, const KeyPoint& kp)
 ////////////////////////////////
 struct ValidPair
 {
-	ValidPair(int aId, int bId, float score)
+	ValidPair(const int aId, const int bId, const float score)
 	{
 		this->aId = aId;
 		this->bId = bId;
@@ -82,7 +84,7 @@ std::ostream& operator <<(std::ostream& os, const std::set<T>& v)
 
 ////////////////////////////////
 
-const int nPoints = 18;
+constexpr int nPoints = 18;
 
 const std::string keypointsMapping[] = {
 	"Nose", "Neck",
@@ -107,7 +109,7 @@ const std::vector<std::pair<int, int>> posePairs = {
 	{5, 16}
 };
 
-void getKeyPoints(cv::Mat& probMap, double threshold, std::vector<KeyPoint>& keyPoints)
+static void getKeyPoints(cv::Mat& probMap, const double threshold, std::vector<KeyPoint>& keyPoints)
 {
 	cv::Mat smoothProbMap;
 	cv::GaussianBlur(probMap, smoothProbMap, cv::Size(3, 3), 0, 0);
@@ -135,7 +137,7 @@ void getKeyPoints(cv::Mat& probMap, double threshold, std::vector<KeyPoint>& key
 	}
 }
 
-void populateColorPalette(std::vector<cv::Scalar>& colors, int nColors)
+void populateColorPalette(std::vector<cv::Scalar>& colors, const int nColors)
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -149,15 +151,15 @@ void populateColorPalette(std::vector<cv::Scalar>& colors, int nColors)
 	}
 }
 
-void splitNetOutputBlobToParts(cv::Mat& netOutputBlob, const cv::Size& targetSize, std::vector<cv::Mat>& netOutputParts)
+static void splitNetOutputBlobToParts(cv::Mat& netOutputBlob, const cv::Size& targetSize, std::vector<cv::Mat>& netOutputParts)
 {
-	int nParts = netOutputBlob.size[1];
-	int h = netOutputBlob.size[2];
-	int w = netOutputBlob.size[3];
+	const int nParts = netOutputBlob.size[1];
+	const int height = netOutputBlob.size[2];
+	const int width = netOutputBlob.size[3];
 
 	for (int i = 0; i < nParts; ++i)
 	{
-		cv::Mat part(h, w, CV_32F, netOutputBlob.ptr(0, i));
+		cv::Mat part(height, width, CV_32F, netOutputBlob.ptr(0, i));
 
 		cv::Mat resizedPart;
 
@@ -167,7 +169,7 @@ void splitNetOutputBlobToParts(cv::Mat& netOutputBlob, const cv::Size& targetSiz
 	}
 }
 
-void populateInterpPoints(const cv::Point& a, const cv::Point& b, int numPoints, std::vector<cv::Point>& interpCoords)
+static void populateInterpPoints(const cv::Point& a, const cv::Point& b, int numPoints, std::vector<cv::Point>& interpCoords)
 {
 	const float xStep = static_cast<float>(b.x - a.x) / static_cast<float>(numPoints - 1);
 	const float yStep = static_cast<float>(b.y - a.y) / static_cast<float>(numPoints - 1);
@@ -188,9 +190,9 @@ void getValidPairs(const std::vector<cv::Mat>& netOutputParts,
                    std::vector<std::vector<ValidPair>>& validPairs,
                    std::set<int>& invalidPairs)
 {
-	constexpr int nInterpSamples = 10;
-	constexpr float pafScoreTh = 0.1;
-	constexpr float confTh = 0.7;
+	constexpr int nInterpSamples = settings.nInterpSamples;
+	constexpr float pafScoreTh = settings.pafScoreTh;
+	constexpr float confTh = settings.confTh;
 
 	for (int k = 0; k < mapIdx.size(); ++k)
 	{

@@ -160,6 +160,9 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>$(ProjectDir)json2hpp.exe "settings" "settings.json" "settingsFromJson.h"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -177,6 +180,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>$(ProjectDir)json2hpp.exe "settings" "settings.json" "settingsFromJson.h"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='PoseDetectionRelease|x64'">
     <ClCompile>
@@ -194,6 +200,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>$(ProjectDir)json2hpp.exe "settings" "settings.json" "settingsFromJson.h"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="components\BoundingBoxComponent.cpp" />
@@ -245,6 +254,7 @@
     <ClInclude Include="poseChecker.h" />
     <ClInclude Include="poseEstimation.h" />
     <ClInclude Include="poseRetriever.h" />
+    <ClInclude Include="settingsFromJson.h" />
     <ClInclude Include="SpinComponent.h" />
     <ClInclude Include="tigl.h" />
   </ItemGroup>
