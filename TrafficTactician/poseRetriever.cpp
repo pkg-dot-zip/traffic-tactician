@@ -46,7 +46,7 @@ static void setCpuOrGpu(cv::dnn::Net& inputNet)
 		LOG(INFO) << "Attempting to use CPU device!" << std::endl;
 		inputNet.setPreferableBackend(cv::dnn::DNN_TARGET_CPU);
 	}
-	else if (preferred_device == "gpu")
+	else if (preferred_device == "gpu") // NOTE: Required custom OpenCV built with CUDA sdk.
 	{
 		LOG(INFO) << "Attempting to use GPU device!" << std::endl;
 		inputNet.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
@@ -119,8 +119,8 @@ int runPoseRetriever()
 
 		displayArmDirections(outputFrame);
 
-		cv::imshow("Detected Pose", outputFrame);
-		cv::waitKey(1);
+		cv::imshow(std::string(settings.openCVWindowName), outputFrame);
+		cv::waitKey(settings.waitKeyDelayOpenCV);
 
 		clearPoseEstimationKeyPointsMap(); // DON'T FORGET TO CLEAR MAP; THIS LINE IS IMPORTANT!
 	}

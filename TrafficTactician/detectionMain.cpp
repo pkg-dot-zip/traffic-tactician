@@ -3,7 +3,7 @@
  * DO NOT put code here that belongs in another configuration.
  *
  * Kort in het Nederlands:
- * Als de gij niet bezig bent met pose estimation taken moet de gij hier niet zijn.
+ * Als de gij niet bezig bent met pose estimation taken in PoseDetectionRelease modus moe de gij hier niet zijn.
  */
 
 // Following includes and configurations are just to make it work and are not actually used in the pose detection configuration.

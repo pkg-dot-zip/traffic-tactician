@@ -111,8 +111,12 @@ const std::vector<std::pair<int, int>> posePairs = {
 
 static void getKeyPoints(cv::Mat& probMap, const double threshold, std::vector<KeyPoint>& keyPoints)
 {
+	const auto ksize = cv::Size(settings.blurKSize, settings.blurKSize);
+	constexpr int sigmaX = settings.blurSigmaX;
+	constexpr int sigmaY = settings.blurSigmaY;
+
 	cv::Mat smoothProbMap;
-	cv::GaussianBlur(probMap, smoothProbMap, cv::Size(3, 3), 0, 0);
+	cv::GaussianBlur(probMap, smoothProbMap, ksize, sigmaX, sigmaY);
 
 	cv::Mat maskedProbMap;
 	cv::threshold(smoothProbMap, maskedProbMap, threshold, 255, cv::THRESH_BINARY);
@@ -340,10 +344,7 @@ void getPersonwiseKeypoints(const std::vector<std::vector<ValidPair>>& validPair
 	} /* k */
 }
 
-// constexpr int magicNumber = 368;
-// constexpr int magicNumber = 200;
-constexpr int magicNumber = 100;
-constexpr double scaleFactor = 1.0 / 255.0;
+constexpr int spatialSizeFactor = settings.spatialSizeFactor; // Typically larger, we however don't need good accuracy at all and will probably not go over 200.
 
 // TODO: Look into usage if UMAT & MATEXPR to see if we can optimize this further. -> Benchmark.
 void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsToUseInCalculation, cv::Mat& input,
@@ -351,9 +352,17 @@ void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsTo
 {
 	if (!keyPointsToUseInCalculation.empty()) throw std::exception("Map to save points in is not empty.");
 
+	// For reference:
+	// 1. https://pyimagesearch.com/2017/11/06/deep-learning-opencvs-blobfromimage-works/
+	// 2. https://docs.opencv.org/3.4/d6/d0f/group__dnn.html#ga33d1b39b53a891e98a654fdeabba22eb
+	constexpr double scaleFactor = 1.0 / 255.0;
+	const int spatialSizeWidth = spatialSizeFactor * input.cols / input.rows; // TODO: We know webcam res. Hardcode this & put in setings.json so we can constexpr everywhere.
+	constexpr int spatialSizeHeight = spatialSizeFactor;
+	const auto mean = cv::Scalar(0, 0, 0);
+
 	cv::Mat inputBlob = cv::dnn::blobFromImage(input, scaleFactor,
-	                                           cv::Size((int)((magicNumber * input.cols) / input.rows), magicNumber),
-	                                           cv::Scalar(0, 0, 0), false, false);
+	                                           cv::Size(spatialSizeWidth, spatialSizeHeight),
+	                                           mean, false, false);
 
 	inputNet.setInput(inputBlob);
 
@@ -362,7 +371,7 @@ void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsTo
 	std::vector<cv::Mat> netOutputParts;
 	splitNetOutputBlobToParts(netOutputBlob, cv::Size(input.cols, input.rows), netOutputParts);
 
-	// Done calculating here.
+
 
 	int keyPointId = 0;
 	std::vector<std::vector<KeyPoint>> detectedKeypoints;
@@ -372,7 +381,7 @@ void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsTo
 	{
 		std::vector<KeyPoint> keyPoints;
 
-		getKeyPoints(netOutputParts[i], 0.1, keyPoints);
+		getKeyPoints(netOutputParts[i], settings.confidenceMapThreshold, keyPoints);
 
 		LOG(INFO) << "Keypoints - " << keypointsMapping[i] << " : " << keyPoints << std::endl;
 

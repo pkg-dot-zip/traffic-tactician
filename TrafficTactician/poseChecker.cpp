@@ -137,15 +137,15 @@ PoseDirection getDirectionForArm(const float angleInDegrees)
 {
 	constexpr float tolerance = settings.tolerance; // Tolerance in degrees.
 
-	if (angleInDegrees < (90.0F + tolerance) && angleInDegrees >(90.0F - tolerance))
+	if (angleInDegrees < (90.0F + tolerance) && angleInDegrees > (90.0F - tolerance))
 	{
 		return DIRECTION_UP;
 	}
-	else if (angleInDegrees < (0.0F + tolerance) && angleInDegrees >(0.0F - tolerance))
+	else if (angleInDegrees < (0.0F + tolerance) && angleInDegrees > (0.0F - tolerance))
 	{
 		return DIRECTION_RIGHT;
 	}
-	else if (angleInDegrees < (-90.0F + tolerance) && angleInDegrees >(-90.0F - tolerance))
+	else if (angleInDegrees < (-90.0F + tolerance) && angleInDegrees > (-90.0F - tolerance))
 	{
 		return DIRECTION_DOWN;
 	}
