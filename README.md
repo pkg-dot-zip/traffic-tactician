@@ -31,13 +31,19 @@ Traffic Tactician is a training program made in C++ for a uni assignment. The so
 
 ⚠ Note: Make sure to add an environment variable called "OPENCV" that leads to to your OpenCV build folder (e.g. *C:\opencv\opencv\build*).
 
+⚠ Note: Make sure to download the *pose_iter_440000.caffemodel* from the CMU School of Computer Science.
+
+⚠ Note: Make sure to build the solution when making changes to *settings.json* to ensure having the updated header file.
+
 ## ⛏️ Built Using <a name = "built_using"></a>
 - [OpenGL](https://opengl.org/) - The Industry's Foundation for High Performance Graphics
 - [OpenCV](https://opencv.org/) - World's biggest computer vision library
 - [GLFW](https://www.glfw.org/) - Open Source, multi-platform library for OpenGL
-- [GLM](https://github.com/g-truc/glm) - OpenGL Mathematics (GLM)
-- [GLEW](https://github.com/nigels-com/glew) - The OpenGL Extension Wrangler Library
+- [GLM](https://github.com/g-truc/glm/) - OpenGL Mathematics (GLM)
+- [GLEW](https://github.com/nigels-com/glew/) - The OpenGL Extension Wrangler Library
 - [Easylogging++](https://github.com/abumq/easyloggingpp/) - Single header efficient logging library for C++ applications
+- [JSON](https://github.com/nlohmann/json/) - JSON for Modern C++
+- [json2hpp](https://github.com/KaixoCode/json2hpp/) - CMake module that converts a json file straight into a C++ header containing a constexpr object
 
 ## ✍️ Authors <a name = "authors"></a>
 - [@OnsPetruske](https://github.com/pkg-dot-zip)
