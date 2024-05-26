@@ -1,3 +1,7 @@
+/**
+ * This code will launch, and contain the code for the tasks, of the pose estimation thread.
+ */
+
 #include<opencv2/dnn.hpp>
 #include<opencv2/imgproc.hpp>
 #include<opencv2/highgui.hpp>
@@ -14,6 +18,7 @@
 
 constexpr bool useRealTimePriority = false;
 
+// This forces higher priority on your windows system. You can check this in task manager -> details.
 static void doExternalOptimizations()
 {
 	SetThreadPriority(GetCurrentThread(), useRealTimePriority ? REALTIME_PRIORITY_CLASS : HIGH_PRIORITY_CLASS);
@@ -75,9 +80,16 @@ static void displayArmDirections(cv::Mat& outputFrame)
 	            fontFace, fontScale, color);
 }
 
+// Decides whether to stop the thread or continue working.
+static bool shouldRun()
+{
+	return true;
+}
+
 constexpr double upscaleFactor = 4;
 constexpr double downscaleFactor = 0.4;
 
+// Start the thread f or 
 int runPoseRetriever()
 {
 	doExternalOptimizations();
@@ -87,11 +99,11 @@ int runPoseRetriever()
 	loadDnnModel(inputNet);
 	setCpuOrGpu(inputNet);
 
-	while (true)
+	while (shouldRun())
 	{
 		updateFromCamera(input);
 		cv::resize(input, input, cv::Size(), downscaleFactor, downscaleFactor, cv::INTER_AREA);
-		// INTER_AREA is better than the default (INTER_LINEAR) for camera views, according to a Stackoverflow user.
+		// INTER_AREA is better than the default (INTER_LINEAR) for camera views, according to a Stackoverflow user. TODO: CHECK IF THIS IS TRUE.
 		LOG(INFO) << "AFTER DOWNSCALING - Width: " << input.rows << " | Height: " << input.cols << std::endl;
 		cv::Mat outputFrame;
 
@@ -111,7 +123,7 @@ int runPoseRetriever()
 		cv::imshow("Detected Pose", outputFrame);
 		cv::waitKey(1);
 
-		keyPointsToUseInCalculation.clear(); // DON'T FORGET TO CLEAR MAP; THIS LINE IS IMPORTANT!
+		clearPoseEstimationKeyPointsMap(); // DON'T FORGET TO CLEAR MAP; THIS LINE IS IMPORTANT!
 	}
 
 	return 0;

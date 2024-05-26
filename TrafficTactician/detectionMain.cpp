@@ -1,3 +1,11 @@
+/*
+ * Contains the main entry point for the "PoseDetectionRelease" configuration.
+ * DO NOT put code here that belongs in another configuration.
+ *
+ * Kort in het Nederlands:
+ * Als de gij niet bezig bent met pose estimation taken moet de gij hier niet zijn.
+ */
+
 // Following includes and configurations are just to make it work and are not actually used in the pose detection configuration.
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "glew32s.lib")

@@ -35,7 +35,7 @@ void checkPoseForAll(std::map<std::string, std::vector<KeyPoint>>& map)
 	printDirectionOfArms(map);
 }
 
-std::string getDirectionString(PoseDirection pose_direction)
+std::string getDirectionString(const PoseDirection pose_direction)
 {
 	switch (pose_direction)
 	{
@@ -103,16 +103,16 @@ float calculateDegreesBetweenTwoPoints(std::map<std::string, std::vector<KeyPoin
 {
 	if (map[point1].empty() || map[point2].empty()) return NAN;
 
-	int elbowX = map[point1][0].point.x;
-	int elbowY = map[point1][0].point.y;
+	int point1X = map[point1][0].point.x;
+	int point1Y = map[point1][0].point.y;
 
-	int wristX = map[point2][0].point.x;
-	int wristY = map[point2][0].point.y;
+	int point2X = map[point2][0].point.x;
+	int point2Y = map[point2][0].point.y;
 
-	LOG(INFO) << point1 << " " << elbowX << "/" << elbowY << " ||| " << point2 << " " << wristX << "/" << wristY <<
+	LOG(INFO) << point1 << " " << point1X << "/" << point1Y << " ||| " << point2 << " " << point2X << "/" << point2Y <<
 		std::endl;
 
-	const float angle = atan2(elbowY - wristY, elbowX - wristX);
+	const float angle = atan2(point1Y - point2Y, point1X - point2X);
 
 	constexpr float PI = 3.14159265358979323846;
 	const float degrees = angle * 180 / PI;
