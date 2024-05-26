@@ -220,6 +220,7 @@
     </ClCompile>
     <ClCompile Include="poseChecker.cpp" />
     <ClCompile Include="poseEstimation.cpp" />
+    <ClCompile Include="poseRetriever.cpp" />
     <ClCompile Include="SpinComponent.cpp" />
     <ClCompile Include="tigl.cpp" />
   </ItemGroup>
@@ -243,6 +244,7 @@
     <ClInclude Include="log.h" />
     <ClInclude Include="poseChecker.h" />
     <ClInclude Include="poseEstimation.h" />
+    <ClInclude Include="poseRetriever.h" />
     <ClInclude Include="SpinComponent.h" />
     <ClInclude Include="tigl.h" />
   </ItemGroup>
