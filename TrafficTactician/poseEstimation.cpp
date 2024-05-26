@@ -141,7 +141,7 @@ static void getKeyPoints(cv::Mat& probMap, const double threshold, std::vector<K
 	}
 }
 
-void populateColorPalette(std::vector<cv::Scalar>& colors, const int nColors)
+static void populateRandomColorPalette(std::vector<cv::Scalar>& colors, const int nColors)
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -155,7 +155,17 @@ void populateColorPalette(std::vector<cv::Scalar>& colors, const int nColors)
 	}
 }
 
-static void splitNetOutputBlobToParts(cv::Mat& netOutputBlob, const cv::Size& targetSize, std::vector<cv::Mat>& netOutputParts)
+// TODO: Manually put in colors.
+static void populateColorPalette(std::vector<cv::Scalar>& colors, const int nColors)
+{
+	for (int i = 0; i < nColors; ++i)
+	{
+		colors.push_back(cv::Scalar(0, 0, 0));
+	}
+}
+
+static void splitNetOutputBlobToParts(cv::Mat& netOutputBlob, const cv::Size& targetSize,
+                                      std::vector<cv::Mat>& netOutputParts)
 {
 	const int nParts = netOutputBlob.size[1];
 	const int height = netOutputBlob.size[2];
@@ -173,7 +183,8 @@ static void splitNetOutputBlobToParts(cv::Mat& netOutputBlob, const cv::Size& ta
 	}
 }
 
-static void populateInterpPoints(const cv::Point& a, const cv::Point& b, int numPoints, std::vector<cv::Point>& interpCoords)
+static void populateInterpPoints(const cv::Point& a, const cv::Point& b, int numPoints,
+                                 std::vector<cv::Point>& interpCoords)
 {
 	const float xStep = static_cast<float>(b.x - a.x) / static_cast<float>(numPoints - 1);
 	const float yStep = static_cast<float>(b.y - a.y) / static_cast<float>(numPoints - 1);
@@ -200,11 +211,11 @@ void getValidPairs(const std::vector<cv::Mat>& netOutputParts,
 
 	for (int k = 0; k < mapIdx.size(); ++k)
 	{
-		//A->B constitute a limb
+		// A->B constitute a limb
 		cv::Mat pafA = netOutputParts[mapIdx[k].first];
 		cv::Mat pafB = netOutputParts[mapIdx[k].second];
 
-		//Find the keypoints for the first and second limb
+		// Find the keypoints for the first and second limb
 		const std::vector<KeyPoint>& candA = detectedKeypoints[posePairs[k].first];
 		const std::vector<KeyPoint>& candB = detectedKeypoints[posePairs[k].second];
 
@@ -249,7 +260,7 @@ void getValidPairs(const std::vector<cv::Mat>& netOutputParts,
 					for (int l = 0; l < interpCoords.size(); ++l)
 					{
 						pafInterp.push_back(
-							std::pair<float, float>(
+							std::pair(
 								pafA.at<float>(interpCoords[l].y, interpCoords[l].x),
 								pafB.at<float>(interpCoords[l].y, interpCoords[l].x)
 							));
@@ -262,10 +273,7 @@ void getValidPairs(const std::vector<cv::Mat>& netOutputParts,
 					{
 						float score = pafInterp[l].first * distance.first + pafInterp[l].second * distance.second;
 						sumOfPafScores += score;
-						if (score > pafScoreTh)
-						{
-							++numOverTh;
-						}
+						if (score > pafScoreTh) ++numOverTh;
 
 						pafScores.push_back(score);
 					}
@@ -344,7 +352,8 @@ void getPersonwiseKeypoints(const std::vector<std::vector<ValidPair>>& validPair
 	} /* k */
 }
 
-constexpr int spatialSizeFactor = settings.spatialSizeFactor; // Typically larger, we however don't need good accuracy at all and will probably not go over 200.
+constexpr int spatialSizeFactor = settings.spatialSizeFactor;
+// Typically larger, we however don't need good accuracy at all and will probably not go over 200.
 
 // TODO: Look into usage if UMAT & MATEXPR to see if we can optimize this further. -> Benchmark.
 void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsToUseInCalculation, cv::Mat& input,
@@ -356,7 +365,8 @@ void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsTo
 	// 1. https://pyimagesearch.com/2017/11/06/deep-learning-opencvs-blobfromimage-works/
 	// 2. https://docs.opencv.org/3.4/d6/d0f/group__dnn.html#ga33d1b39b53a891e98a654fdeabba22eb
 	constexpr double scaleFactor = 1.0 / 255.0;
-	const int spatialSizeWidth = spatialSizeFactor * input.cols / input.rows; // TODO: We know webcam res. Hardcode this & put in setings.json so we can constexpr everywhere.
+	const int spatialSizeWidth = spatialSizeFactor * input.cols / input.rows;
+	// TODO: We know webcam res. Hardcode this & put in setings.json so we can constexpr everywhere. NOT JUST HERE. WE USE .cols AND .rows EVERYWHERE!
 	constexpr int spatialSizeHeight = spatialSizeFactor;
 	const auto mean = cv::Scalar(0, 0, 0);
 
@@ -370,7 +380,6 @@ void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsTo
 
 	std::vector<cv::Mat> netOutputParts;
 	splitNetOutputBlobToParts(netOutputBlob, cv::Size(input.cols, input.rows), netOutputParts);
-
 
 
 	int keyPointId = 0;
@@ -399,7 +408,15 @@ void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsTo
 	checkPoseForAll(keyPointsToUseInCalculation);
 
 	std::vector<cv::Scalar> colors;
-	populateColorPalette(colors, nPoints);
+
+	if (settings.useColorsForPose)
+	{
+		populateRandomColorPalette(colors, nPoints);
+	}
+	else
+	{
+		populateColorPalette(colors, nPoints);
+	}
 
 	outputFrame = input.clone();
 
@@ -440,8 +457,8 @@ void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsTo
 std::map<std::string, std::vector<KeyPoint>> poseEstimationKeyPoints;
 
 std::map<std::string, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap(cv::Mat& input,
-                                                  cv::Mat& outputFrame,
-                                                  cv::dnn::Net& inputNet)
+                                                                            cv::Mat& outputFrame,
+                                                                            cv::dnn::Net& inputNet)
 {
 	const int64 timeStart = cv::getTickCount();
 	getCalculatedPose(poseEstimationKeyPoints, input, outputFrame, inputNet);
