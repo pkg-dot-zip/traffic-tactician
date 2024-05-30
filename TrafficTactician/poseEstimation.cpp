@@ -357,7 +357,7 @@ constexpr int spatialSizeFactor = settings.spatialSizeFactor;
 // Typically larger, we however don't need good accuracy at all and will probably not go over 200.
 
 // TODO: Look into usage if UMAT & MATEXPR to see if we can optimize this further. -> Benchmark.
-void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsToUseInCalculation, cv::Mat& input,
+void getCalculatedPose(std::map<std::string_view, std::vector<KeyPoint>>& keyPointsToUseInCalculation, cv::Mat& input,
                        cv::Mat& outputFrame, cv::dnn::Net& inputNet)
 {
 	if (!keyPointsToUseInCalculation.empty()) throw std::exception("Map to save points in is not empty.");
@@ -455,9 +455,9 @@ void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsTo
 }
 
 // Methods under here are allowed to be called by other files.
-std::map<std::string, std::vector<KeyPoint>> poseEstimationKeyPoints;
+std::map<std::string_view, std::vector<KeyPoint>> poseEstimationKeyPoints;
 
-std::map<std::string, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap(cv::Mat& input,
+std::map<std::string_view, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap(cv::Mat& input,
                                                                             cv::Mat& outputFrame,
                                                                             cv::dnn::Net& inputNet)
 {

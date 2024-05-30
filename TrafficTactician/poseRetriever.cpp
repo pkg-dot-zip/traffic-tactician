@@ -65,7 +65,7 @@ bool loadDnnModel(cv::dnn::Net& inputNet)
 	return true;
 }
 
-void displayCurrentPose(const cv::Mat& outputFrame, std::map<std::string, std::vector<KeyPoint>>& map)
+void displayCurrentPose(const cv::Mat& outputFrame, std::map<std::string_view, std::vector<KeyPoint>>& map)
 {
 	const std::string poseString = getPoseString(getPose(map));
 
@@ -81,7 +81,7 @@ void displayCurrentPose(const cv::Mat& outputFrame, std::map<std::string, std::v
 	            fontFace, fontScale, color);
 }
 
-void displayCurrentOrientation(const cv::Mat& outputFrame, std::map<std::string, std::vector<KeyPoint>>& map)
+void displayCurrentOrientation(const cv::Mat& outputFrame, std::map<std::string_view, std::vector<KeyPoint>>& map)
 {
 	std::string baseString = "Current Pose is: ";
 
@@ -129,7 +129,7 @@ int runPoseRetriever()
 		cv::Mat outputFrame;
 		camera.read(inputFrame); // Get camera frame and put it into valid matrix.
 
-		std::map<std::string, std::vector<KeyPoint>>& keyPoints = getPoseEstimationKeyPointsMap(
+		std::map<std::string_view, std::vector<KeyPoint>>& keyPoints = getPoseEstimationKeyPointsMap(
 			inputFrame, outputFrame, inputNet);
 
 		displayCurrentPose(outputFrame, keyPoints);

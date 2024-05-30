@@ -12,26 +12,27 @@
 
 #include "easylogging++.h"
 #include "keyPoint.h"
+#include "KeypointLocationStrings.h"
 #include "settingsFromJson.h"
 #include "utest.h"
 
 
-float calculateDegreesOfElbowToWristLeft(std::map<std::string, std::vector<KeyPoint>>& map);
-float calculateDegreesOfElbowToWristRight(std::map<std::string, std::vector<KeyPoint>>& map);
-float calculateDegreesBetweenTwoPoints(std::map<std::string, std::vector<KeyPoint>>& map, const std::string& point1,
-                                       const std::string& point2);
+float calculateDegreesOfElbowToWristLeft(std::map<std::string_view, std::vector<KeyPoint>>& map);
+float calculateDegreesOfElbowToWristRight(std::map<std::string_view, std::vector<KeyPoint>>& map);
+float calculateDegreesBetweenTwoPoints(std::map<std::string_view, std::vector<KeyPoint>>& map, const std::string_view& point1,
+                                       const std::string_view& point2);
 
 PoseDirection getDirectionForArm(float angleInDegrees);
-PoseDirection getDirectionForArmLeft(std::map<std::string, std::vector<KeyPoint>>& map);
-PoseDirection getDirectionForArmRight(std::map<std::string, std::vector<KeyPoint>>& map);
+PoseDirection getDirectionForArmLeft(std::map<std::string_view, std::vector<KeyPoint>>& map);
+PoseDirection getDirectionForArmRight(std::map<std::string_view, std::vector<KeyPoint>>& map);
 
 
-void printDirectionOfArms(std::map<std::string, std::vector<KeyPoint>>& map);
+void printDirectionOfArms(std::map<std::string_view, std::vector<KeyPoint>>& map);
 
 std::string getPoseString(Pose pose);
 
 // Method used for debugging prints.
-void checkPoseForAll(std::map<std::string, std::vector<KeyPoint>>& map)
+void checkPoseForAll(std::map<std::string_view, std::vector<KeyPoint>>& map)
 {
 	calculateDegreesOfElbowToWristLeft(map);
 	calculateDegreesOfElbowToWristRight(map);
@@ -60,20 +61,20 @@ std::string getPoseString(const Pose pose)
 }
 
 // Checks if the right wrist is near the right shoulder.
-bool isRightWristNearShoulder(std::map<std::string, std::vector<KeyPoint>>& map)
+bool isRightWristNearShoulder(std::map<std::string_view, std::vector<KeyPoint>>& map)
 {
-	if (map["R-Wr"].empty() || map["R-Sho"].empty()) return false;
+	if (map[pose_keypoint_wrist_right].empty() || map[pose_keypoint_shoulder_right].empty()) return false;
 
 	constexpr float toleranceWristNearShoulderDistanceX = settings.toleranceWristNearShoulderDistanceX;
 	constexpr float toleranceWristNearShoulderDistanceY = settings.toleranceWristNearShoulderDistanceY;
 
 	constexpr float toleranceWristNearShoulderDistanceLeftAndDown = settings.toleranceWristNearShoulderDistanceLeftAndDown;
 
-	const float wristX = map["R-Wr"][0].point.x;
-	const float wristY = map["R-Wr"][0].point.y;
+	const float wristX = map[pose_keypoint_wrist_right][0].point.x;
+	const float wristY = map[pose_keypoint_wrist_right][0].point.y;
 
-	const float shoulderX = map["R-Sho"][0].point.x;
-	const float shoulderY = map["R-Sho"][0].point.y;
+	const float shoulderX = map[pose_keypoint_shoulder_right][0].point.x;
+	const float shoulderY = map[pose_keypoint_shoulder_right][0].point.y;
 
 	const bool isWristXNearShoulderX = wristX <= shoulderX + toleranceWristNearShoulderDistanceLeftAndDown && wristX >= shoulderX -
 		toleranceWristNearShoulderDistanceX;
@@ -84,20 +85,20 @@ bool isRightWristNearShoulder(std::map<std::string, std::vector<KeyPoint>>& map)
 }
 
 // Checks if person is standing oriented towards the camera or sideways. Returns true if standing oriented towards the camera.
-bool isPersonFacingFront(std::map<std::string, std::vector<KeyPoint>>& map)
+bool isPersonFacingFront(std::map<std::string_view, std::vector<KeyPoint>>& map)
 {
-	if (map["L-Sho"].empty() || map["R-Sho"].empty()) return false;
+	if (map[pose_keypoint_shoulder_left].empty() || map[pose_keypoint_shoulder_right].empty()) return false;
 
 	constexpr float personOrientationShoulderTolerance = settings.personOrientationShoulderTolerance;
 
-	const float LshoulderX = map["L-Sho"][0].point.x;
-	const float RshoulderX = map["R-Sho"][0].point.x;
+	const float LshoulderX = map[pose_keypoint_shoulder_left][0].point.x;
+	const float RshoulderX = map[pose_keypoint_shoulder_right][0].point.x;
 
 	return !(RshoulderX < LshoulderX + personOrientationShoulderTolerance && RshoulderX > LshoulderX -
 		personOrientationShoulderTolerance);
 }
 
-Pose getPose(std::map<std::string, std::vector<KeyPoint>>& map)
+Pose getPose(std::map<std::string_view, std::vector<KeyPoint>>& map)
 {
 	const PoseDirection leftArmDirection = getDirectionForArmLeft(map);
 	const PoseDirection rightArmDirection = getDirectionForArmRight(map);
@@ -156,7 +157,7 @@ std::string getDirectionString(const PoseDirection pose_direction)
 }
 
 // Method used for debugging prints for direction of arms.
-void printDirectionOfArms(std::map<std::string, std::vector<KeyPoint>>& map)
+void printDirectionOfArms(std::map<std::string_view, std::vector<KeyPoint>>& map)
 {
 	const int leftArmDirection = getDirectionForArmLeft(map);
 	const int rightArmDirection = getDirectionForArmRight(map);
@@ -200,28 +201,28 @@ void printDirectionOfArms(std::map<std::string, std::vector<KeyPoint>>& map)
 	}
 }
 
-float calculateDifferenceInHeightBetweenShoulderAndWristLeft(std::map<std::string, std::vector<KeyPoint>>& map)
+float calculateDifferenceInHeightBetweenShoulderAndWristLeft(std::map<std::string_view, std::vector<KeyPoint>>& map)
 {
-	return calculateDifferenceInHeightBetweenTwoPoints(map, "L-Sho", "L-Wr");
+	return calculateDifferenceInHeightBetweenTwoPoints(map, pose_keypoint_shoulder_left, pose_keypoint_wrist_left);
 }
 
-float calculateDifferenceInHeightBetweenShoulderAndWristRight(std::map<std::string, std::vector<KeyPoint>>& map)
+float calculateDifferenceInHeightBetweenShoulderAndWristRight(std::map<std::string_view, std::vector<KeyPoint>>& map)
 {
-	return calculateDifferenceInHeightBetweenTwoPoints(map, "R-Sho", "R-Wr");
+	return calculateDifferenceInHeightBetweenTwoPoints(map, pose_keypoint_shoulder_right, pose_keypoint_wrist_right);
 }
 
 // Returns the difference in height between two points. Returns NAN if any of the two points couldn't be found.
-float calculateDifferenceInHeightBetweenTwoPoints(std::map<std::string, std::vector<KeyPoint>>& map,
-                                                  const std::string& point1,
-                                                  const std::string& point2)
+float calculateDifferenceInHeightBetweenTwoPoints(std::map<std::string_view, std::vector<KeyPoint>>& map,
+                                                  const std::string_view& point1,
+                                                  const std::string_view& point2)
 {
 	if (map[point1].empty() || map[point2].empty()) return NAN;
 	return map[point1][0].point.y - map[point2][0].point.y;
 }
 
 // Returns the angle between two points in degrees (NOT RADIANS!). Returns NAN if any of the two points couldn't be found.
-float calculateDegreesBetweenTwoPoints(std::map<std::string, std::vector<KeyPoint>>& map, const std::string& point1,
-                                       const std::string& point2)
+float calculateDegreesBetweenTwoPoints(std::map<std::string_view, std::vector<KeyPoint>>& map, const std::string_view& point1,
+                                       const std::string_view& point2)
 {
 	if (map[point1].empty() || map[point2].empty()) return NAN;
 
@@ -241,12 +242,12 @@ float calculateDegreesBetweenTwoPoints(std::map<std::string, std::vector<KeyPoin
 	return degrees;
 }
 
-PoseDirection getDirectionForArmLeft(std::map<std::string, std::vector<KeyPoint>>& map)
+PoseDirection getDirectionForArmLeft(std::map<std::string_view, std::vector<KeyPoint>>& map)
 {
 	return getDirectionForArm(calculateDegreesOfElbowToWristLeft(map));
 }
 
-PoseDirection getDirectionForArmRight(std::map<std::string, std::vector<KeyPoint>>& map)
+PoseDirection getDirectionForArmRight(std::map<std::string_view, std::vector<KeyPoint>>& map)
 {
 	return getDirectionForArm(calculateDegreesOfElbowToWristRight(map));
 }
@@ -277,12 +278,12 @@ PoseDirection getDirectionForArm(const float angleInDegrees)
 	return DIRECTION_UNCLEAR;
 }
 
-float calculateDegreesOfElbowToWristLeft(std::map<std::string, std::vector<KeyPoint>>& map)
+float calculateDegreesOfElbowToWristLeft(std::map<std::string_view, std::vector<KeyPoint>>& map)
 {
-	return calculateDegreesBetweenTwoPoints(map, "L-Elb", "L-Wr");
+	return calculateDegreesBetweenTwoPoints(map, pose_keypoint_elbow_left, pose_keypoint_wrist_left);
 }
 
-float calculateDegreesOfElbowToWristRight(std::map<std::string, std::vector<KeyPoint>>& map)
+float calculateDegreesOfElbowToWristRight(std::map<std::string_view, std::vector<KeyPoint>>& map)
 {
-	return calculateDegreesBetweenTwoPoints(map, "R-Elb", "R-Wr");
+	return calculateDegreesBetweenTwoPoints(map, pose_keypoint_elbow_right, pose_keypoint_wrist_right);
 }
