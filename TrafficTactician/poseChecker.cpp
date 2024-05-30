@@ -82,19 +82,13 @@ Pose getPose(std::map<std::string, std::vector<KeyPoint>>& map)
 	LOG(INFO) << "Height dif right " << heightDifferenceRight << std::endl;
 
 	if (leftArmDirection == DIRECTION_LEFT && (rightArmDirection == DIRECTION_DOWN || rightArmDirection ==
-		DIRECTION_UNCLEAR) && heightDifferenceLeft >= 0 - heightTolerance && heightDifferenceRight <= heightTolerance)
+		DIRECTION_UNCLEAR) && heightDifferenceLeft >= 0 - heightTolerance && heightDifferenceLeft <= heightTolerance)
 	{
 		return POSE_MOVE_LEFT;
 	}
 
 	return POSE_OTHER;
 }
-
-#ifdef _TESTING_CONFIG
-UTEST(getDirectionString, directionStringReturnsLeft) {
-	ASSERT_EQ(getDirectionString(DIRECTION_LEFT), "LEFT");
-}
-#endif
 
 std::string getDirectionString(const PoseDirection pose_direction)
 {

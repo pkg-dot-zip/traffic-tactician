@@ -54,7 +54,7 @@ static void setCpuOrGpu(cv::dnn::Net& inputNet)
 	}
 }
 
-static void loadDnnModel(cv::dnn::Net& inputNet)
+void loadDnnModel(cv::dnn::Net& inputNet)
 {
 	inputNet = cv::dnn::readNetFromCaffe(static_cast<std::string>(settings.prototxt), static_cast<std::string>(settings.caffemodel));
 }
@@ -85,9 +85,6 @@ static bool shouldRun()
 	return true;
 }
 
-constexpr double upscaleFactor = settings.upscaleFactor;
-constexpr double downscaleFactor = settings.downscaleFactor;
-
 // Start the thread for pose estimation. 
 int runPoseRetriever()
 {
@@ -101,21 +98,13 @@ int runPoseRetriever()
 	while (shouldRun())
 	{
 		updateFromCamera(input);
-		cv::resize(input, input, cv::Size(), downscaleFactor, downscaleFactor, cv::INTER_AREA);
-		// INTER_AREA is better than the default (INTER_LINEAR) for camera views, according to a Stackoverflow user. TODO: CHECK IF THIS IS TRUE.
-		LOG(INFO) << "AFTER DOWNSCALING - Width: " << input.rows << " | Height: " << input.cols << std::endl;
 		cv::Mat outputFrame;
 
 		std::map<std::string, std::vector<KeyPoint>>& keyPointsToUseInCalculation = getPoseEstimationKeyPointsMap(
 			input, outputFrame, inputNet);
 
-
 		leftArmDirection = getDirectionForArmLeft(keyPointsToUseInCalculation);
 		rightArmDirection = getDirectionForArmRight(keyPointsToUseInCalculation);
-
-		cv::resize(outputFrame, outputFrame, cv::Size(), upscaleFactor, upscaleFactor);
-		cv::flip(outputFrame, outputFrame, 1);
-		// We flip the mat here so that our cam view looks more natural; it confuses the user to see his left arm on the right side of his screen.
 
 		displayArmDirections(outputFrame);
 
