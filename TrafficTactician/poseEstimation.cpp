@@ -456,17 +456,13 @@ void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsTo
 // Methods under here are allowed to be called by other files.
 std::map<std::string, std::vector<KeyPoint>> poseEstimationKeyPoints;
 
-constexpr double upscaleFactor = settings.upscaleFactor;
-constexpr double downscaleFactor = settings.downscaleFactor;
-
 std::map<std::string, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap(cv::Mat& input,
                                                                             cv::Mat& outputFrame,
                                                                             cv::dnn::Net& inputNet)
 {
 	// First we downscale the image.
-	cv::resize(input, input, cv::Size(), downscaleFactor, downscaleFactor, cv::INTER_AREA);
+	cv::resize(input, input, { settings.downscaleTargetWidth, settings.downscaleTargetHeight }, 0, 0, cv::INTER_AREA);
 	// INTER_AREA is better than the default (INTER_LINEAR) for camera views, according to a Stackoverflow user. TODO: CHECK IF THIS IS TRUE.
-	LOG(INFO) << "AFTER DOWNSCALING - Width: " << input.rows << " | Height: " << input.cols << std::endl;
 
 	// Then we retrieve the estimationpoints.
 	const int64 timeStart = cv::getTickCount();
@@ -478,7 +474,7 @@ std::map<std::string, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap(cv::
 	LOG(INFO) << "Time it took to retrieve the poseEstimationKeyPoints: " << time << std::endl;
 
 	// Then we upscale and flip.  We flip the mat here so that our cam view looks more natural; it confuses the user to see his left arm on the right side of his screen.
-	cv::resize(outputFrame, outputFrame, cv::Size(), upscaleFactor, upscaleFactor);
+	cv::resize(outputFrame, outputFrame, cv::Size(), settings.upscaleFactor, settings.upscaleFactor);
 	cv::flip(outputFrame, outputFrame, 1);
 
 	return poseEstimationKeyPoints;

@@ -6,7 +6,8 @@ struct settings_0_t {
   std::uint64_t cameraToUse;
   double confTh;
   double confidenceMapThreshold;
-  double downscaleFactor;
+  std::uint64_t downscaleTargetHeight;
+  std::uint64_t downscaleTargetWidth;
   double heightElbowTolerance;
   std::uint64_t nInterpSamples;
   double pafScoreTh;
@@ -27,7 +28,8 @@ constexpr settings_0_t settings = {
   .cameraToUse = 0, 
   .confTh = 0.700000, 
   .confidenceMapThreshold = 0.100000, 
-  .downscaleFactor = 0.400000, 
+  .downscaleTargetHeight = 192, 
+  .downscaleTargetWidth = 256, 
   .heightElbowTolerance = 40.000000, 
   .nInterpSamples = 10, 
   .pafScoreTh = 0.100000, 
