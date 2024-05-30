@@ -9,6 +9,8 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		PoseDetectionRelease|x64 = PoseDetectionRelease|x64
+		PoseDetectionRelease|x86 = PoseDetectionRelease|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
@@ -17,6 +19,10 @@ Global
 		{283D0B97-987B-40BB-8F02-4833283B8D4F}.Debug|x64.Build.0 = Debug|x64
 		{283D0B97-987B-40BB-8F02-4833283B8D4F}.Debug|x86.ActiveCfg = Debug|Win32
 		{283D0B97-987B-40BB-8F02-4833283B8D4F}.Debug|x86.Build.0 = Debug|Win32
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.PoseDetectionRelease|x64.ActiveCfg = PoseDetectionRelease|x64
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.PoseDetectionRelease|x64.Build.0 = PoseDetectionRelease|x64
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.PoseDetectionRelease|x86.ActiveCfg = PoseDetectionRelease|Win32
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.PoseDetectionRelease|x86.Build.0 = PoseDetectionRelease|Win32
 		{283D0B97-987B-40BB-8F02-4833283B8D4F}.Release|x64.ActiveCfg = Release|x64
 		{283D0B97-987B-40BB-8F02-4833283B8D4F}.Release|x64.Build.0 = Release|x64
 		{283D0B97-987B-40BB-8F02-4833283B8D4F}.Release|x86.ActiveCfg = Release|Win32
