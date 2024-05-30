@@ -75,7 +75,7 @@ Pose getPose(std::map<std::string, std::vector<KeyPoint>>& map)
 	const float heightDifferenceLeft = calculateDifferenceInHeightBetweenElbowAndWristLeft(map);
 	const float heightDifferenceRight = calculateDifferenceInHeightBetweenElbowAndWristRight(map);
 
-	constexpr float heightTolerance = 40.0F;
+	constexpr float heightTolerance = settings.heightTolerance;
 
 	LOG(INFO) << "Height dif left " << heightDifferenceLeft << std::endl;
 	LOG(INFO) << "Height dif right " << heightDifferenceRight << std::endl;
