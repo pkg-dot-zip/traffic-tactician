@@ -18,7 +18,7 @@
 float calculateDegreesOfElbowToWristLeft(std::map<std::string, std::vector<KeyPoint>>& map);
 float calculateDegreesOfElbowToWristRight(std::map<std::string, std::vector<KeyPoint>>& map);
 float calculateDegreesBetweenTwoPoints(std::map<std::string, std::vector<KeyPoint>>& map, const std::string& point1,
-	const std::string& point2);
+                                       const std::string& point2);
 
 PoseDirection getDirectionForArm(float angleInDegrees);
 PoseDirection getDirectionForArmLeft(std::map<std::string, std::vector<KeyPoint>>& map);
@@ -27,6 +27,8 @@ PoseDirection getDirectionForArmRight(std::map<std::string, std::vector<KeyPoint
 
 void printDirectionOfArms(std::map<std::string, std::vector<KeyPoint>>& map);
 
+std::string getPoseString(const Pose pose);
+
 // Method used for debugging prints.
 void checkPoseForAll(std::map<std::string, std::vector<KeyPoint>>& map)
 {
@@ -34,6 +36,57 @@ void checkPoseForAll(std::map<std::string, std::vector<KeyPoint>>& map)
 	calculateDegreesOfElbowToWristRight(map);
 
 	printDirectionOfArms(map);
+
+	const Pose currentPose = getPose(map);
+	LOG(INFO) << "Current pose: " << getPoseString(currentPose) << std::endl;
+}
+
+std::string getPoseString(const Pose pose)
+{
+	if (pose == POSE_MOVE_LEFT)
+	{
+		return "POSE_MOVE_LEFT";
+	}
+	else if (pose == POSE_MOVE_RIGHT)
+	{
+		return "POSE_MOVE_RIGHT";
+	}
+	else if (pose == POSE_MOVE_FORWARD)
+	{
+		return "POSE_MOVE_FORWARD";
+	}
+	else if (pose == POSE_STOP)
+	{
+		return "POSE_STOP";
+	}
+	else if (pose == POSE_OTHER)
+	{
+		return "POSE_OTHER";
+	}
+
+	throw "Can't convert invalid pose enum value to string!";
+}
+
+Pose getPose(std::map<std::string, std::vector<KeyPoint>>& map)
+{
+	const PoseDirection leftArmDirection = getDirectionForArmLeft(map);
+	const PoseDirection rightArmDirection = getDirectionForArmRight(map);
+
+	const float heightDifferenceLeft = calculateDifferenceInHeightBetweenElbowAndWristLeft(map);
+	const float heightDifferenceRight = calculateDifferenceInHeightBetweenElbowAndWristRight(map);
+
+	constexpr float heightTolerance = 40.0F;
+
+	LOG(INFO) << "Height dif left " << heightDifferenceLeft << std::endl;
+	LOG(INFO) << "Height dif right " << heightDifferenceRight << std::endl;
+
+	if (leftArmDirection == DIRECTION_LEFT && (rightArmDirection == DIRECTION_DOWN || rightArmDirection ==
+		DIRECTION_UNCLEAR) && heightDifferenceLeft >= 0 - heightTolerance && heightDifferenceRight <= heightTolerance)
+	{
+		return POSE_MOVE_LEFT;
+	}
+
+	return POSE_OTHER;
 }
 
 std::string getDirectionString(const PoseDirection pose_direction)
@@ -98,9 +151,28 @@ void printDirectionOfArms(std::map<std::string, std::vector<KeyPoint>>& map)
 	}
 }
 
+float calculateDifferenceInHeightBetweenElbowAndWristLeft(std::map<std::string, std::vector<KeyPoint>>& map)
+{
+	return calculateDifferenceInHeightBetweenTwoPoints(map, "L-Sho", "L-Wr");
+}
+
+float calculateDifferenceInHeightBetweenElbowAndWristRight(std::map<std::string, std::vector<KeyPoint>>& map)
+{
+	return calculateDifferenceInHeightBetweenTwoPoints(map, "R-Sho", "R-Wr");
+}
+
+// Returns the difference in height between two points. Returns NAN if the two points couldn't be found.
+float calculateDifferenceInHeightBetweenTwoPoints(std::map<std::string, std::vector<KeyPoint>>& map,
+                                                  const std::string& point1,
+                                                  const std::string& point2)
+{
+	if (map[point1].empty() || map[point2].empty()) return NAN;
+	return map[point1][0].point.y - map[point2][0].point.y;
+}
+
 // Returns the angle between two points in degrees (NOT RADIANS!). Returns NAN if the two points couldn't be found.
 float calculateDegreesBetweenTwoPoints(std::map<std::string, std::vector<KeyPoint>>& map, const std::string& point1,
-	const std::string& point2)
+                                       const std::string& point2)
 {
 	if (map[point1].empty() || map[point2].empty()) return NAN;
 
