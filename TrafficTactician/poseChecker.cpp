@@ -108,7 +108,7 @@ bool isStandingTowardsCamera(std::map<std::string, std::vector<KeyPoint>>& map)
 	const float LshoulderX = map["L-Sho"][0].point.x;
 	const float RshoulderX = map["R-Sho"][0].point.x;
 
-	return RshoulderX < LshoulderX + orientationXTolerance && RshoulderX > LshoulderX - orientationXTolerance;
+	return !(RshoulderX < LshoulderX + orientationXTolerance && RshoulderX > LshoulderX - orientationXTolerance);
 }
 
 Pose getPose(std::map<std::string, std::vector<KeyPoint>>& map)
@@ -270,6 +270,8 @@ PoseDirection getDirectionForArmRight(std::map<std::string, std::vector<KeyPoint
 
 PoseDirection getDirectionForArm(const float angleInDegrees)
 {
+	if (angleInDegrees == NAN) return DIRECTION_UNCLEAR;
+
 	constexpr float tolerance = settings.tolerance; // Tolerance in degrees.
 
 	if (angleInDegrees < (90.0F + tolerance) && angleInDegrees > (90.0F - tolerance))
