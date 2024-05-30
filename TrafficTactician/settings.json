@@ -8,7 +8,7 @@
 	"downscaleTargetWidth": 256,
 	"downscaleTargetHeight": 192,
 	"useRealTimePriority": true,
-	"tolerance": 20.0,
+	"anglesForDirectionCalculationTolerance": 20.0,
 	"nInterpSamples": 10,
 	"pafScoreTh": 0.1,
 	"confTh": 0.7,
@@ -18,5 +18,9 @@
 	"blurSigmaX": 0,
 	"blurSigmaY": 0,
 	"useColorsForPose": true,
-	"heightElbowTolerance": 40.0
+	"heightDifferenceBetweenShoulderAndWristTolerance": 40.0,
+	"toleranceWristNearShoulderDistanceX": 30.0,
+	"toleranceWristNearShoulderDistanceY": 60.0,
+	"toleranceWristNearShoulderDistanceLeftAndDown": 5.0,
+	"personOrientationShoulderTolerance": 20.0
 }

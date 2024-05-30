@@ -1,4 +1,5 @@
 struct settings_0_t {
+  double anglesForDirectionCalculationTolerance;
   std::uint64_t blurKSize;
   std::uint64_t blurSigmaX;
   std::uint64_t blurSigmaY;
@@ -8,13 +9,16 @@ struct settings_0_t {
   double confidenceMapThreshold;
   std::uint64_t downscaleTargetHeight;
   std::uint64_t downscaleTargetWidth;
-  double heightElbowTolerance;
+  double heightDifferenceBetweenShoulderAndWristTolerance;
   std::uint64_t nInterpSamples;
   double pafScoreTh;
+  double personOrientationShoulderTolerance;
   std::string_view preferredDevice;
   std::string_view prototxt;
   std::uint64_t spatialSizeFactor;
-  double tolerance;
+  double toleranceWristNearShoulderDistanceLeftAndDown;
+  double toleranceWristNearShoulderDistanceX;
+  double toleranceWristNearShoulderDistanceY;
   std::uint64_t upscaleTargetHeight;
   std::uint64_t upscaleTargetWidth;
   bool useColorsForPose;
@@ -22,6 +26,7 @@ struct settings_0_t {
 };
 
 constexpr settings_0_t settings = {
+  .anglesForDirectionCalculationTolerance = 20.000000, 
   .blurKSize = 3, 
   .blurSigmaX = 0, 
   .blurSigmaY = 0, 
@@ -31,13 +36,16 @@ constexpr settings_0_t settings = {
   .confidenceMapThreshold = 0.100000, 
   .downscaleTargetHeight = 192, 
   .downscaleTargetWidth = 256, 
-  .heightElbowTolerance = 40.000000, 
+  .heightDifferenceBetweenShoulderAndWristTolerance = 40.000000, 
   .nInterpSamples = 10, 
   .pafScoreTh = 0.100000, 
+  .personOrientationShoulderTolerance = 20.000000, 
   .preferredDevice = R"##(cpu)##", 
   .prototxt = R"##(./pose/coco/pose_deploy_linevec.prototxt)##", 
   .spatialSizeFactor = 100, 
-  .tolerance = 20.000000, 
+  .toleranceWristNearShoulderDistanceLeftAndDown = 5.000000, 
+  .toleranceWristNearShoulderDistanceX = 30.000000, 
+  .toleranceWristNearShoulderDistanceY = 60.000000, 
   .upscaleTargetHeight = 768, 
   .upscaleTargetWidth = 1024, 
   .useColorsForPose = true, 

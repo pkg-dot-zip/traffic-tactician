@@ -64,10 +64,10 @@ bool isRightWristNearShoulder(std::map<std::string, std::vector<KeyPoint>>& map)
 {
 	if (map["R-Wr"].empty() || map["R-Sho"].empty()) return false;
 
-	constexpr float toleranceWristNearShoulderDistanceX = 30.0F;
-	constexpr float toleranceWristNearShoulderDistanceY = 60.0F;
+	constexpr float toleranceWristNearShoulderDistanceX = settings.toleranceWristNearShoulderDistanceX;
+	constexpr float toleranceWristNearShoulderDistanceY = settings.toleranceWristNearShoulderDistanceY;
 
-	constexpr float smallToleranceShoulderLeftAndDown = 5.0F;
+	constexpr float toleranceWristNearShoulderDistanceLeftAndDown = settings.toleranceWristNearShoulderDistanceLeftAndDown;
 
 	const float wristX = map["R-Wr"][0].point.x;
 	const float wristY = map["R-Wr"][0].point.y;
@@ -75,9 +75,9 @@ bool isRightWristNearShoulder(std::map<std::string, std::vector<KeyPoint>>& map)
 	const float shoulderX = map["R-Sho"][0].point.x;
 	const float shoulderY = map["R-Sho"][0].point.y;
 
-	const bool isWristXNearShoulderX = wristX <= shoulderX + smallToleranceShoulderLeftAndDown && wristX >= shoulderX -
+	const bool isWristXNearShoulderX = wristX <= shoulderX + toleranceWristNearShoulderDistanceLeftAndDown && wristX >= shoulderX -
 		toleranceWristNearShoulderDistanceX;
-	const bool isWristYNearShoulderY = wristY <= shoulderY + smallToleranceShoulderLeftAndDown && wristY >= shoulderY -
+	const bool isWristYNearShoulderY = wristY <= shoulderY + toleranceWristNearShoulderDistanceLeftAndDown && wristY >= shoulderY -
 		toleranceWristNearShoulderDistanceY;
 
 	return isWristXNearShoulderX && isWristYNearShoulderY;
@@ -88,7 +88,7 @@ bool isPersonFacingFront(std::map<std::string, std::vector<KeyPoint>>& map)
 {
 	if (map["L-Sho"].empty() || map["R-Sho"].empty()) return false;
 
-	constexpr float personOrientationShoulderTolerance = 20.0F;
+	constexpr float personOrientationShoulderTolerance = settings.personOrientationShoulderTolerance;
 
 	const float LshoulderX = map["L-Sho"][0].point.x;
 	const float RshoulderX = map["R-Sho"][0].point.x;
@@ -105,7 +105,7 @@ Pose getPose(std::map<std::string, std::vector<KeyPoint>>& map)
 	const float heightDifferenceElbowLeft = calculateDifferenceInHeightBetweenShoulderAndWristLeft(map);
 	const float heightDifferenceElbowRight = calculateDifferenceInHeightBetweenShoulderAndWristRight(map);
 
-	constexpr float heightDifferenceBetweenShoulderAndWristTolerance = settings.heightElbowTolerance;
+	constexpr float heightDifferenceBetweenShoulderAndWristTolerance = settings.heightDifferenceBetweenShoulderAndWristTolerance;
 
 	if (leftArmDirection == DIRECTION_LEFT && (rightArmDirection == DIRECTION_DOWN || rightArmDirection ==
 			DIRECTION_UNCLEAR) && heightDifferenceElbowLeft >= 0 - heightDifferenceBetweenShoulderAndWristTolerance && heightDifferenceElbowLeft <=
@@ -255,21 +255,21 @@ PoseDirection getDirectionForArm(const float angleInDegrees)
 {
 	if (angleInDegrees == NAN) return DIRECTION_UNCLEAR;
 
-	constexpr float tolerance = settings.tolerance; // Tolerance in degrees.
+	constexpr float anglesForDirectionCalculationTolerance = settings.anglesForDirectionCalculationTolerance; // Tolerance in degrees.
 
-	if (angleInDegrees < (90.0F + tolerance) && angleInDegrees > (90.0F - tolerance))
+	if (angleInDegrees < (90.0F + anglesForDirectionCalculationTolerance) && angleInDegrees > (90.0F - anglesForDirectionCalculationTolerance))
 	{
 		return DIRECTION_UP;
 	}
-	if (angleInDegrees < (0.0F + tolerance) && angleInDegrees > (0.0F - tolerance))
+	if (angleInDegrees < (0.0F + anglesForDirectionCalculationTolerance) && angleInDegrees > (0.0F - anglesForDirectionCalculationTolerance))
 	{
 		return DIRECTION_RIGHT;
 	}
-	if (angleInDegrees < (-90.0F + tolerance) && angleInDegrees > (-90.0F - tolerance))
+	if (angleInDegrees < (-90.0F + anglesForDirectionCalculationTolerance) && angleInDegrees > (-90.0F - anglesForDirectionCalculationTolerance))
 	{
 		return DIRECTION_DOWN;
 	}
-	if (angleInDegrees > (180.0F - tolerance) && angleInDegrees > (-180.0F - tolerance))
+	if (angleInDegrees > (180.0F - anglesForDirectionCalculationTolerance) && angleInDegrees > (-180.0F - anglesForDirectionCalculationTolerance))
 	{
 		return DIRECTION_LEFT;
 	}
