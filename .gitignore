@@ -49,6 +49,9 @@
 # Mono auto generated files
 mono_crash.*
 
+# Pose Model
+TrafficTactician/pose/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -57,6 +60,7 @@ mono_crash.*
 #The lib files include necessary x64 folders
 \TrafficTactician\x64\Debug 
 x86/
+/TrafficTactician/x64/
 [Ww][Ii][Nn]32/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
