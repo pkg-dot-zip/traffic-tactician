@@ -22,6 +22,12 @@
     <Filter Include="components">
       <UniqueIdentifier>{8bf3fa7a-a229-431c-9e8a-0ce569868ecf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\poseDetection">
+      <UniqueIdentifier>{f8397d31-a5a9-46d9-a05f-3616f3fc990c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\poseDetection">
+      <UniqueIdentifier>{a525fee6-60aa-4a7e-8400-55f398d84cc3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tigl.cpp">
@@ -78,6 +84,18 @@
     <ClCompile Include="lib\imgui-docking\backends\imgui_impl_opengl3.cpp">
       <Filter>Source Files\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="poseChecker.cpp">
+      <Filter>Source Files\poseDetection</Filter>
+    </ClCompile>
+    <ClCompile Include="detectionMain.cpp">
+      <Filter>Source Files\poseDetection</Filter>
+    </ClCompile>
+    <ClCompile Include="poseEstimation.cpp">
+      <Filter>Source Files\poseDetection</Filter>
+    </ClCompile>
+    <ClCompile Include="poseRetriever.cpp">
+      <Filter>Source Files\poseDetection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="easylogging++.h">
@@ -130,6 +148,24 @@
     </ClInclude>
     <ClInclude Include="lib\imgui-docking\backends\imgui_impl_opengl3.h">
       <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="json.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="poseChecker.h">
+      <Filter>Header Files\poseDetection</Filter>
+    </ClInclude>
+    <ClInclude Include="keyPoint.h">
+      <Filter>Header Files\poseDetection</Filter>
+    </ClInclude>
+    <ClInclude Include="poseEstimation.h">
+      <Filter>Header Files\poseDetection</Filter>
+    </ClInclude>
+    <ClInclude Include="poseRetriever.h">
+      <Filter>Header Files\poseDetection</Filter>
+    </ClInclude>
+    <ClInclude Include="settingsFromJson.h">
+      <Filter>Header Files\poseDetection</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

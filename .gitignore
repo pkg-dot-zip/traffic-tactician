@@ -434,3 +434,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+!TrafficTactician/json2hpp.exe

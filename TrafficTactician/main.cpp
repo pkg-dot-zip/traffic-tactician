@@ -17,7 +17,11 @@
 #include "WorldComponent.h"
 using tigl::Vertex;
 
+#ifdef _DEBUG
 #pragma comment (lib, "opencv_world490d.lib")
+#else
+#pragma comment (lib, "opencv_world490.lib")
+#endif
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "opengl32.lib")
