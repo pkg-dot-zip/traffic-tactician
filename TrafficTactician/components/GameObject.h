@@ -4,7 +4,9 @@
 #include <glm/glm.hpp>
 #include <list>
 #include <memory>
+#include <string>
 
+class Simulation;
 class Component;
 class DrawComponent;
 class BoundingBoxComponent;
@@ -15,8 +17,11 @@ class GameObject
 	std::list<std::shared_ptr<Component>> components;
 
 public:
-	GameObject();
+	GameObject(const std::string &name, Simulation* sim);
 	~GameObject();
+
+	std::string name;
+	Simulation* sim;
 
 	glm::vec3 position = glm::vec3(0.0f);
 	glm::vec3 rotation = glm::vec3(0, 0, 0);

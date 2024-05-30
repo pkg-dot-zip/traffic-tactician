@@ -233,6 +233,9 @@
     <ClCompile Include="poseChecker.cpp" />
     <ClCompile Include="poseEstimation.cpp" />
     <ClCompile Include="poseRetriever.cpp" />
+    <ClCompile Include="RouteComponent.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="SpinComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tigl.cpp" />
@@ -248,6 +251,9 @@
     <ClInclude Include="components\PlayerComponent.h" />
     <ClInclude Include="easylogging++.h" />
     <ClInclude Include="MoveComponent.h" />
+    <ClInclude Include="RouteComponent.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="Simulation.h" />
     <ClInclude Include="WorldComponent.h" />
     <ClInclude Include="json.h" />
     <ClInclude Include="keyPoint.h" />

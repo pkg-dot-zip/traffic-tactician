@@ -2,14 +2,13 @@
 #include <GLFW/glfw3.h>
 #include "CarComponent.h"
 #include "GameObject.h"
-#include "MoveComponent.h"
+#include "Simulation.h"
+#include <easylogging++.h>
+#include <glm/gtx/string_cast.hpp>
 
 
 extern GLFWwindow* window;
 extern std::vector<tigl::Vertex> verts;
-
-
-
 
 CarComponent::CarComponent()
 {
@@ -19,49 +18,29 @@ CarComponent::~CarComponent()
 {
 }
 
-void CarComponent::update(float elapsedTime)
+void CarComponent::update(float deltaTime)
 {
-	//if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-	//	allowPointClicks = !allowPointClicks;
-	//}
 
-	//if (!allowPointClicks) return;
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+		allowPointClicks = !allowPointClicks;
+		LOG(INFO) << "Clicks allowed" << std::endl;
+	}
 
-	//if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && lastSpawn + clickDelay < glfwGetTime())
-	//{
-	//	auto direction = mousePosition3D;
-	//	direction.y = 0;
-	//	direction = glm::normalize(direction);
+	if (!allowPointClicks) return;
 
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && lastSpawn + clickDelay < glfwGetTime())
+	{
+		glm::vec3 rayOrigin = gameObject->sim->getCameraPosition();
+		glm::vec3 mousePosition3D = gameObject->sim->mousePosition3D;
+		glm::vec3 rayDirection = glm::normalize(mousePosition3D - rayOrigin);
 
-	//	if (!points.empty()) {
-	//		glm::vec3 lastElement = points.back();
-	//		if (direction == lastElement) return;
-	//	}
+		float planeY = 0.0f;
+		float t = (planeY - rayOrigin.y) / rayDirection.y;
+		glm::vec3 intersectionPoint = rayOrigin + t * rayDirection;
 
-	//	points.push_back(direction);
-	//	gameObject->position = direction;
-		/*gameObject->getCo(gameObject->position, direction);*/
+		LOG(INFO) << glm::to_string(intersectionPoint) << std::endl;
 
-		/*glm::vec4 color = glm::vec4(1,1,1,1);
-		verts.clear();
-		for (glm::vec3 point : points) {
-			Vertex v = Vertex::PC(point, color);
-			verts.push_back(v);
-		}*/
-}
+		gameObject->position = intersectionPoint;
 
-
-
-void CarComponent::draw(glm::mat4 parentMatrix)
-{
-	tigl::drawVertices(GL_TRIANGLES, verts);
-	/*glm::vec3 oldPoint = gameObject->position;
-	glm::vec4 color(1, 1, 1, 1);
-	for (glm::vec3 point : points) {
-		Vertex v1 = Vertex::PC(oldPoint, color);
-		Vertex v2 = Vertex::PC(point, color);
-		tigl::drawVertices(GL_LINE, {v1, v2});
-		oldPoint = point;
-	}*/
+	}
 }
