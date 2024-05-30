@@ -474,5 +474,5 @@ std::map<std::string, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap(cv::
 void clearPoseEstimationKeyPointsMap()
 {
 	poseEstimationKeyPoints.clear();
-	LOG(INFO) << "Cleared the poseEstimationKeyPoints map!";
+	LOG(INFO) << "Cleared the poseEstimationKeyPoints map!" << std::endl;
 }

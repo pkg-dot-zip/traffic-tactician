@@ -205,6 +205,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CarComponent.cpp" />
     <ClCompile Include="components\BoundingBoxComponent.cpp" />
     <ClCompile Include="components\Component.cpp" />
     <ClCompile Include="components\CubeComponent.cpp" />
@@ -228,6 +229,7 @@
     <ClCompile Include="main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='PoseDetectionRelease|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="poseChecker.cpp" />
     <ClCompile Include="poseEstimation.cpp" />
     <ClCompile Include="poseRetriever.cpp" />
@@ -237,6 +239,7 @@
     <ClCompile Include="WorldComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CarComponent.h" />
     <ClInclude Include="components\BoundingBoxComponent.h" />
     <ClInclude Include="components\Component.h" />
     <ClInclude Include="components\CubeComponent.h" />
@@ -244,6 +247,7 @@
     <ClInclude Include="components\GameObject.h" />
     <ClInclude Include="components\PlayerComponent.h" />
     <ClInclude Include="easylogging++.h" />
+    <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="WorldComponent.h" />
     <ClInclude Include="json.h" />
     <ClInclude Include="keyPoint.h" />

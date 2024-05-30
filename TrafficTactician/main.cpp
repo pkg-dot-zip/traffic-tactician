@@ -15,6 +15,8 @@
 #include "ModelComponent.h"
 #include "SpinComponent.h"
 #include "WorldComponent.h"
+#include <glm/gtx/string_cast.hpp>
+#include "CarComponent.h"
 using tigl::Vertex;
 
 #ifdef _DEBUG
@@ -38,7 +40,8 @@ void updateImGuiWindow();
 void drawImGuiWindow();
 void onDestroy();
 
-
+glm::vec3 mouse2D;
+glm::vec3 mousePosition3D = glm::vec3(0, 0, 0);
 int width = 1600;
 int height = 900;
 float rotation = 0;
@@ -46,12 +49,61 @@ float posX, posY, posZ = 0;
 float axisX, axisY, axisZ = 0;
 bool isRotated = false;
 
+glm::mat4 projection;
+glm::mat4 view;
+int viewport[4];
+glm::vec3 intersectionPoint;
 GLFWwindow* window;
+
+std::vector<Vertex> verts;
+glm::vec4 color(1, 1, 1, 1);
+
 
 double lastFrameTime = 0;
 std::list<std::shared_ptr<GameObject>> objects;
 std::shared_ptr<GameObject> player;
+std::shared_ptr<GameObject> world = std::make_shared<GameObject>();
 
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+		double xpos, ypos;
+		glfwGetCursorPos(window, &xpos, &ypos);
+
+		glm::vec3 mouse2D;
+		mouse2D.x = static_cast<float>(xpos);
+		mouse2D.y = viewport[3] - static_cast<float>(ypos);
+		glReadPixels(static_cast<int>(xpos), viewport[3] - static_cast<int>(ypos), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &mouse2D.z);
+
+		glm::vec3 mousePosition3D = glm::unProject(
+			mouse2D,
+			view,
+			projection,
+			glm::vec4(viewport[0], viewport[1], viewport[2], viewport[3])
+		);
+
+		// Extract camera position from the inverse of the view matrix
+		glm::mat4 inverseView = glm::inverse(view);
+		glm::vec3 cameraPosition = glm::vec3(inverseView[3]);
+
+		glm::vec3 rayOrigin = cameraPosition;
+		glm::vec3 rayDirection = glm::normalize(mousePosition3D - rayOrigin);
+
+		float planeY = 0.0f;
+		float t = (planeY - rayOrigin.y) / rayDirection.y;
+		glm::vec3 intersectionPoint = rayOrigin + t * rayDirection;
+
+		player->position = intersectionPoint;
+		verts.push_back(Vertex::PC(intersectionPoint,color));
+		LOG(INFO) << "Verts size is " << verts.size() << std::endl;
+	}
+}
+
+void resize(GLFWwindow*, int w, int h)
+{
+	width = w;
+	height = h;
+}
 int main(void)
 {
 	init();
@@ -99,6 +151,7 @@ void initWindow()
 	}
 
 	glfwMakeContextCurrent(window);
+	glfwSetWindowSizeCallback(window, resize);
 }
 
 void initPlayer()
@@ -106,6 +159,13 @@ void initPlayer()
 	LOG(INFO) << "Initialized player." << std::endl;
 	player = std::make_shared<GameObject>();
 	player->position = glm::vec3(0, 0, 0);
+	player->addComponent(std::make_shared<ModelComponent>("models/car_kit/ambulance.obj"));
+
+	std::shared_ptr<GameObject> route = std::make_shared<GameObject>();
+	route->position = glm::vec3(0, 0, 0);
+	route->addComponent(std::make_shared<CarComponent>());
+
+
 	int size = 9;
 	//std::shared_ptr<ModelComponent> model_component = std::make_shared<ModelComponent>("models/car_kit/hatchback-sports.obj");
 	std::shared_ptr<WorldComponent> world_component = std::make_shared<WorldComponent>(size, 1.0f, std::make_shared<ModelComponent>("models/road_kit/tile_low.obj"));
@@ -121,8 +181,13 @@ void initPlayer()
 
 	world_component->setModel(size / 2, size / 2, std::make_shared<ModelComponent>("models/road_kit/road_crossroad.obj"));
 
-	player->addComponent(world_component);
+
+	world->addComponent(world_component);
 	objects.push_back(player);
+	objects.push_back(world);
+	objects.push_back(route);
+
+
 }
 
 void initInputCallback()
@@ -133,6 +198,8 @@ void initInputCallback()
 			if (key == GLFW_KEY_ESCAPE)
 				glfwSetWindowShouldClose(window, true);
 		});
+
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
 }
 
 void initImGui()
@@ -197,33 +264,51 @@ void update()
 void draw()
 {
 	// Set GL.
+	if (width == 0 || height == 0)
+		return;
+	glViewport(0, 0, width, height);
 	glClearColor(0.3f, 0.4f, 0.6f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	int viewport[4];
+	//int viewport[4];
 	glGetIntegerv(GL_VIEWPORT, viewport);
-	const glm::mat4 projection = glm::perspective(glm::radians(75.0f), static_cast<float>(viewport[2]) / static_cast<float>(viewport[3]), 0.01f, 1000.0f);
-
+	projection = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 10.0f);
+	view = glm::lookAt(glm::vec3(0, 4.5f, 2), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	tigl::shader->setProjectionMatrix(projection);
-	tigl::shader->setViewMatrix(glm::lookAt(glm::vec3(0, 10, 10), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
+	tigl::shader->setViewMatrix(view);
 	tigl::shader->setModelMatrix(glm::mat4(1.0f));
+	double xpos, ypos;
+
+	glfwGetCursorPos(window, &xpos, &ypos);
+	mouse2D.x = (float)xpos;
+	mouse2D.y = viewport[3] - (float)ypos;
+	glReadPixels((int)xpos, viewport[3] - (int)ypos, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &mouse2D.z);
+
+	mousePosition3D = glm::unProject(
+		mouse2D,
+		view,
+		projection,
+		glm::uvec4(viewport[0], viewport[1], viewport[2], viewport[3]));
+
+
+
+
 
 	tigl::shader->enableColor(true);
 
-	// Temporary floor drawing.
-	tigl::begin(GL_QUADS);
-	tigl::addVertex(Vertex::PCN(glm::vec3(-50, 0, -50), glm::vec4(1, 0, 0, 1), glm::vec3(0, 1, 0)));
-	tigl::addVertex(Vertex::PCN(glm::vec3(-50, 0, 50), glm::vec4(0, 1, 0, 1), glm::vec3(0, 1, 0)));
-	tigl::addVertex(Vertex::PCN(glm::vec3(50, 0, 50), glm::vec4(0, 0, 1, 1), glm::vec3(0, 1, 0)));
-	tigl::addVertex(Vertex::PCN(glm::vec3(50, 0, -50), glm::vec4(0, 0, 1, 1), glm::vec3(0, 1, 0)));
-	tigl::end();
+	//// Temporary floor drawing.
+	//tigl::begin(GL_QUADS);
+	//tigl::addVertex(Vertex::PCN(glm::vec3(-50, 0, -50), glm::vec4(1, 0, 0, 1), glm::vec3(0, 1, 0)));
+	//tigl::addVertex(Vertex::PCN(glm::vec3(-50, 0, 50), glm::vec4(0, 1, 0, 1), glm::vec3(0, 1, 0)));
+	//tigl::addVertex(Vertex::PCN(glm::vec3(50, 0, 50), glm::vec4(0, 0, 1, 1), glm::vec3(0, 1, 0)));
+	//tigl::addVertex(Vertex::PCN(glm::vec3(50, 0, -50), glm::vec4(0, 0, 1, 1), glm::vec3(0, 1, 0)));
+	//tigl::end();
 
 	// Draw Gameobjects.
 	for (std::shared_ptr<GameObject>& gameObject : objects)
 	{
 		gameObject->draw();
 	}
-
 	drawImGuiWindow(); //Must be done after drawing objects.
 }
 
@@ -232,38 +317,33 @@ void updateImGuiWindow()
 	ImGui::SetNextWindowSize(ImVec2(200, 200));
 	ImGui::ShowDemoWindow(0);
 	if (ImGui::Begin("Hello Imgui")) {
-		float scale = player->scale.y;
+		float scale = world->scale.y;
 
 		ImGui::Text("Hello Computer Graphics!");
-		ImGui::SliderAngle("Rotation", &player->rotation.y);
-		ImGui::SliderFloat("Rotation", &player->rotation.y, 0, 10);
-		ImGui::SliderFloat("Scale", &scale, 0.5f, 50.0f);
+		ImGui::SliderAngle("World rotation", &world->rotation.y);
+		ImGui::SliderFloat("Car Scale", &player->scale.y, 0, 1);
+		ImGui::SliderFloat("World Scale", &scale, 0.5f, 50.0f);
 
 		if (ImGui::Button("Hi")) {
-			player->rotation.y += 0.1f;
+			world->rotation.y += 0.1f;
 		}
 
 		static float translation[] = { 0, 0, 0 };
 		ImGui::SliderFloat3("position", translation, -2.0, 2.0);
 
 		// Player position set to slider pos.
-		player->position = glm::vec3(translation[0], translation[1], translation[2]);
+		world->position = glm::vec3(translation[0], translation[1], translation[2]);
 
-		player->scale = glm::vec3(scale);
+		world->scale = glm::vec3(scale);
 
-
-		static bool rotateCheck = false;
-		if (ImGui::Checkbox("Rotate?", &rotateCheck))
-		{
-			if (rotateCheck)
-			{
-				player->addComponent(std::make_shared<SpinComponent>());
-			}
-			else
-			{
-				player->removeComponent(player->getComponent<SpinComponent>());
-			}
-		}
+		std::string str;
+		ImGui::Text("MousePosition3D: (%f, %f, %f)", mousePosition3D.x, mousePosition3D.y, mousePosition3D.z);
+		ImGui::Text("Mouse2D: (%f, %f)", mouse2D.x, mouse2D.y);
+		ImGui::Text("Car Pos: (%f, %f, %f)", player->position.x, player->position.y, player->position.z);
+		/*for (glm::vec3 point : player->getComponent<CarComponent>()->points) {
+			ImGui::Text("(%f, %f, %f)",
+				point.x, point.y, point.z);
+		}*/
 
 		ImGui::End();
 	}

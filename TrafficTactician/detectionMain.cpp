@@ -31,5 +31,5 @@ INITIALIZE_EASYLOGGINGPP
 int main(int argc, char** argv)
 {
 	setupLogger();
-	runPoseRetriever();
+	//runPoseRetriever();
 }
