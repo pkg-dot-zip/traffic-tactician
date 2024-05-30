@@ -59,7 +59,7 @@ UTEST(getPose, returnsMoveRight2)
 
 UTEST(getPose, returnsMoveRight3)
 {
-	ASSERT_EQ(getPose(getPoints("./images/unittesting/move_rigt=ht3.jpg")), POSE_MOVE_RIGHT);
+	ASSERT_EQ(getPose(getPoints("./images/unittesting/move_right3.jpg")), POSE_MOVE_RIGHT);
 }
 
 #endif

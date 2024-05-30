@@ -87,6 +87,12 @@ Pose getPose(std::map<std::string, std::vector<KeyPoint>>& map)
 		return POSE_MOVE_LEFT;
 	}
 
+	if (rightArmDirection == DIRECTION_RIGHT && (leftArmDirection == DIRECTION_DOWN || leftArmDirection ==
+		DIRECTION_UNCLEAR) && heightDifferenceRight >= 0 - heightTolerance && heightDifferenceRight <= heightTolerance)
+	{
+		return POSE_MOVE_RIGHT;
+	}
+
 	return POSE_OTHER;
 }
 
