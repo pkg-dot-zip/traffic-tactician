@@ -77,8 +77,8 @@ bool isRightWristNearShoulder(std::map<std::string, std::vector<KeyPoint>>& map)
 		return false;
 	}
 
-	constexpr float toleranceWristNearShouldDistanceX = 40.0F;
-	constexpr float toleranceWristNearShouldDistanceY = 20.0F;
+	constexpr float toleranceWristNearShouldDistanceX = 30.0F;
+	constexpr float toleranceWristNearShouldDistanceY = 60.0F;
 
 	constexpr float smallToleranceShoulderLeftAndDown = 5.0F;
 
@@ -88,7 +88,7 @@ bool isRightWristNearShoulder(std::map<std::string, std::vector<KeyPoint>>& map)
 	const float shoulderX = map["R-Sho"][0].point.x;
 	const float shoulderY = map["R-Sho"][0].point.y;
 
-	const bool boolX = wristX >= shoulderX - smallToleranceShoulderLeftAndDown && wristX <= shoulderX + toleranceWristNearShouldDistanceX;
+	const bool boolX = wristX <= shoulderX + smallToleranceShoulderLeftAndDown && wristX >= shoulderX - toleranceWristNearShouldDistanceX;
 	const bool boolY = wristY <= shoulderY + smallToleranceShoulderLeftAndDown && wristY >= shoulderY - toleranceWristNearShouldDistanceY;
 
 	// LOG(INFO) << "Wrist Pos: (" << wristX << ", " << wristY << ")" << std::endl;
