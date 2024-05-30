@@ -302,6 +302,7 @@
     <ClInclude Include="components\GameObject.h" />
     <ClInclude Include="components\PlayerComponent.h" />
     <ClInclude Include="easylogging++.h" />
+    <ClInclude Include="KeypointLocationStrings.h" />
     <ClInclude Include="utest.h" />
     <ClInclude Include="WorldComponent.h" />
     <ClInclude Include="json.h" />

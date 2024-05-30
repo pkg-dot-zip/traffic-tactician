@@ -21,6 +21,7 @@
 
 #include "easylogging++.h"
 #include "keyPoint.h"
+#include "KeypointLocationStrings.h"
 #include "poseChecker.h"
 #include "settingsFromJson.h"
 
@@ -86,13 +87,13 @@ std::ostream& operator <<(std::ostream& os, const std::set<T>& v)
 
 constexpr int nPoints = 18;
 
-const std::string keypointsMapping[] = {
-	"Nose", "Neck",
-	"R-Sho", "R-Elb", "R-Wr",
-	"L-Sho", "L-Elb", "L-Wr",
-	"R-Hip", "R-Knee", "R-Ank",
-	"L-Hip", "L-Knee", "L-Ank",
-	"R-Eye", "L-Eye", "R-Ear", "L-Ear"
+const std::string_view keypointsMapping[] = {
+	pose_keypoint_nose, pose_keypoint_neck,
+	pose_keypoint_shoulder_right, pose_keypoint_elbow_right, pose_keypoint_wrist_right,
+pose_keypoint_shoulder_left, pose_keypoint_elbow_left, pose_keypoint_wrist_left,
+pose_keypoint_hip_right, pose_keypoint_knee_right, pose_keypoint_ankle_right,
+pose_keypoint_hip_left, pose_keypoint_knee_left, pose_keypoint_ankle_left,
+pose_keypoint_eye_right, pose_keypoint_eye_left, pose_keypoint_ear_right, pose_keypoint_ear_left
 };
 
 const std::vector<std::pair<int, int>> mapIdx = {
