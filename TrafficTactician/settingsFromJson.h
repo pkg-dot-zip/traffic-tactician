@@ -1,4 +1,5 @@
 struct settings_0_t {
+  double anglesForDirectionCalculationTolerance;
   std::uint64_t blurKSize;
   std::uint64_t blurSigmaX;
   std::uint64_t blurSigmaY;
@@ -6,22 +7,26 @@ struct settings_0_t {
   std::uint64_t cameraToUse;
   double confTh;
   double confidenceMapThreshold;
-  double downscaleFactor;
-  double heightElbowTolerance;
+  std::uint64_t downscaleTargetHeight;
+  std::uint64_t downscaleTargetWidth;
+  double heightDifferenceBetweenShoulderAndWristTolerance;
   std::uint64_t nInterpSamples;
-  std::string_view openCVWindowName;
   double pafScoreTh;
+  double personOrientationShoulderTolerance;
   std::string_view preferredDevice;
   std::string_view prototxt;
   std::uint64_t spatialSizeFactor;
-  double tolerance;
-  double upscaleFactor;
+  double toleranceWristNearShoulderDistanceLeftAndDown;
+  double toleranceWristNearShoulderDistanceX;
+  double toleranceWristNearShoulderDistanceY;
+  std::uint64_t upscaleTargetHeight;
+  std::uint64_t upscaleTargetWidth;
   bool useColorsForPose;
   bool useRealTimePriority;
-  std::uint64_t waitKeyDelayOpenCV;
 };
 
 constexpr settings_0_t settings = {
+  .anglesForDirectionCalculationTolerance = 20.000000, 
   .blurKSize = 3, 
   .blurSigmaX = 0, 
   .blurSigmaY = 0, 
@@ -29,17 +34,20 @@ constexpr settings_0_t settings = {
   .cameraToUse = 0, 
   .confTh = 0.700000, 
   .confidenceMapThreshold = 0.100000, 
-  .downscaleFactor = 0.400000, 
-  .heightElbowTolerance = 40.000000, 
+  .downscaleTargetHeight = 192, 
+  .downscaleTargetWidth = 256, 
+  .heightDifferenceBetweenShoulderAndWristTolerance = 40.000000, 
   .nInterpSamples = 10, 
-  .openCVWindowName = R"##(Detected Pose)##", 
   .pafScoreTh = 0.100000, 
+  .personOrientationShoulderTolerance = 20.000000, 
   .preferredDevice = R"##(cpu)##", 
   .prototxt = R"##(./pose/coco/pose_deploy_linevec.prototxt)##", 
   .spatialSizeFactor = 100, 
-  .tolerance = 20.000000, 
-  .upscaleFactor = 4.000000, 
+  .toleranceWristNearShoulderDistanceLeftAndDown = 5.000000, 
+  .toleranceWristNearShoulderDistanceX = 30.000000, 
+  .toleranceWristNearShoulderDistanceY = 60.000000, 
+  .upscaleTargetHeight = 768, 
+  .upscaleTargetWidth = 1024, 
   .useColorsForPose = true, 
-  .useRealTimePriority = false, 
-  .waitKeyDelayOpenCV = 1, 
+  .useRealTimePriority = true, 
 };

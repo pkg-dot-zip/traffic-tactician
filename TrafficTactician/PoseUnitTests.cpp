@@ -8,16 +8,14 @@
 #include "poseRetriever.h"
 #ifdef _TESTING_CONFIG
 
-#include <opencv2/videoio.hpp>
-
 #include "poseEstimation.h"
 #include "utest.h"
 #include <opencv2/dnn.hpp>
 
 #pragma region helpers
-extern std::map<std::string, std::vector<KeyPoint>> poseEstimationKeyPoints;
+extern std::map<std::string_view, std::vector<KeyPoint>> poseEstimationKeyPoints;
 
-std::map<std::string, std::vector<KeyPoint>>& getPoints(std::string_view filePath)
+std::map<std::string_view, std::vector<KeyPoint>>& getPoints(std::string_view filePath)
 {
 	poseEstimationKeyPoints.clear();
 

@@ -2,4 +2,4 @@
 #include <opencv2/dnn.hpp>
 
 int runPoseRetriever();
-void loadDnnModel(cv::dnn::Net& inputNet);
+bool loadDnnModel(cv::dnn::Net& inputNet);
