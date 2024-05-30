@@ -68,24 +68,33 @@ std::string getPoseString(const Pose pose)
 	throw "Can't convert invalid pose enum value to string!";
 }
 
+// Checks if the right wrist is near the right shoulder.
 bool isRightWristNearShoulder(std::map<std::string, std::vector<KeyPoint>>& map)
 {
-	if (map["R-Wri"].empty() || map["R-Sho"].empty()) return false;
+	if (map["R-Wr"].empty() || map["R-Sho"].empty())
+	{
+		LOG(INFO) << "Couldn't find anything for right wrist or couldn't find anything for right shoulder. Returning." << std::endl;
+		return false;
+	}
 
-	constexpr float toleranceWristNearShouldDistanceX = 20.0F;
+	constexpr float toleranceWristNearShouldDistanceX = 40.0F;
 	constexpr float toleranceWristNearShouldDistanceY = 20.0F;
 
 	constexpr float smallToleranceShoulderLeftAndDown = 5.0F;
 
-	const float wristX = map["R-Wri"][0].point.x;
-	const float wristY = map["R-Wri"][0].point.y;
+	const float wristX = map["R-Wr"][0].point.x;
+	const float wristY = map["R-Wr"][0].point.y;
 
 	const float shoulderX = map["R-Sho"][0].point.x;
 	const float shoulderY = map["R-Sho"][0].point.y;
 
 	const bool boolX = wristX >= shoulderX - smallToleranceShoulderLeftAndDown && wristX <= shoulderX + toleranceWristNearShouldDistanceX;
-	const bool boolY = wristY >= shoulderY - smallToleranceShoulderLeftAndDown && wristY <= shoulderY + toleranceWristNearShouldDistanceY;
+	const bool boolY = wristY <= shoulderY + smallToleranceShoulderLeftAndDown && wristY >= shoulderY - toleranceWristNearShouldDistanceY;
 
+	// LOG(INFO) << "Wrist Pos: (" << wristX << ", " << wristY << ")" << std::endl;
+	// LOG(INFO) << "Shoulder Pos: (" << shoulderX << ", " << shoulderY << ")" << std::endl;
+	// LOG(INFO) << "BOOL X TRUE: " << boolX << std::endl;
+	// LOG(INFO) << "BOOL Y TRUE: " << boolX << std::endl;
 	return boolX && boolY;
 }
 

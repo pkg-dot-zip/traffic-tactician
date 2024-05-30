@@ -85,6 +85,22 @@ static bool shouldRun()
 	return true;
 }
 
+void displayCurrentPose(const cv::Mat& outputFrame, std::map<std::string, std::vector<KeyPoint>>& map)
+{
+	const std::string poseString = getPoseString(getPose(map));
+
+	std::string baseString = "Current Pose is: ";
+
+	constexpr int offset = 40;
+	constexpr int fontFace = cv::FONT_HERSHEY_COMPLEX;
+	constexpr double fontScale = 1.0;
+	const cv::Scalar color = { 0, 0, 0, 0 };
+
+	cv::putText(outputFrame, baseString.append(poseString),
+		{ offset, offset },
+		fontFace, fontScale, color);
+}
+
 // Start the thread for pose estimation. 
 int runPoseRetriever()
 {
@@ -106,7 +122,8 @@ int runPoseRetriever()
 		leftArmDirection = getDirectionForArmLeft(keyPointsToUseInCalculation);
 		rightArmDirection = getDirectionForArmRight(keyPointsToUseInCalculation);
 
-		displayArmDirections(outputFrame);
+		// displayArmDirections(outputFrame);
+		displayCurrentPose(outputFrame, keyPointsToUseInCalculation);
 
 		cv::imshow(std::string(settings.openCVWindowName), outputFrame);
 		cv::waitKey(settings.waitKeyDelayOpenCV);

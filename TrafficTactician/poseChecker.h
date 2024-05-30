@@ -18,4 +18,5 @@ float calculateDifferenceInHeightBetweenShoulderAndWristRight(std::map<std::stri
 float calculateDifferenceInHeightBetweenTwoPoints(std::map<std::string, std::vector<KeyPoint>>& map, const std::string& point1,
 	const std::string& point2);
 
+std::string getPoseString(Pose pose);
 Pose getPose(std::map<std::string, std::vector<KeyPoint>>& map);
