@@ -21,4 +21,4 @@ float calculateDifferenceInHeightBetweenTwoPoints(std::map<std::string, std::vec
 std::string getPoseString(Pose pose);
 Pose getPose(std::map<std::string, std::vector<KeyPoint>>& map);
 
-bool isStandingTowardsCamera(std::map<std::string, std::vector<KeyPoint>>& map);
+bool isPersonFacingFront(std::map<std::string, std::vector<KeyPoint>>& map);

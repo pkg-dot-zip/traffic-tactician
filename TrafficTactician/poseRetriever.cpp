@@ -90,7 +90,7 @@ void displayCurrentOrientation(const cv::Mat& outputFrame, std::map<std::string,
 	constexpr double fontScale = 1.0;
 	const cv::Scalar color = {0, 0, 0, 0};
 
-	cv::putText(outputFrame, baseString.append(std::to_string(isStandingTowardsCamera(map))),
+	cv::putText(outputFrame, baseString.append(std::to_string(isPersonFacingFront(map))),
 	            {offset, offset},
 	            fontFace, fontScale, color);
 }
