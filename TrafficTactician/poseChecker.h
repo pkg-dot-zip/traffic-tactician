@@ -13,8 +13,8 @@ std::string getDirectionString(PoseDirection pose_direction);
 PoseDirection getDirectionForArmLeft(std::map<std::string, std::vector<KeyPoint>>& map);
 PoseDirection getDirectionForArmRight(std::map<std::string, std::vector<KeyPoint>>& map);
 
-float calculateDifferenceInHeightBetweenElbowAndWristLeft(std::map<std::string, std::vector<KeyPoint>>& map);
-float calculateDifferenceInHeightBetweenElbowAndWristRight(std::map<std::string, std::vector<KeyPoint>>& map);
+float calculateDifferenceInHeightBetweenShoulderAndWristLeft(std::map<std::string, std::vector<KeyPoint>>& map);
+float calculateDifferenceInHeightBetweenShoulderAndWristRight(std::map<std::string, std::vector<KeyPoint>>& map);
 float calculateDifferenceInHeightBetweenTwoPoints(std::map<std::string, std::vector<KeyPoint>>& map, const std::string& point1,
 	const std::string& point2);
 

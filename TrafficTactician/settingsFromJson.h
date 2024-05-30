@@ -7,7 +7,7 @@ struct settings_0_t {
   double confTh;
   double confidenceMapThreshold;
   double downscaleFactor;
-  double heightTolerance;
+  double heightElbowTolerance;
   std::uint64_t nInterpSamples;
   std::string_view openCVWindowName;
   double pafScoreTh;
@@ -30,7 +30,7 @@ constexpr settings_0_t settings = {
   .confTh = 0.700000, 
   .confidenceMapThreshold = 0.100000, 
   .downscaleFactor = 0.400000, 
-  .heightTolerance = 40.000000, 
+  .heightElbowTolerance = 40.000000, 
   .nInterpSamples = 10, 
   .openCVWindowName = R"##(Detected Pose)##", 
   .pafScoreTh = 0.100000, 

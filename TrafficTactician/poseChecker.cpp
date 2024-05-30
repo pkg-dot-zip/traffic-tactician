@@ -28,7 +28,7 @@ PoseDirection getDirectionForArmRight(std::map<std::string, std::vector<KeyPoint
 
 void printDirectionOfArms(std::map<std::string, std::vector<KeyPoint>>& map);
 
-std::string getPoseString(const Pose pose);
+std::string getPoseString(Pose pose);
 
 // Method used for debugging prints.
 void checkPoseForAll(std::map<std::string, std::vector<KeyPoint>>& map)
@@ -68,29 +68,63 @@ std::string getPoseString(const Pose pose)
 	throw "Can't convert invalid pose enum value to string!";
 }
 
+bool isRightWristNearShoulder(std::map<std::string, std::vector<KeyPoint>>& map)
+{
+	if (map["R-Wri"].empty() || map["R-Sho"].empty()) return false;
+
+	constexpr float toleranceWristNearShouldDistanceX = 20.0F;
+	constexpr float toleranceWristNearShouldDistanceY = 20.0F;
+
+	constexpr float smallToleranceShoulderLeftAndDown = 5.0F;
+
+	const float wristX = map["R-Wri"][0].point.x;
+	const float wristY = map["R-Wri"][0].point.y;
+
+	const float shoulderX = map["R-Sho"][0].point.x;
+	const float shoulderY = map["R-Sho"][0].point.y;
+
+	const bool boolX = wristX >= shoulderX - smallToleranceShoulderLeftAndDown && wristX <= shoulderX + toleranceWristNearShouldDistanceX;
+	const bool boolY = wristY >= shoulderY - smallToleranceShoulderLeftAndDown && wristY <= shoulderY + toleranceWristNearShouldDistanceY;
+
+	return boolX && boolY;
+}
+
 Pose getPose(std::map<std::string, std::vector<KeyPoint>>& map)
 {
 	const PoseDirection leftArmDirection = getDirectionForArmLeft(map);
 	const PoseDirection rightArmDirection = getDirectionForArmRight(map);
 
-	const float heightDifferenceLeft = calculateDifferenceInHeightBetweenElbowAndWristLeft(map);
-	const float heightDifferenceRight = calculateDifferenceInHeightBetweenElbowAndWristRight(map);
+	const float heightDifferenceElbowLeft = calculateDifferenceInHeightBetweenShoulderAndWristLeft(map);
+	const float heightDifferenceElbowRight = calculateDifferenceInHeightBetweenShoulderAndWristRight(map);
 
-	constexpr float heightTolerance = settings.heightTolerance;
+	constexpr float heightElbowTolerance = settings.heightElbowTolerance;
 
-	LOG(INFO) << "Height dif left " << heightDifferenceLeft << std::endl;
-	LOG(INFO) << "Height dif right " << heightDifferenceRight << std::endl;
+	LOG(INFO) << "Height dif left " << heightDifferenceElbowLeft << std::endl;
+	LOG(INFO) << "Height dif right " << heightDifferenceElbowRight << std::endl;
 
 	if (leftArmDirection == DIRECTION_LEFT && (rightArmDirection == DIRECTION_DOWN || rightArmDirection ==
-		DIRECTION_UNCLEAR) && heightDifferenceLeft >= 0 - heightTolerance && heightDifferenceLeft <= heightTolerance)
+		DIRECTION_UNCLEAR) && heightDifferenceElbowLeft >= 0 - heightElbowTolerance && heightDifferenceElbowLeft <= heightElbowTolerance)
 	{
 		return POSE_MOVE_LEFT;
 	}
 
 	if (rightArmDirection == DIRECTION_RIGHT && (leftArmDirection == DIRECTION_DOWN || leftArmDirection ==
-		DIRECTION_UNCLEAR) && heightDifferenceRight >= 0 - heightTolerance && heightDifferenceRight <= heightTolerance)
+		DIRECTION_UNCLEAR) && heightDifferenceElbowRight >= 0 - heightElbowTolerance && heightDifferenceElbowRight <= heightElbowTolerance)
 	{
 		return POSE_MOVE_RIGHT;
+	}
+
+	if (isRightWristNearShoulder(map) && (leftArmDirection == DIRECTION_DOWN || leftArmDirection ==
+		DIRECTION_UNCLEAR))
+	{
+		return POSE_STOP; // TODO: Fix. Not working right now.
+	}
+
+	if ((leftArmDirection == DIRECTION_DOWN || leftArmDirection ==
+		DIRECTION_UNCLEAR) && (rightArmDirection == DIRECTION_DOWN || rightArmDirection ==
+			DIRECTION_UNCLEAR)) // TODO:: Add hip pos check.
+	{
+		return POSE_MOVE_FORWARD;
 	}
 
 	return POSE_OTHER;
@@ -158,12 +192,12 @@ void printDirectionOfArms(std::map<std::string, std::vector<KeyPoint>>& map)
 	}
 }
 
-float calculateDifferenceInHeightBetweenElbowAndWristLeft(std::map<std::string, std::vector<KeyPoint>>& map)
+float calculateDifferenceInHeightBetweenShoulderAndWristLeft(std::map<std::string, std::vector<KeyPoint>>& map)
 {
 	return calculateDifferenceInHeightBetweenTwoPoints(map, "L-Sho", "L-Wr");
 }
 
-float calculateDifferenceInHeightBetweenElbowAndWristRight(std::map<std::string, std::vector<KeyPoint>>& map)
+float calculateDifferenceInHeightBetweenShoulderAndWristRight(std::map<std::string, std::vector<KeyPoint>>& map)
 {
 	return calculateDifferenceInHeightBetweenTwoPoints(map, "R-Sho", "R-Wr");
 }
