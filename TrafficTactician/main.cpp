@@ -12,7 +12,9 @@
 #include "log.h"
 #include "PlayerComponent.h"
 #include "CubeComponent.h"
+#include "ModelComponent.h"
 #include "SpinComponent.h"
+#include "WorldComponent.h"
 using tigl::Vertex;
 
 #ifdef _DEBUG
@@ -75,7 +77,7 @@ int main(void)
 
 void onDestroy()
 {
-	LOG(INFO) << "DeInitializing.";
+	LOG(INFO) << "DeInitializing." << std::endl;
 	ImGui_ImplGlfw_Shutdown();
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui::DestroyContext();
@@ -84,13 +86,14 @@ void onDestroy()
 
 void initWindow()
 {
-	LOG(INFO) << "Initialized window.";
+	LOG(INFO) << "Initialized window." << std::endl;
 
 	if (!glfwInit()) throw "Could not initialize glwf";
 	window = glfwCreateWindow(width, height, "Hello World", NULL, NULL);
 
 	if (!window)
 	{
+
 		glfwTerminate();
 		throw "Could not initialize glwf";
 	}
@@ -100,17 +103,31 @@ void initWindow()
 
 void initPlayer()
 {
-	LOG(INFO) << "Initialized player.";
+	LOG(INFO) << "Initialized player." << std::endl;
 	player = std::make_shared<GameObject>();
-	player->position = glm::vec3(0, 1, 2);
+	player->position = glm::vec3(0, 0, 0);
+	int size = 9;
+	//std::shared_ptr<ModelComponent> model_component = std::make_shared<ModelComponent>("models/car_kit/hatchback-sports.obj");
+	std::shared_ptr<WorldComponent> world_component = std::make_shared<WorldComponent>(size, 1.0f, std::make_shared<ModelComponent>("models/road_kit/tile_low.obj"));
 
-	player->addComponent(std::make_shared<CubeComponent>());
+	for (int i = 0; i < size; i++)
+	{
+		if (i == size / 2)
+			continue;
+
+		world_component->setModel(size / 2, i, std::make_shared<ModelComponent>("models/road_kit/road_straight_rotated.obj"));
+		world_component->setModel(i, size / 2, std::make_shared<ModelComponent>("models/road_kit/road_straight.obj"));
+	}
+
+	world_component->setModel(size / 2, size / 2, std::make_shared<ModelComponent>("models/road_kit/road_crossroad.obj"));
+
+	player->addComponent(world_component);
 	objects.push_back(player);
 }
 
 void initInputCallback()
 {
-	LOG(INFO) << "Initialized input callback.";
+	LOG(INFO) << "Initialized input callback." << std::endl;
 	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 		{
 			if (key == GLFW_KEY_ESCAPE)
@@ -120,7 +137,7 @@ void initInputCallback()
 
 void initImGui()
 {
-	LOG(INFO) << "Initialized ImGui.";
+	LOG(INFO) << "Initialized ImGui." << std::endl;
 
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -215,10 +232,12 @@ void updateImGuiWindow()
 	ImGui::SetNextWindowSize(ImVec2(200, 200));
 	ImGui::ShowDemoWindow(0);
 	if (ImGui::Begin("Hello Imgui")) {
+		float scale = player->scale.y;
 
 		ImGui::Text("Hello Computer Graphics!");
 		ImGui::SliderAngle("Rotation", &player->rotation.y);
 		ImGui::SliderFloat("Rotation", &player->rotation.y, 0, 10);
+		ImGui::SliderFloat("Scale", &scale, 0.5f, 50.0f);
 
 		if (ImGui::Button("Hi")) {
 			player->rotation.y += 0.1f;
@@ -229,6 +248,8 @@ void updateImGuiWindow()
 
 		// Player position set to slider pos.
 		player->position = glm::vec3(translation[0], translation[1], translation[2]);
+
+		player->scale = glm::vec3(scale);
 
 
 		static bool rotateCheck = false;
@@ -250,6 +271,6 @@ void updateImGuiWindow()
 }
 
 void drawImGuiWindow() {
-	ImGui::Render(); 
+	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

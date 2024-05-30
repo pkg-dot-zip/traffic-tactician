@@ -224,6 +224,7 @@
     <ClCompile Include="lib\imgui-docking\imgui_tables.cpp" />
     <ClCompile Include="lib\imgui-docking\imgui_widgets.cpp" />
     <ClCompile Include="log.cpp" />
+    <ClCompile Include="ModelComponent.cpp" />
     <ClCompile Include="main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='PoseDetectionRelease|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -231,7 +232,9 @@
     <ClCompile Include="poseEstimation.cpp" />
     <ClCompile Include="poseRetriever.cpp" />
     <ClCompile Include="SpinComponent.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tigl.cpp" />
+    <ClCompile Include="WorldComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="components\BoundingBoxComponent.h" />
@@ -241,6 +244,7 @@
     <ClInclude Include="components\GameObject.h" />
     <ClInclude Include="components\PlayerComponent.h" />
     <ClInclude Include="easylogging++.h" />
+    <ClInclude Include="WorldComponent.h" />
     <ClInclude Include="json.h" />
     <ClInclude Include="keyPoint.h" />
     <ClInclude Include="lib\imgui-docking\backends\imgui_impl_opengl3.h" />
@@ -251,11 +255,13 @@
     <ClInclude Include="lib\imgui-docking\imstb_textedit.h" />
     <ClInclude Include="lib\imgui-docking\imstb_truetype.h" />
     <ClInclude Include="log.h" />
+    <ClInclude Include="ModelComponent.h" />
     <ClInclude Include="poseChecker.h" />
     <ClInclude Include="poseEstimation.h" />
     <ClInclude Include="poseRetriever.h" />
     <ClInclude Include="settingsFromJson.h" />
     <ClInclude Include="SpinComponent.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="tigl.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
