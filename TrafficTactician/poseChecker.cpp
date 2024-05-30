@@ -19,7 +19,7 @@
 float calculateDegreesOfElbowToWristLeft(std::map<std::string, std::vector<KeyPoint>>& map);
 float calculateDegreesOfElbowToWristRight(std::map<std::string, std::vector<KeyPoint>>& map);
 float calculateDegreesBetweenTwoPoints(std::map<std::string, std::vector<KeyPoint>>& map, const std::string& point1,
-	const std::string& point2);
+                                       const std::string& point2);
 
 PoseDirection getDirectionForArm(float angleInDegrees);
 PoseDirection getDirectionForArmLeft(std::map<std::string, std::vector<KeyPoint>>& map);
@@ -28,6 +28,8 @@ PoseDirection getDirectionForArmRight(std::map<std::string, std::vector<KeyPoint
 
 void printDirectionOfArms(std::map<std::string, std::vector<KeyPoint>>& map);
 
+std::string getPoseString(Pose pose);
+
 // Method used for debugging prints.
 void checkPoseForAll(std::map<std::string, std::vector<KeyPoint>>& map)
 {
@@ -35,13 +37,120 @@ void checkPoseForAll(std::map<std::string, std::vector<KeyPoint>>& map)
 	calculateDegreesOfElbowToWristRight(map);
 
 	printDirectionOfArms(map);
+
+	const Pose currentPose = getPose(map);
+	LOG(INFO) << "Current pose: " << getPoseString(currentPose) << std::endl;
 }
 
-#ifdef _TESTING_CONFIG
-UTEST(getDirectionString, directionStringReturnsLeft) {
-	ASSERT_EQ(getDirectionString(DIRECTION_LEFT), "LEFT");
+std::string getPoseString(const Pose pose)
+{
+	if (pose == POSE_MOVE_LEFT)
+	{
+		return "POSE_MOVE_LEFT";
+	}
+	else if (pose == POSE_MOVE_RIGHT)
+	{
+		return "POSE_MOVE_RIGHT";
+	}
+	else if (pose == POSE_MOVE_FORWARD)
+	{
+		return "POSE_MOVE_FORWARD";
+	}
+	else if (pose == POSE_STOP)
+	{
+		return "POSE_STOP";
+	}
+	else if (pose == POSE_OTHER)
+	{
+		return "POSE_OTHER";
+	}
+
+	throw "Can't convert invalid pose enum value to string!";
 }
-#endif
+
+// Checks if the right wrist is near the right shoulder.
+bool isRightWristNearShoulder(std::map<std::string, std::vector<KeyPoint>>& map)
+{
+	if (map["R-Wr"].empty() || map["R-Sho"].empty())
+	{
+		LOG(INFO) << "Couldn't find anything for right wrist or couldn't find anything for right shoulder. Returning." << std::endl;
+		return false;
+	}
+
+	constexpr float toleranceWristNearShouldDistanceX = 30.0F;
+	constexpr float toleranceWristNearShouldDistanceY = 60.0F;
+
+	constexpr float smallToleranceShoulderLeftAndDown = 5.0F;
+
+	const float wristX = map["R-Wr"][0].point.x;
+	const float wristY = map["R-Wr"][0].point.y;
+
+	const float shoulderX = map["R-Sho"][0].point.x;
+	const float shoulderY = map["R-Sho"][0].point.y;
+
+	const bool boolX = wristX <= shoulderX + smallToleranceShoulderLeftAndDown && wristX >= shoulderX - toleranceWristNearShouldDistanceX;
+	const bool boolY = wristY <= shoulderY + smallToleranceShoulderLeftAndDown && wristY >= shoulderY - toleranceWristNearShouldDistanceY;
+
+	// LOG(INFO) << "Wrist Pos: (" << wristX << ", " << wristY << ")" << std::endl;
+	// LOG(INFO) << "Shoulder Pos: (" << shoulderX << ", " << shoulderY << ")" << std::endl;
+	// LOG(INFO) << "BOOL X TRUE: " << boolX << std::endl;
+	// LOG(INFO) << "BOOL Y TRUE: " << boolX << std::endl;
+	return boolX && boolY;
+}
+
+// Checks if person is standing oriented towards the camera or sideways. Returns true if standing oriented towards the camera.
+bool isStandingTowardsCamera(std::map<std::string, std::vector<KeyPoint>>& map)
+{
+	if (map["L-Sho"].empty() || map["R-Sho"].empty()) return false;
+
+	constexpr float orientationXTolerance = 20.0F;
+
+	const float LshoulderX = map["L-Sho"][0].point.x;
+	const float RshoulderX = map["R-Sho"][0].point.x;
+
+	return !(RshoulderX < LshoulderX + orientationXTolerance && RshoulderX > LshoulderX - orientationXTolerance);
+}
+
+Pose getPose(std::map<std::string, std::vector<KeyPoint>>& map)
+{
+	const PoseDirection leftArmDirection = getDirectionForArmLeft(map);
+	const PoseDirection rightArmDirection = getDirectionForArmRight(map);
+
+	const float heightDifferenceElbowLeft = calculateDifferenceInHeightBetweenShoulderAndWristLeft(map);
+	const float heightDifferenceElbowRight = calculateDifferenceInHeightBetweenShoulderAndWristRight(map);
+
+	constexpr float heightElbowTolerance = settings.heightElbowTolerance;
+
+	LOG(INFO) << "Height dif left " << heightDifferenceElbowLeft << std::endl;
+	LOG(INFO) << "Height dif right " << heightDifferenceElbowRight << std::endl;
+
+	if (leftArmDirection == DIRECTION_LEFT && (rightArmDirection == DIRECTION_DOWN || rightArmDirection ==
+		DIRECTION_UNCLEAR) && heightDifferenceElbowLeft >= 0 - heightElbowTolerance && heightDifferenceElbowLeft <= heightElbowTolerance)
+	{
+		return POSE_MOVE_LEFT;
+	}
+
+	if (rightArmDirection == DIRECTION_RIGHT && (leftArmDirection == DIRECTION_DOWN || leftArmDirection ==
+		DIRECTION_UNCLEAR) && heightDifferenceElbowRight >= 0 - heightElbowTolerance && heightDifferenceElbowRight <= heightElbowTolerance)
+	{
+		return POSE_MOVE_RIGHT;
+	}
+
+	if (isRightWristNearShoulder(map) && (leftArmDirection == DIRECTION_DOWN || leftArmDirection ==
+		DIRECTION_UNCLEAR))
+	{
+		return POSE_STOP;
+	}
+
+	if (!isStandingTowardsCamera(map) && (leftArmDirection == DIRECTION_DOWN || leftArmDirection ==
+		DIRECTION_UNCLEAR) && (rightArmDirection == DIRECTION_DOWN || rightArmDirection ==
+			DIRECTION_UNCLEAR))
+	{
+		return POSE_MOVE_FORWARD;
+	}
+
+	return POSE_OTHER;
+}
 
 std::string getDirectionString(const PoseDirection pose_direction)
 {
@@ -105,9 +214,28 @@ void printDirectionOfArms(std::map<std::string, std::vector<KeyPoint>>& map)
 	}
 }
 
+float calculateDifferenceInHeightBetweenShoulderAndWristLeft(std::map<std::string, std::vector<KeyPoint>>& map)
+{
+	return calculateDifferenceInHeightBetweenTwoPoints(map, "L-Sho", "L-Wr");
+}
+
+float calculateDifferenceInHeightBetweenShoulderAndWristRight(std::map<std::string, std::vector<KeyPoint>>& map)
+{
+	return calculateDifferenceInHeightBetweenTwoPoints(map, "R-Sho", "R-Wr");
+}
+
+// Returns the difference in height between two points. Returns NAN if the two points couldn't be found.
+float calculateDifferenceInHeightBetweenTwoPoints(std::map<std::string, std::vector<KeyPoint>>& map,
+                                                  const std::string& point1,
+                                                  const std::string& point2)
+{
+	if (map[point1].empty() || map[point2].empty()) return NAN;
+	return map[point1][0].point.y - map[point2][0].point.y;
+}
+
 // Returns the angle between two points in degrees (NOT RADIANS!). Returns NAN if the two points couldn't be found.
 float calculateDegreesBetweenTwoPoints(std::map<std::string, std::vector<KeyPoint>>& map, const std::string& point1,
-	const std::string& point2)
+                                       const std::string& point2)
 {
 	if (map[point1].empty() || map[point2].empty()) return NAN;
 
@@ -142,6 +270,8 @@ PoseDirection getDirectionForArmRight(std::map<std::string, std::vector<KeyPoint
 
 PoseDirection getDirectionForArm(const float angleInDegrees)
 {
+	if (angleInDegrees == NAN) return DIRECTION_UNCLEAR;
+
 	constexpr float tolerance = settings.tolerance; // Tolerance in degrees.
 
 	if (angleInDegrees < (90.0F + tolerance) && angleInDegrees > (90.0F - tolerance))

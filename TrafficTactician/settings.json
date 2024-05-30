@@ -17,5 +17,6 @@
 	"blurKSize": 3,
 	"blurSigmaX": 0,
 	"blurSigmaY": 0,
-	"useColorsForPose": true
+	"useColorsForPose": true,
+	"heightElbowTolerance": 40.0
 }

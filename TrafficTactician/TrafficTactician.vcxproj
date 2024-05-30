@@ -288,6 +288,7 @@
     <ClCompile Include="poseChecker.cpp" />
     <ClCompile Include="poseEstimation.cpp" />
     <ClCompile Include="poseRetriever.cpp" />
+    <ClCompile Include="PoseUnitTests.cpp" />
     <ClCompile Include="SpinComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tigl.cpp" />
