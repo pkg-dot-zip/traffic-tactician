@@ -9,7 +9,6 @@ struct settings_0_t {
   double downscaleFactor;
   double heightElbowTolerance;
   std::uint64_t nInterpSamples;
-  std::string_view openCVWindowName;
   double pafScoreTh;
   std::string_view preferredDevice;
   std::string_view prototxt;
@@ -18,7 +17,6 @@ struct settings_0_t {
   double upscaleFactor;
   bool useColorsForPose;
   bool useRealTimePriority;
-  std::uint64_t waitKeyDelayOpenCV;
 };
 
 constexpr settings_0_t settings = {
@@ -32,7 +30,6 @@ constexpr settings_0_t settings = {
   .downscaleFactor = 0.400000, 
   .heightElbowTolerance = 40.000000, 
   .nInterpSamples = 10, 
-  .openCVWindowName = R"##(Detected Pose)##", 
   .pafScoreTh = 0.100000, 
   .preferredDevice = R"##(cpu)##", 
   .prototxt = R"##(./pose/coco/pose_deploy_linevec.prototxt)##", 
@@ -41,5 +38,4 @@ constexpr settings_0_t settings = {
   .upscaleFactor = 4.000000, 
   .useColorsForPose = true, 
   .useRealTimePriority = false, 
-  .waitKeyDelayOpenCV = 1, 
 };

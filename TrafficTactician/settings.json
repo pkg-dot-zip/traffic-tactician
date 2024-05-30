@@ -12,8 +12,6 @@
 	"confTh": 0.7,
 	"spatialSizeFactor": 100,
 	"confidenceMapThreshold": 0.1,
-	"waitKeyDelayOpenCV": 1,
-	"openCVWindowName": "Detected Pose",
 	"blurKSize": 3,
 	"blurSigmaX": 0,
 	"blurSigmaY": 0,

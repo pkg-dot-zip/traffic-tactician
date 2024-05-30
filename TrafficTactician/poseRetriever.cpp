@@ -129,14 +129,14 @@ int runPoseRetriever()
 		cv::Mat outputFrame;
 		camera.read(inputFrame); // Get camera frame and put it into valid matrix.
 
-		std::map<std::string, std::vector<KeyPoint>>& keyPointsToUseInCalculation = getPoseEstimationKeyPointsMap(
+		std::map<std::string, std::vector<KeyPoint>>& keyPoints = getPoseEstimationKeyPointsMap(
 			inputFrame, outputFrame, inputNet);
 
-		displayCurrentPose(outputFrame, keyPointsToUseInCalculation);
-		displayCurrentOrientation(outputFrame, keyPointsToUseInCalculation);
+		displayCurrentPose(outputFrame, keyPoints);
+		displayCurrentOrientation(outputFrame, keyPoints);
 
-		cv::imshow(std::string(settings.openCVWindowName), outputFrame);
-		cv::waitKey(settings.waitKeyDelayOpenCV);
+		cv::imshow("Detected Pose", outputFrame);
+		cv::waitKey(1);
 
 		clearPoseEstimationKeyPointsMap(); // DON'T FORGET TO CLEAR MAP; THIS LINE IS IMPORTANT!
 	}
