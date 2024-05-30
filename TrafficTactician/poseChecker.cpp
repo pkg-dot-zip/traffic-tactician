@@ -98,6 +98,19 @@ bool isRightWristNearShoulder(std::map<std::string, std::vector<KeyPoint>>& map)
 	return boolX && boolY;
 }
 
+// Checks if person is standing oriented towards the camera or sideways. Returns true if standing oriented towards the camera.
+bool isStandingTowardsCamera(std::map<std::string, std::vector<KeyPoint>>& map)
+{
+	if (map["L-Sho"].empty() || map["R-Sho"].empty()) return false;
+
+	constexpr float orientationXTolerance = 20.0F;
+
+	const float LshoulderX = map["L-Sho"][0].point.x;
+	const float RshoulderX = map["R-Sho"][0].point.x;
+
+	return RshoulderX < LshoulderX + orientationXTolerance && RshoulderX > LshoulderX - orientationXTolerance;
+}
+
 Pose getPose(std::map<std::string, std::vector<KeyPoint>>& map)
 {
 	const PoseDirection leftArmDirection = getDirectionForArmLeft(map);
@@ -126,12 +139,12 @@ Pose getPose(std::map<std::string, std::vector<KeyPoint>>& map)
 	if (isRightWristNearShoulder(map) && (leftArmDirection == DIRECTION_DOWN || leftArmDirection ==
 		DIRECTION_UNCLEAR))
 	{
-		return POSE_STOP; // TODO: Fix. Not working right now.
+		return POSE_STOP;
 	}
 
-	if ((leftArmDirection == DIRECTION_DOWN || leftArmDirection ==
+	if (!isStandingTowardsCamera(map) && (leftArmDirection == DIRECTION_DOWN || leftArmDirection ==
 		DIRECTION_UNCLEAR) && (rightArmDirection == DIRECTION_DOWN || rightArmDirection ==
-			DIRECTION_UNCLEAR)) // TODO:: Add hip pos check.
+			DIRECTION_UNCLEAR))
 	{
 		return POSE_MOVE_FORWARD;
 	}

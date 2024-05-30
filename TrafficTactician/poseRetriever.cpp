@@ -89,7 +89,7 @@ void displayCurrentPose(const cv::Mat& outputFrame, std::map<std::string, std::v
 {
 	const std::string poseString = getPoseString(getPose(map));
 
-	std::string baseString = "Current Pose is: ";
+	std::string baseString = "Current orientation is: ";
 
 	constexpr int offset = 40;
 	constexpr int fontFace = cv::FONT_HERSHEY_COMPLEX;
@@ -97,6 +97,20 @@ void displayCurrentPose(const cv::Mat& outputFrame, std::map<std::string, std::v
 	const cv::Scalar color = { 0, 0, 0, 0 };
 
 	cv::putText(outputFrame, baseString.append(poseString),
+		{ offset, outputFrame.rows - offset },
+		fontFace, fontScale, color);
+}
+
+void displayCurrentOrientation(const cv::Mat& outputFrame, std::map<std::string, std::vector<KeyPoint>>& map)
+{
+	std::string baseString = "Current Pose is: ";
+
+	constexpr int offset = 40;
+	constexpr int fontFace = cv::FONT_HERSHEY_COMPLEX;
+	constexpr double fontScale = 1.0;
+	const cv::Scalar color = { 0, 0, 0, 0 };
+
+	cv::putText(outputFrame, baseString.append(std::to_string(isStandingTowardsCamera(map))),
 		{ offset, offset },
 		fontFace, fontScale, color);
 }
@@ -124,6 +138,7 @@ int runPoseRetriever()
 
 		// displayArmDirections(outputFrame);
 		displayCurrentPose(outputFrame, keyPointsToUseInCalculation);
+		displayCurrentOrientation(outputFrame, keyPointsToUseInCalculation);
 
 		cv::imshow(std::string(settings.openCVWindowName), outputFrame);
 		cv::waitKey(settings.waitKeyDelayOpenCV);
