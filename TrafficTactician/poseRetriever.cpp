@@ -77,7 +77,7 @@ void displayCurrentPose(const cv::Mat& outputFrame, std::map<std::string, std::v
 	const cv::Scalar color = {0, 0, 0, 0};
 
 	cv::putText(outputFrame, baseString.append(poseString),
-	            {offset, outputFrame.rows - offset},
+	            {offset, settings.upscaleTargetHeight - offset},
 	            fontFace, fontScale, color);
 }
 

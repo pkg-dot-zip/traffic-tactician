@@ -15,7 +15,8 @@ struct settings_0_t {
   std::string_view prototxt;
   std::uint64_t spatialSizeFactor;
   double tolerance;
-  double upscaleFactor;
+  std::uint64_t upscaleTargetHeight;
+  std::uint64_t upscaleTargetWidth;
   bool useColorsForPose;
   bool useRealTimePriority;
 };
@@ -37,7 +38,8 @@ constexpr settings_0_t settings = {
   .prototxt = R"##(./pose/coco/pose_deploy_linevec.prototxt)##", 
   .spatialSizeFactor = 100, 
   .tolerance = 20.000000, 
-  .upscaleFactor = 4.000000, 
+  .upscaleTargetHeight = 768, 
+  .upscaleTargetWidth = 1024, 
   .useColorsForPose = true, 
-  .useRealTimePriority = false, 
+  .useRealTimePriority = true, 
 };
