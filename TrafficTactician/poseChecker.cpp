@@ -13,6 +13,7 @@
 #include "easylogging++.h"
 #include "keyPoint.h"
 #include "settingsFromJson.h"
+#include "utest.h"
 
 
 float calculateDegreesOfElbowToWristLeft(std::map<std::string, std::vector<KeyPoint>>& map);
@@ -35,6 +36,12 @@ void checkPoseForAll(std::map<std::string, std::vector<KeyPoint>>& map)
 
 	printDirectionOfArms(map);
 }
+
+#ifdef _TESTING_CONFIG
+UTEST(getDirectionString, directionStringReturnsLeft) {
+	ASSERT_EQ(getDirectionString(DIRECTION_LEFT), "LEFT");
+}
+#endif
 
 std::string getDirectionString(const PoseDirection pose_direction)
 {

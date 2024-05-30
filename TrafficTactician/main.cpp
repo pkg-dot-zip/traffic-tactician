@@ -14,6 +14,7 @@
 #include "CubeComponent.h"
 #include "ModelComponent.h"
 #include "SpinComponent.h"
+#include "utest.h"
 #include "WorldComponent.h"
 using tigl::Vertex;
 
@@ -25,6 +26,10 @@ using tigl::Vertex;
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "opengl32.lib")
+
+#ifdef _TESTING_CONFIG
+UTEST_MAIN();
+#endif
 
 INITIALIZE_EASYLOGGINGPP
 
@@ -52,6 +57,7 @@ double lastFrameTime = 0;
 std::list<std::shared_ptr<GameObject>> objects;
 std::shared_ptr<GameObject> player;
 
+#ifndef _TESTING_CONFIG
 int main(void)
 {
 	init();
@@ -74,6 +80,7 @@ int main(void)
 
 	return 0;
 }
+#endif
 
 void onDestroy()
 {
