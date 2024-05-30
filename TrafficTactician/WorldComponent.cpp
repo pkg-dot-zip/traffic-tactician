@@ -34,6 +34,6 @@ void WorldComponent::draw(glm::mat4 parentMatrix)
 		if (models[i] != nullptr)
 			models[i]->draw(modelMatrix);
 		else
-			LOG(INFO) << "NO MODEL FOUND";
+			LOG(INFO) << "NO MODEL FOUND" << std::endl;
 	}
 }

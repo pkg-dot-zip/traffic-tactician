@@ -20,7 +20,7 @@ void setupLogger()
 	                el::ConfigurationType::Format, "%datetime %level %msg");
 	// default logger uses default configurations
 	el::Loggers::reconfigureLogger("default", defaultConf);
-	LOG(INFO) << "Starting logging";
+	LOG(INFO) << "Starting logging" << std::endl;
 	// To set GLOBAL configurations you may use
 	defaultConf.setGlobally(
 		el::ConfigurationType::Format, "%date %msg");

@@ -84,7 +84,7 @@ static inline std::string cleanLine(std::string line)
 */
 ModelComponent::ModelComponent(const std::string& fileName)
 {
-	LOG(INFO) << "Loading " << fileName;
+	LOG(INFO) << "Loading " << fileName << std::endl;
 	std::string dirName = fileName;
 	if (dirName.rfind("/") != std::string::npos)
 		dirName = dirName.substr(0, dirName.rfind("/"));
@@ -98,7 +98,7 @@ ModelComponent::ModelComponent(const std::string& fileName)
 
 	if (!pFile.is_open())
 	{
-		LOG(INFO) << "Could not open file " << fileName;
+		LOG(INFO) << "Could not open file " << fileName << std::endl;
 		return;
 	}
 
@@ -173,7 +173,7 @@ ModelComponent::ModelComponent(const std::string& fileName)
 				}
 			}
 			if (currentGroup->materialIndex == -1)
-				LOG(INFO) << "Could not find material name " << params[1];
+				LOG(INFO) << "Could not find material name " << params[1] << std::endl;
 		}
 	}
 	groups.push_back(currentGroup);
@@ -218,11 +218,11 @@ void ModelComponent::draw(glm::mat4 parentMatrix)
 
 void ModelComponent::loadMaterialFile(const std::string& fileName, const std::string& dirName)
 {
-	LOG(INFO) << "Loading " << fileName;
+	LOG(INFO) << "Loading " << fileName << std::endl;
 	std::ifstream pFile(fileName.c_str());
 	if (!pFile.is_open())
 	{
-		LOG(INFO) << "Could not open file " << fileName;
+		LOG(INFO) << "Could not open file " << fileName << std::endl;
 		return;
 	}
 
@@ -294,7 +294,7 @@ void ModelComponent::loadMaterialFile(const std::string& fileName, const std::st
 			//these values are usually not used for rendering at this time, so ignore them
 		}
 		else
-			LOG(INFO) << "Didn't parse " << params[0] << " in material file";
+			LOG(INFO) << "Didn't parse " << params[0] << " in material file" << std::endl;
 	}
 	if (currentMaterial != NULL)
 		materials.push_back(currentMaterial);

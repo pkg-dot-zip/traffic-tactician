@@ -18,7 +18,7 @@ Texture::Texture(const std::string& fileName)
 		exit(0);
 	}
 
-	LOG(INFO) << "Loaded texture " << fileName.c_str();
+	LOG(INFO) << "Loaded texture " << fileName.c_str() << std::endl;
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
