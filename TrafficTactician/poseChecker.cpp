@@ -44,28 +44,21 @@ void checkPoseForAll(std::map<std::string, std::vector<KeyPoint>>& map)
 
 std::string getPoseString(const Pose pose)
 {
-	if (pose == POSE_MOVE_LEFT)
+	switch (pose)
 	{
+	case POSE_MOVE_LEFT:
 		return "POSE_MOVE_LEFT";
-	}
-	else if (pose == POSE_MOVE_RIGHT)
-	{
+	case POSE_MOVE_RIGHT:
 		return "POSE_MOVE_RIGHT";
-	}
-	else if (pose == POSE_MOVE_FORWARD)
-	{
+	case POSE_MOVE_FORWARD:
 		return "POSE_MOVE_FORWARD";
-	}
-	else if (pose == POSE_STOP)
-	{
+	case POSE_STOP:
 		return "POSE_STOP";
-	}
-	else if (pose == POSE_OTHER)
-	{
+	case POSE_OTHER:
 		return "POSE_OTHER";
+	default: 
+		throw "Unhandled enum state for Pose -> Can't convert unhandled pose to string";
 	}
-
-	throw "Can't convert invalid pose enum value to string!";
 }
 
 // Checks if the right wrist is near the right shoulder.
