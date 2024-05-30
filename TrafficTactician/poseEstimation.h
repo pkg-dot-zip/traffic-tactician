@@ -4,7 +4,7 @@
 
 #include "keyPoint.h"
 
-std::map<std::string, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap(cv::Mat& input,
+std::map<std::string_view, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap(cv::Mat& input,
                                                                             cv::Mat& outputFrame,
                                                                             cv::dnn::Net& inputNet);
 

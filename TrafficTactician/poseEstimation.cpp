@@ -21,6 +21,7 @@
 
 #include "easylogging++.h"
 #include "keyPoint.h"
+#include "KeypointLocationStrings.h"
 #include "poseChecker.h"
 #include "settingsFromJson.h"
 
@@ -86,13 +87,13 @@ std::ostream& operator <<(std::ostream& os, const std::set<T>& v)
 
 constexpr int nPoints = 18;
 
-const std::string keypointsMapping[] = {
-	"Nose", "Neck",
-	"R-Sho", "R-Elb", "R-Wr",
-	"L-Sho", "L-Elb", "L-Wr",
-	"R-Hip", "R-Knee", "R-Ank",
-	"L-Hip", "L-Knee", "L-Ank",
-	"R-Eye", "L-Eye", "R-Ear", "L-Ear"
+const std::string_view keypointsMapping[] = {
+	pose_keypoint_nose, pose_keypoint_neck,
+	pose_keypoint_shoulder_right, pose_keypoint_elbow_right, pose_keypoint_wrist_right,
+pose_keypoint_shoulder_left, pose_keypoint_elbow_left, pose_keypoint_wrist_left,
+pose_keypoint_hip_right, pose_keypoint_knee_right, pose_keypoint_ankle_right,
+pose_keypoint_hip_left, pose_keypoint_knee_left, pose_keypoint_ankle_left,
+pose_keypoint_eye_right, pose_keypoint_eye_left, pose_keypoint_ear_right, pose_keypoint_ear_left
 };
 
 const std::vector<std::pair<int, int>> mapIdx = {
@@ -356,7 +357,7 @@ constexpr int spatialSizeFactor = settings.spatialSizeFactor;
 // Typically larger, we however don't need good accuracy at all and will probably not go over 200.
 
 // TODO: Look into usage if UMAT & MATEXPR to see if we can optimize this further. -> Benchmark.
-void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsToUseInCalculation, cv::Mat& input,
+void getCalculatedPose(std::map<std::string_view, std::vector<KeyPoint>>& keyPointsToUseInCalculation, cv::Mat& input,
                        cv::Mat& outputFrame, cv::dnn::Net& inputNet)
 {
 	if (!keyPointsToUseInCalculation.empty()) throw std::exception("Map to save points in is not empty.");
@@ -365,13 +366,12 @@ void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsTo
 	// 1. https://pyimagesearch.com/2017/11/06/deep-learning-opencvs-blobfromimage-works/
 	// 2. https://docs.opencv.org/3.4/d6/d0f/group__dnn.html#ga33d1b39b53a891e98a654fdeabba22eb
 	constexpr double scaleFactor = 1.0 / 255.0;
-	const int spatialSizeWidth = spatialSizeFactor * input.cols / input.rows;
-	// TODO: We know webcam res. Hardcode this & put in setings.json so we can constexpr everywhere. NOT JUST HERE. WE USE .cols AND .rows EVERYWHERE!
+	constexpr int spatialSizeWidth = spatialSizeFactor * settings.downscaleTargetWidth / settings.downscaleTargetHeight;
 	constexpr int spatialSizeHeight = spatialSizeFactor;
 	const auto mean = cv::Scalar(0, 0, 0);
 
 	cv::Mat inputBlob = cv::dnn::blobFromImage(input, scaleFactor,
-	                                           cv::Size(spatialSizeWidth, spatialSizeHeight),
+	                                           {spatialSizeWidth, spatialSizeHeight},
 	                                           mean, false, false);
 
 	inputNet.setInput(inputBlob);
@@ -379,7 +379,8 @@ void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsTo
 	cv::Mat netOutputBlob = inputNet.forward();
 
 	std::vector<cv::Mat> netOutputParts;
-	splitNetOutputBlobToParts(netOutputBlob, cv::Size(input.cols, input.rows), netOutputParts);
+	splitNetOutputBlobToParts(netOutputBlob, {settings.downscaleTargetWidth, settings.downscaleTargetHeight},
+	                          netOutputParts);
 
 
 	int keyPointId = 0;
@@ -392,7 +393,7 @@ void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsTo
 
 		getKeyPoints(netOutputParts[i], settings.confidenceMapThreshold, keyPoints);
 
-		LOG(INFO) << "Keypoints - " << keypointsMapping[i] << " : " << keyPoints << std::endl;
+		// LOG(INFO) << "Keypoints - " << keypointsMapping[i] << " : " << keyPoints << std::endl;
 
 		keyPointsToUseInCalculation.insert(std::make_pair(keypointsMapping[i], keyPoints));
 
@@ -454,12 +455,17 @@ void getCalculatedPose(std::map<std::string, std::vector<KeyPoint>>& keyPointsTo
 }
 
 // Methods under here are allowed to be called by other files.
-std::map<std::string, std::vector<KeyPoint>> poseEstimationKeyPoints;
+std::map<std::string_view, std::vector<KeyPoint>> poseEstimationKeyPoints;
 
-std::map<std::string, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap(cv::Mat& input,
+std::map<std::string_view, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap(cv::Mat& input,
                                                                             cv::Mat& outputFrame,
                                                                             cv::dnn::Net& inputNet)
 {
+	// First we downscale the image.
+	cv::resize(input, input, {settings.downscaleTargetWidth, settings.downscaleTargetHeight}, 0, 0, cv::INTER_AREA);
+	// INTER_AREA is better than the default (INTER_LINEAR) for camera views, according to a Stackoverflow user. TODO: CHECK IF THIS IS TRUE.
+
+	// Then we retrieve the estimationpoints.
 	const int64 timeStart = cv::getTickCount();
 	getCalculatedPose(poseEstimationKeyPoints, input, outputFrame, inputNet);
 	const int64 timeEnd = cv::getTickCount();
@@ -468,11 +474,16 @@ std::map<std::string, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap(cv::
 
 	LOG(INFO) << "Time it took to retrieve the poseEstimationKeyPoints: " << time << std::endl;
 
+	// Then we upscale and flip.  We flip the mat here so that our cam view looks more natural; it confuses the user to see his left arm on the right side of his screen.
+	cv::resize(outputFrame, outputFrame, {settings.upscaleTargetWidth, settings.upscaleTargetHeight});
+	cv::flip(outputFrame, outputFrame, 1);
+		
 	return poseEstimationKeyPoints;
 }
 
+
+// Clears the keypoints map.
 void clearPoseEstimationKeyPointsMap()
 {
 	poseEstimationKeyPoints.clear();
-	LOG(INFO) << "Cleared the poseEstimationKeyPoints map!" << std::endl;
 }

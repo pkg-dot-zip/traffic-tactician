@@ -17,6 +17,12 @@ using tigl::Vertex;
 #include "GameObject.h"
 #include "PlayerComponent.h"
 #include <glm/gtx/string_cast.hpp>
+#include "CubeComponent.h"
+#include "ModelComponent.h"
+#include "SpinComponent.h"
+#include "utest.h"
+#include "WorldComponent.h"
+using tigl::Vertex;
 
 
 
@@ -29,6 +35,10 @@ using tigl::Vertex;
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "opengl32.lib")
+
+#ifdef _TESTING_CONFIG
+UTEST_MAIN();
+#endif
 
 INITIALIZE_EASYLOGGINGPP
 
@@ -53,6 +63,7 @@ void resize(GLFWwindow*, int w, int h)
 	height = h;
 }
 
+#ifndef _TESTING_CONFIG
 int main(void)
 {
 	setupLogger(); // MUST go first before any log entries are submitted.
@@ -90,6 +101,7 @@ int main(void)
 
 	return 0;
 }
+#endif
 
 void initImGui()
 {

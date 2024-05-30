@@ -28,6 +28,9 @@
     <Filter Include="Header Files\poseDetection">
       <UniqueIdentifier>{a525fee6-60aa-4a7e-8400-55f398d84cc3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\poseDetection\unitTests">
+      <UniqueIdentifier>{461f79be-b02d-478f-9764-9d0ddf333d01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tigl.cpp">
@@ -119,6 +122,18 @@
     </ClCompile>
     <ClCompile Include="Simulation.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PoseUnitTests.cpp">
+      <Filter>Source Files\poseDetection\unitTests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

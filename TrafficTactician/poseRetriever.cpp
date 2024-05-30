@@ -17,36 +17,31 @@
 #include "poseEstimation.h"
 #include "settingsFromJson.h"
 
-constexpr bool useRealTimePriority = settings.useRealTimePriority;
+
+bool isPoseEstimationEnabled = true;
 
 // This forces higher priority on your windows system. You can check this in task manager -> details.
 static void doExternalOptimizations()
 {
-	SetThreadPriority(GetCurrentThread(), useRealTimePriority ? REALTIME_PRIORITY_CLASS : HIGH_PRIORITY_CLASS);
-	SetPriorityClass(GetCurrentProcess(), useRealTimePriority ? REALTIME_PRIORITY_CLASS : HIGH_PRIORITY_CLASS);
+	SetThreadPriority(GetCurrentThread(), settings.useRealTimePriority ? REALTIME_PRIORITY_CLASS : HIGH_PRIORITY_CLASS);
+	SetPriorityClass(GetCurrentProcess(), settings.useRealTimePriority ? REALTIME_PRIORITY_CLASS : HIGH_PRIORITY_CLASS);
 }
 
-constexpr int cameraToUse = settings.cameraToUse;
-auto camera = cv::VideoCapture(cameraToUse);
-
-static void updateFromCamera(cv::Mat& input)
+// Attempts to initialize the camera, then returns true if cameraCapture was successfully opened.
+static bool initCamera(cv::VideoCapture& camera)
 {
-	camera.read(input);
+	camera = cv::VideoCapture(settings.cameraToUse);
+	return camera.isOpened();
 }
-
-PoseDirection leftArmDirection = DIRECTION_UNCLEAR;
-PoseDirection rightArmDirection = DIRECTION_UNCLEAR;
-
-constexpr std::string_view preferred_device = settings.preferredDevice;
 
 static void setCpuOrGpu(cv::dnn::Net& inputNet)
 {
-	if (preferred_device == "cpu")
+	if (settings.preferredDevice == "cpu")
 	{
 		LOG(INFO) << "Attempting to use CPU device!" << std::endl;
 		inputNet.setPreferableBackend(cv::dnn::DNN_TARGET_CPU);
 	}
-	else if (preferred_device == "gpu") // NOTE: Required custom OpenCV built with CUDA sdk.
+	else if (settings.preferredDevice == "gpu") // NOTE: Requires custom OpenCV built with CUDA sdk.
 	{
 		LOG(INFO) << "Attempting to use GPU device!" << std::endl;
 		inputNet.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
@@ -54,73 +49,94 @@ static void setCpuOrGpu(cv::dnn::Net& inputNet)
 	}
 }
 
-static void loadDnnModel(cv::dnn::Net& inputNet)
+// Attempts to load the DNN model, then returns true if it was successful.
+bool loadDnnModel(cv::dnn::Net& inputNet)
 {
-	inputNet = cv::dnn::readNetFromCaffe(static_cast<std::string>(settings.prototxt), static_cast<std::string>(settings.caffemodel));
+	try
+	{
+		inputNet = cv::dnn::readNetFromCaffe(static_cast<std::string>(settings.prototxt),
+		                                     static_cast<std::string>(settings.caffemodel));
+	}
+	catch (cv::Exception e)
+	{
+		return false;
+	}
+
+	return true;
 }
 
-static void displayArmDirections(cv::Mat& outputFrame)
+void displayCurrentPose(const cv::Mat& outputFrame, std::map<std::string_view, std::vector<KeyPoint>>& map)
 {
-	const std::string leftArmDirectionString = getDirectionString(leftArmDirection);
-	const std::string rightArmDirectionString = getDirectionString(rightArmDirection);
+	const std::string poseString = getPoseString(getPose(map));
 
-	std::string leftArmDirectionDisplayString = "Left arm Direction is ";
-	std::string rightArmDirectionDisplayString = "Right arm Direction is ";
+	std::string baseString = "Current orientation is: ";
 
 	constexpr int offset = 40;
 	constexpr int fontFace = cv::FONT_HERSHEY_COMPLEX;
 	constexpr double fontScale = 1.0;
 	const cv::Scalar color = {0, 0, 0, 0};
 
-	cv::putText(outputFrame, leftArmDirectionDisplayString.append(leftArmDirectionString),
-	            {offset, outputFrame.rows - offset},
-	            fontFace, fontScale, color);
-	cv::putText(outputFrame, rightArmDirectionDisplayString.append(rightArmDirectionString), {offset, offset},
+	cv::putText(outputFrame, baseString.append(poseString),
+	            {offset, settings.upscaleTargetHeight - offset},
 	            fontFace, fontScale, color);
 }
 
-// Decides whether to stop the thread or continue working.
-static bool shouldRun()
+void displayCurrentOrientation(const cv::Mat& outputFrame, std::map<std::string_view, std::vector<KeyPoint>>& map)
 {
-	return true;
-}
+	std::string baseString = "Current Pose is: ";
 
-constexpr double upscaleFactor = settings.upscaleFactor;
-constexpr double downscaleFactor = settings.downscaleFactor;
+	constexpr int offset = 40;
+	constexpr int fontFace = cv::FONT_HERSHEY_COMPLEX;
+	constexpr double fontScale = 1.0;
+	const cv::Scalar color = {0, 0, 0, 0};
+
+	cv::putText(outputFrame, baseString.append(std::to_string(isPersonFacingFront(map))),
+	            {offset, offset},
+	            fontFace, fontScale, color);
+}
 
 // Start the thread for pose estimation. 
 int runPoseRetriever()
 {
 	doExternalOptimizations();
 
-	cv::Mat input;
+	// Try to initialize the camera. If it fails, we return and never touch anything related to the camera and/or pose estimation for the remainder of this process.
+	cv::VideoCapture camera;
+	if (!initCamera(camera))
+	{
+		LOG(INFO) << "Could not initialize camera. Will continue without pose estimation." << std::endl;
+		isPoseEstimationEnabled = false;
+		return 0;
+	}
+
+	// Then we try to load the model. If it fails, we return and never touch anything related to the camera and/or pose estimation for the remainder of this process.
 	cv::dnn::Net inputNet;
-	loadDnnModel(inputNet);
+
+	if (!loadDnnModel(inputNet))
+	{
+		LOG(INFO) << "Could not initialize dnn model. Will continue without pose estimation." << std::endl;
+		LOG(INFO) << "Did you check whether the models are in right directory? (./pose/coco/...)." << std::endl;
+		isPoseEstimationEnabled = false;
+		return 0;
+	}
+
 	setCpuOrGpu(inputNet);
 
-	while (shouldRun())
+	// Main loop.
+	while (true)
 	{
-		updateFromCamera(input);
-		cv::resize(input, input, cv::Size(), downscaleFactor, downscaleFactor, cv::INTER_AREA);
-		// INTER_AREA is better than the default (INTER_LINEAR) for camera views, according to a Stackoverflow user. TODO: CHECK IF THIS IS TRUE.
-		LOG(INFO) << "AFTER DOWNSCALING - Width: " << input.rows << " | Height: " << input.cols << std::endl;
+		cv::Mat inputFrame;
 		cv::Mat outputFrame;
+		camera.read(inputFrame); // Get camera frame and put it into valid matrix.
 
-		std::map<std::string, std::vector<KeyPoint>>& keyPointsToUseInCalculation = getPoseEstimationKeyPointsMap(
-			input, outputFrame, inputNet);
+		std::map<std::string_view, std::vector<KeyPoint>>& keyPoints = getPoseEstimationKeyPointsMap(
+			inputFrame, outputFrame, inputNet);
 
+		displayCurrentPose(outputFrame, keyPoints);
+		displayCurrentOrientation(outputFrame, keyPoints);
 
-		leftArmDirection = getDirectionForArmLeft(keyPointsToUseInCalculation);
-		rightArmDirection = getDirectionForArmRight(keyPointsToUseInCalculation);
-
-		cv::resize(outputFrame, outputFrame, cv::Size(), upscaleFactor, upscaleFactor);
-		cv::flip(outputFrame, outputFrame, 1);
-		// We flip the mat here so that our cam view looks more natural; it confuses the user to see his left arm on the right side of his screen.
-
-		displayArmDirections(outputFrame);
-
-		cv::imshow(std::string(settings.openCVWindowName), outputFrame);
-		cv::waitKey(settings.waitKeyDelayOpenCV);
+		cv::imshow("Detected Pose", outputFrame);
+		cv::waitKey(1);
 
 		clearPoseEstimationKeyPointsMap(); // DON'T FORGET TO CLEAR MAP; THIS LINE IS IMPORTANT!
 	}
