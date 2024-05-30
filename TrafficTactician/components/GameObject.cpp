@@ -40,8 +40,7 @@ void GameObject::draw(const glm::mat4& parentMatrix)
 	modelMatrix = glm::rotate(modelMatrix, rotation.z, glm::vec3(0, 0, 1));
 	modelMatrix = glm::scale(modelMatrix, scale);
 
-	tigl::shader->setModelMatrix(modelMatrix);
-	drawComponent->draw();
+	drawComponent->draw(modelMatrix);
 }
 
 void GameObject::update(float deltaTime)

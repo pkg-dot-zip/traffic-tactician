@@ -37,7 +37,7 @@ constexpr settings_0_t settings = {
   .spatialSizeFactor = 100, 
   .tolerance = 20.000000, 
   .upscaleFactor = 4.000000, 
-  .useColorsForPose = false, 
+  .useColorsForPose = true, 
   .useRealTimePriority = false, 
   .waitKeyDelayOpenCV = 1, 
 };
