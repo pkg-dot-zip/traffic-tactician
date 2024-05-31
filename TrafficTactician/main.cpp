@@ -151,6 +151,7 @@ void init()
 
 
 	initKeyCallback(window);
+	initCameraInput();
 }
 
 void updateImGui()
