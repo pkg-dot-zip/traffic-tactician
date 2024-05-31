@@ -12,6 +12,7 @@
 #include<set>
 #include<cmath>
 
+#include "InputHandler.h"
 #include "keyPoint.h"
 #include "poseChecker.h"
 #include "poseEstimation.h"
@@ -111,7 +112,7 @@ int runPoseRetriever()
 
 	// Then we try to load the model. If it fails, we return and never touch anything related to the camera and/or pose estimation for the remainder of this process.
 	cv::dnn::Net inputNet;
-
+	
 	if (!loadDnnModel(inputNet))
 	{
 		LOG(INFO) << "Could not initialize dnn model. Will continue without pose estimation." << std::endl;
@@ -123,21 +124,24 @@ int runPoseRetriever()
 	setCpuOrGpu(inputNet);
 
 	// Main loop.
-	while (true)
+	while (isPoseEstimationEnabled)
 	{
 		cv::Mat inputFrame;
 		cv::Mat outputFrame;
 		camera.read(inputFrame); // Get camera frame and put it into valid matrix.
-
+	
 		std::map<std::string_view, std::vector<KeyPoint>>& keyPoints = getPoseEstimationKeyPointsMap(
 			inputFrame, outputFrame, inputNet);
-
-		displayCurrentPose(outputFrame, keyPoints);
-		displayCurrentOrientation(outputFrame, keyPoints);
-
-		cv::imshow("Detected Pose", outputFrame);
+	
+	
+		// displayCurrentPose(outputFrame, keyPoints);
+		// displayCurrentOrientation(outputFrame, keyPoints);
+		//
+		// cv::imshow("Detected Pose", outputFrame);
 		cv::waitKey(1);
-
+	
+		setInputPose(getPose(keyPoints));
+	
 		clearPoseEstimationKeyPointsMap(); // DON'T FORGET TO CLEAR MAP; THIS LINE IS IMPORTANT!
 	}
 

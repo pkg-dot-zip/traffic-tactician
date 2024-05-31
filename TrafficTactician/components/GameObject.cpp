@@ -1,10 +1,16 @@
 #include "GameObject.h"
+#include "Simulation.h"
 #include "DrawComponent.h"
 #include "tigl.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "BoundingBoxComponent.h"
 
-GameObject::GameObject() = default;
+
+GameObject::GameObject(const std::string& name, Simulation* sim)
+{
+	this->name = name;
+	this->sim = sim;
+}
 
 GameObject::~GameObject() = default;
 

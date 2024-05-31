@@ -31,6 +31,12 @@
     <Filter Include="Source Files\poseDetection\unitTests">
       <UniqueIdentifier>{461f79be-b02d-478f-9764-9d0ddf333d01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\inputSystem">
+      <UniqueIdentifier>{a4502ec4-5826-45c4-976d-7bc4f4515c1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\inputSystem">
+      <UniqueIdentifier>{230bc179-0d42-4894-895f-32060948a5f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tigl.cpp">
@@ -108,8 +114,38 @@
     <ClCompile Include="WorldComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CarComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Simulation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="PoseUnitTests.cpp">
       <Filter>Source Files\poseDetection\unitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyboardInputHandler.cpp">
+      <Filter>Source Files\inputSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="InputHandler.cpp">
+      <Filter>Source Files\inputSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -182,9 +218,6 @@
     <ClInclude Include="settingsFromJson.h">
       <Filter>Header Files\poseDetection</Filter>
     </ClInclude>
-    <ClInclude Include="utest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="WorldComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -193,6 +226,30 @@
     </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CarComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Simulation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KeypointLocationStrings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyboardInputHandler.h">
+      <Filter>Header Files\inputSystem</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

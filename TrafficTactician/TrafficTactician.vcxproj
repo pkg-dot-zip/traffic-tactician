@@ -261,6 +261,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CarComponent.cpp" />
     <ClCompile Include="components\BoundingBoxComponent.cpp" />
     <ClCompile Include="components\Component.cpp" />
     <ClCompile Include="components\CubeComponent.cpp" />
@@ -273,6 +274,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="easylogging++.cpp" />
+    <ClCompile Include="InputHandler.cpp" />
+    <ClCompile Include="KeyboardInputHandler.cpp" />
     <ClCompile Include="lib\imgui-docking\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="lib\imgui-docking\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="lib\imgui-docking\imgui.cpp" />
@@ -285,9 +288,13 @@
     <ClCompile Include="main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='PoseDetectionRelease|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="poseChecker.cpp" />
     <ClCompile Include="poseEstimation.cpp" />
     <ClCompile Include="poseRetriever.cpp" />
+    <ClCompile Include="RouteComponent.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="PoseUnitTests.cpp" />
     <ClCompile Include="SpinComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -295,6 +302,7 @@
     <ClCompile Include="WorldComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CarComponent.h" />
     <ClInclude Include="components\BoundingBoxComponent.h" />
     <ClInclude Include="components\Component.h" />
     <ClInclude Include="components\CubeComponent.h" />
@@ -302,6 +310,12 @@
     <ClInclude Include="components\GameObject.h" />
     <ClInclude Include="components\PlayerComponent.h" />
     <ClInclude Include="easylogging++.h" />
+    <ClInclude Include="InputHandler.h" />
+    <ClInclude Include="KeyboardInputHandler.h" />
+    <ClInclude Include="MoveComponent.h" />
+    <ClInclude Include="RouteComponent.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="Simulation.h" />
     <ClInclude Include="KeypointLocationStrings.h" />
     <ClInclude Include="utest.h" />
     <ClInclude Include="WorldComponent.h" />
