@@ -3,6 +3,9 @@
 #include "tigl.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+
+#include "InputHandler.h"
+#include "KeyBoardInputHandler.h"
 using tigl::Vertex;
 
 #include "easylogging++.h"
@@ -147,13 +150,8 @@ void init()
 	LOG(INFO) << "Initialized simulation." << std::endl;
 
 
-	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-		{
-			if (key == GLFW_KEY_ESCAPE)
-				glfwSetWindowShouldClose(window, true);
-		});
-	LOG(INFO) << "Initialized input callback." << std::endl;
-
+	initKeyCallback(window);
+	initCameraInput();
 }
 
 void updateImGui()
@@ -163,6 +161,7 @@ void updateImGui()
 	if (ImGui::Begin("Hello Imgui")) {
 
 		ImGui::Text("MousePosition3D: %f, %f, %f", sim->mousePosition3D.x, sim->mousePosition3D.y, sim->mousePosition3D.z);
+		ImGui::Text("Pose: %d", getInputPose());
 		//float scale = world->scale.y;
 
 		//ImGui::Text("Hello Computer Graphics!");
