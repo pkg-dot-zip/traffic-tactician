@@ -161,7 +161,9 @@ void updateImGui()
 	if (ImGui::Begin("Hello Imgui")) {
 
 		ImGui::Text("MousePosition3D: %f, %f, %f", sim->mousePosition3D.x, sim->mousePosition3D.y, sim->mousePosition3D.z);
-		ImGui::Text("Pose: %d", getInputPose());
+
+		const std::string poseString = "Pose: " + getPoseString(getInputPose());
+		ImGui::Text(poseString.c_str());
 		//float scale = world->scale.y;
 
 		//ImGui::Text("Hello Computer Graphics!");
