@@ -50,7 +50,7 @@
 mono_crash.*
 
 # Pose Model
-TrafficTactician/pose/
+TrafficTactician/pose/model/
 
 # Build results
 [Dd]ebug/
