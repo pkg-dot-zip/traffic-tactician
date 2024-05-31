@@ -57,8 +57,8 @@ GLuint loadTexture(const std::string& imageName);
 void restartTimer();
 
 Simulation* sim;
-GLuint* currentSignTexture = nullptr; // Change this to a pointer to the current sign texture e.g. currentSignTexture = &textures["stopSign"];
-std::map<std::string, GLuint> textures; // scoreLogo, stopSign, forwardSign, leftSign, rightSign
+GLuint* currentSignTexture = nullptr, * currentThumbsTexture = nullptr; // Change this to a pointer to the current sign texture e.g. currentSignTexture = &textures["stopSign"]; 
+std::map<std::string, GLuint> textures; // empty, scoreLogo, stopSign, forwardSign, leftSign, rightSign, thumbsupSign, thumbsdownSign
 
 int width = 1600, height = 900, score = 0;
 double lastFrameTime = 0, timerIsDone = 0;
@@ -150,6 +150,7 @@ void init() {
 	// Load textures and set the current sign texture to the stop sign
 	loadTextures();
 	currentSignTexture = &textures["stopSign"];
+	currentThumbsTexture = &textures["empty"];
 
 	initImGui();
 	LOG(INFO) << "Initialized ImGui window." << std::endl;
@@ -167,11 +168,12 @@ void init() {
 }
 
 void updateImGui() {
+	int height = 0;
 
 	ImGui::SetNextWindowPos(ImVec2(0, 0)); // Set the window position to the top left corner
-	ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, 100)); // Set the window width to the display width and height to 100
+	ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, height)); // Set the window width to the display width and height to 100
 
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.25f)); // Set the window background color to semi-transparent black
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.1f)); // Set the window background color to semi-transparent black
 
 	if (ImGui::Begin("Status", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar)) { // Add ImGuiWindowFlags_NoTitleBar to hide the title bar
 
@@ -188,6 +190,10 @@ void updateImGui() {
 
 		ImGui::SameLine(); // Keep the following items on the same line with an offset
 
+		ImGui::Image((void*)(intptr_t)*currentThumbsTexture, ImVec2(31, 31)); // Display the icon
+
+		ImGui::SameLine(); // Keep the following items on the same line with an offset
+
 		float windowWidth = ImGui::GetWindowWidth();
 		float imageWidth = 31.0f; // Width of the image
 		float textWidth = ImGui::CalcTextSize(std::to_string(score).c_str()).x; // Width of the text
@@ -200,11 +206,11 @@ void updateImGui() {
 
 		ImGui::Text("%d", score); // Display the text and integer
 
-		//ImGui::Text("MousePosition3D: %f, %f, %f", sim->mousePosition3D.x, sim->mousePosition3D.y, sim->mousePosition3D.z);
-
 		char overlay[32];
 		sprintf_s(overlay, "%.2f s", remainingTime);
 		ImGui::ProgressBar(progress, ImVec2(-1.0f, 0.0f), overlay); // Full width progress bar 
+
+		//height = 31 + ImGui::GetFontSize(); // Set the height of the window to the height of the icons + the font size 
 
 		ImGui::End();
 	}
@@ -217,6 +223,7 @@ void restartTimer() {
 		progress = 0.0f; // Clamp to 0
 		timerIsDone = false;
 		std::cout << "Timer has been restarted!" << std::endl;
+		currentThumbsTexture = &textures["empty"];
 	}
 	else {
 		std::cout << "Timer is not done yet!" << std::endl;
@@ -230,7 +237,7 @@ void update() {
 
 	if (progress >= 1.0f) {
 		timerIsDone = true;
-		restartTimer();
+		//restartTimer();
 	}
 	else {
 		// Increase the progress over time (timerSeconds) 
@@ -285,19 +292,25 @@ void onDestroy() {
 }
 
 void loadTextures() {
+	textures["empty"] = loadTexture("empty.png");
 	textures["scoreLogo"] = loadTexture("score_logo.png");
 	textures["stopSign"] = loadTexture("sign_stop.png");
 	textures["forwardSign"] = loadTexture("sign_forward.png");
 	textures["leftSign"] = loadTexture("sign_left.png");
-	textures["rightSign"] = loadTexture("sign_sign.png");
+	textures["rightSign"] = loadTexture("sign_right.png");
+	textures["thumbsupSign"] = loadTexture("sign_thumbsup.png");
+	textures["thumbsdownSign"] = loadTexture("sign_thumbsdown.png");
 }
 
 GLuint loadTexture(const std::string& imageName) {
 	GLuint texture = 0; // Initialize texture to 0
 
 	int width, height, nrChannels;
-	const char* imageName2 = imageName.c_str();
-	unsigned char* data = stbi_load(imageName2, &width, &height, &nrChannels, STBI_rgb_alpha);
+	std::string folderPrefix = "overlay_imgs/";
+	std::string imageLocation = folderPrefix + imageName;
+	std::cout << "Loading texture: " << imageLocation << std::endl;
+	unsigned char* data = stbi_load(imageLocation.c_str(), &width, &height, &nrChannels, STBI_rgb_alpha);
+
 	if (data)
 	{
 		glGenTextures(1, &texture);
