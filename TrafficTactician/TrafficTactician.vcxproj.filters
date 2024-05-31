@@ -147,6 +147,9 @@
     <ClCompile Include="InputHandler.cpp">
       <Filter>Source Files\inputSystem</Filter>
     </ClCompile>
+    <ClCompile Include="TextureCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="easylogging++.h">
@@ -250,6 +253,12 @@
     </ClInclude>
     <ClInclude Include="KeyboardInputHandler.h">
       <Filter>Header Files\inputSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="InputHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureCache.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

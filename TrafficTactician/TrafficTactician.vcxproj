@@ -298,6 +298,7 @@
     <ClCompile Include="PoseUnitTests.cpp" />
     <ClCompile Include="SpinComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureCache.cpp" />
     <ClCompile Include="tigl.cpp" />
     <ClCompile Include="WorldComponent.cpp" />
   </ItemGroup>
@@ -317,6 +318,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Simulation.h" />
     <ClInclude Include="KeypointLocationStrings.h" />
+    <ClInclude Include="TextureCache.h" />
     <ClInclude Include="utest.h" />
     <ClInclude Include="WorldComponent.h" />
     <ClInclude Include="json.h" />

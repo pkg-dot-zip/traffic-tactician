@@ -50,7 +50,17 @@ Texture::Texture(const glm::vec3& color)
 	delete[] data;
 }
 
+Texture::~Texture() {
+	unbind();
+	glDeleteTextures(1, &id);
+}
+
 void Texture::bind()
 {
 	glBindTexture(GL_TEXTURE_2D, id);
+}
+
+void Texture::unbind()
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
