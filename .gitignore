@@ -49,9 +49,6 @@
 # Mono auto generated files
 mono_crash.*
 
-# Pose Model
-TrafficTactician/pose/model/
-
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
