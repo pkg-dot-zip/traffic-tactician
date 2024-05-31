@@ -3,6 +3,8 @@
 #include "tigl.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+
+#include "KeyBoardInputHandler.h"
 using tigl::Vertex;
 
 #include "easylogging++.h"
@@ -147,13 +149,7 @@ void init()
 	LOG(INFO) << "Initialized simulation." << std::endl;
 
 
-	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-		{
-			if (key == GLFW_KEY_ESCAPE)
-				glfwSetWindowShouldClose(window, true);
-		});
-	LOG(INFO) << "Initialized input callback." << std::endl;
-
+	initKeyCallback(window);
 }
 
 void updateImGui()
