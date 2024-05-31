@@ -319,6 +319,7 @@
     <ClInclude Include="Simulation.h" />
     <ClInclude Include="KeypointLocationStrings.h" />
     <ClInclude Include="TextureCache.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="utest.h" />
     <ClInclude Include="WorldComponent.h" />
     <ClInclude Include="json.h" />

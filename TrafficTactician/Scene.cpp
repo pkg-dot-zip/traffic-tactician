@@ -9,6 +9,20 @@
 #include "CarComponent.h"
 
 
+Scene::Scene(Simulation* sim, int worldSize)
+{
+	this->sim = sim;
+	initWorld(worldSize);
+	
+	// Create a car object at 0,0,0
+	std::shared_ptr<GameObject> car = std::make_shared<GameObject>("car", sim);
+	car->position = glm::vec3(0, 0, 0);
+	car->addComponent(std::make_shared<ModelComponent>("models/car_kit/ambulance.obj"));
+	car->addComponent(std::make_shared<CarComponent>());
+
+	objects.push_back(car);
+}
+
 void Scene::initWorld(int worldSize)
 {
 	std::shared_ptr<GameObject> worldObject = std::make_shared<GameObject>("world", sim);
@@ -28,20 +42,6 @@ void Scene::initWorld(int worldSize)
 	objects.push_back(worldObject);
 }
 
-
-Scene::Scene(Simulation* sim, int worldSize)
-{
-	this->sim = sim;
-	initWorld(worldSize);
-	
-	// Create a car object at 0,0,0
-	std::shared_ptr<GameObject> car = std::make_shared<GameObject>("car", sim);
-	car->position = glm::vec3(0, 0, 0);
-	car->addComponent(std::make_shared<ModelComponent>("models/car_kit/ambulance.obj"));
-	car->addComponent(std::make_shared<CarComponent>());
-
-	objects.push_back(car);
-}
 
 void Scene::update(float deltaTime)
 {
