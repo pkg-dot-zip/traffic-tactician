@@ -8,6 +8,8 @@
 #include "easylogging++.h"
 #include "tigl.h"
 #include "Texture.h"
+#include "TextureCache.h"
+#include <glm/gtx/string_cast.hpp>
 
 using tigl::Vertex;
 
@@ -256,7 +258,7 @@ void ModelComponent::loadMaterialFile(const std::string& fileName, const std::st
 			if (tex.find("\\"))
 				tex = tex.substr(tex.rfind("\\") + 1);
 			// Texture files must be in a sub-folder "textures"
-			currentMaterial->texture = new Texture(dirName + "/textures/" + tex);
+			currentMaterial->texture = TextureCache::loadTexture(dirName + "/textures/" + tex);
 		}
 		else if (params[0] == "kd")
 		{
@@ -268,7 +270,9 @@ void ModelComponent::loadMaterialFile(const std::string& fileName, const std::st
 				tex = tex.substr(tex.rfind("\\") + 1);
 
 			// Create 1x1 texture based on diffuse color
-			currentMaterial->texture = new Texture(glm::vec3(std::stof(params[1]), std::stof(params[2]), std::stof(params[3])));
+			glm::vec3 color = glm::vec3(std::stof(params[1]), std::stof(params[2]), std::stof(params[3]));
+			const std::string colorName = glm::to_string(color);
+			currentMaterial->texture = TextureCache::loadMaterialTexture(colorName, color);
 		}
 		else if (params[0] == "ka")
 		{//TODO, ambient color
