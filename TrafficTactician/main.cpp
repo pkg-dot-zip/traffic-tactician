@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
+#include "InputHandler.h"
 #include "KeyBoardInputHandler.h"
 using tigl::Vertex;
 
@@ -159,6 +160,7 @@ void updateImGui()
 	if (ImGui::Begin("Hello Imgui")) {
 
 		ImGui::Text("MousePosition3D: %f, %f, %f", sim->mousePosition3D.x, sim->mousePosition3D.y, sim->mousePosition3D.z);
+		ImGui::Text("Pose: %d", getInputPose());
 		//float scale = world->scale.y;
 
 		//ImGui::Text("Hello Computer Graphics!");

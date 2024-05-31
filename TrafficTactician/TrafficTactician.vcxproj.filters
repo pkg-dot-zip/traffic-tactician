@@ -144,6 +144,9 @@
     <ClCompile Include="KeyboardInputHandler.cpp">
       <Filter>Source Files\inputSystem</Filter>
     </ClCompile>
+    <ClCompile Include="InputHandler.cpp">
+      <Filter>Source Files\inputSystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="easylogging++.h">

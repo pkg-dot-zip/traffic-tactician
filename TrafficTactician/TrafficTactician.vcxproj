@@ -274,6 +274,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="easylogging++.cpp" />
+    <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="KeyboardInputHandler.cpp" />
     <ClCompile Include="lib\imgui-docking\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="lib\imgui-docking\backends\imgui_impl_opengl3.cpp" />
@@ -309,6 +310,7 @@
     <ClInclude Include="components\GameObject.h" />
     <ClInclude Include="components\PlayerComponent.h" />
     <ClInclude Include="easylogging++.h" />
+    <ClInclude Include="InputHandler.h" />
     <ClInclude Include="KeyboardInputHandler.h" />
     <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="RouteComponent.h" />
