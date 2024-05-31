@@ -465,6 +465,8 @@ std::map<std::string_view, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap
 	cv::resize(input, input, {settings.downscaleTargetWidth, settings.downscaleTargetHeight}, 0, 0, cv::INTER_AREA);
 	// INTER_AREA is better than the default (INTER_LINEAR) for camera views, according to a Stackoverflow user. TODO: CHECK IF THIS IS TRUE.
 
+	LOG(INFO) << "InputFrame size: " << input.cols << " | " << input.rows << std::endl;
+
 	// Then we retrieve the estimationpoints.
 	const int64 timeStart = cv::getTickCount();
 	getCalculatedPose(poseEstimationKeyPoints, input, outputFrame, inputNet);
@@ -477,7 +479,9 @@ std::map<std::string_view, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap
 	// Then we upscale and flip.  We flip the mat here so that our cam view looks more natural; it confuses the user to see his left arm on the right side of his screen.
 	cv::resize(outputFrame, outputFrame, {settings.upscaleTargetWidth, settings.upscaleTargetHeight});
 	cv::flip(outputFrame, outputFrame, 1);
-		
+
+	LOG(INFO) << "Outputframe size: " << outputFrame.cols << " | " << outputFrame.rows << std::endl;
+
 	return poseEstimationKeyPoints;
 }
 
