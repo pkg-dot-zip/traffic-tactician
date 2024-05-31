@@ -5,38 +5,25 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\imgui">
-      <UniqueIdentifier>{a65bbd8f-7aac-47c6-8909-8f5b5e7b0e39}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\imgui">
       <UniqueIdentifier>{faaf17bd-2b0f-45f2-9c7d-a5fca6ecbf35}</UniqueIdentifier>
     </Filter>
-    <Filter Include="components">
-      <UniqueIdentifier>{8bf3fa7a-a229-431c-9e8a-0ce569868ecf}</UniqueIdentifier>
+    <Filter Include="Components">
+      <UniqueIdentifier>{549d6fec-4503-49e2-b595-bee6d0a0eefb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\poseDetection">
+    <Filter Include="Source Files\Pose Detection">
       <UniqueIdentifier>{f8397d31-a5a9-46d9-a05f-3616f3fc990c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\poseDetection">
-      <UniqueIdentifier>{a525fee6-60aa-4a7e-8400-55f398d84cc3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\poseDetection\unitTests">
-      <UniqueIdentifier>{461f79be-b02d-478f-9764-9d0ddf333d01}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tigl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="easylogging++.cpp">
@@ -45,26 +32,29 @@
     <ClCompile Include="log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="components\BoundingBoxComponent.cpp">
-      <Filter>components</Filter>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="components\Component.cpp">
-      <Filter>components</Filter>
+    <ClCompile Include="Simulation.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="components\CubeComponent.cpp">
-      <Filter>components</Filter>
+    <ClCompile Include="ModelComponent.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="components\DrawComponent.cpp">
-      <Filter>components</Filter>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="components\GameObject.cpp">
-      <Filter>components</Filter>
+    <ClCompile Include="WorldComponent.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="components\PlayerComponent.cpp">
-      <Filter>components</Filter>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SpinComponent.cpp">
-      <Filter>components</Filter>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DetectionMain.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="lib\imgui-docking\imgui.cpp">
       <Filter>Source Files\imgui</Filter>
@@ -87,148 +77,154 @@
     <ClCompile Include="lib\imgui-docking\backends\imgui_impl_opengl3.cpp">
       <Filter>Source Files\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="poseChecker.cpp">
-      <Filter>Source Files\poseDetection</Filter>
+    <ClCompile Include="pose\PoseChecker.cpp">
+      <Filter>Source Files\Pose Detection</Filter>
     </ClCompile>
-    <ClCompile Include="detectionMain.cpp">
-      <Filter>Source Files\poseDetection</Filter>
+    <ClCompile Include="pose\PoseEstimation.cpp">
+      <Filter>Source Files\Pose Detection</Filter>
     </ClCompile>
-    <ClCompile Include="poseEstimation.cpp">
-      <Filter>Source Files\poseDetection</Filter>
+    <ClCompile Include="pose\PoseRetriever.cpp">
+      <Filter>Source Files\Pose Detection</Filter>
     </ClCompile>
-    <ClCompile Include="poseRetriever.cpp">
-      <Filter>Source Files\poseDetection</Filter>
+    <ClCompile Include="pose\PoseUnitTests.cpp">
+      <Filter>Source Files\Pose Detection</Filter>
     </ClCompile>
-    <ClCompile Include="ModelComponent.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="components\BoundingBoxComponent.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="components\CarComponent.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="WorldComponent.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="components\WorldComponent.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="CarComponent.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="components\RouteComponent.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="MoveComponent.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="components\PlayerComponent.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="RouteComponent.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="components\MoveComponent.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="components\ModelComponent.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="Simulation.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="components\DrawComponent.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="ModelComponent.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="components\CubeComponent.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="components\Component.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="WorldComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PoseUnitTests.cpp">
-      <Filter>Source Files\poseDetection\unitTests</Filter>
+    <ClCompile Include="components\SpinComponent.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="easylogging++.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="log.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="components\BoundingBoxComponent.h">
-      <Filter>components</Filter>
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="components\CarComponent.h">
+      <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="components\Component.h">
-      <Filter>components</Filter>
+      <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="components\CubeComponent.h">
-      <Filter>components</Filter>
+      <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="components\DrawComponent.h">
-      <Filter>components</Filter>
+      <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="components\GameObject.h">
-      <Filter>components</Filter>
+    <ClInclude Include="components\ModelComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="components\MoveComponent.h">
+      <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="components\PlayerComponent.h">
-      <Filter>components</Filter>
+      <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="tigl.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="components\RouteComponent.h">
+      <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="SpinComponent.h">
-      <Filter>components</Filter>
+    <ClInclude Include="components\SpinComponent.h">
+      <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="lib\imgui-docking\imconfig.h">
-      <Filter>Header Files\imgui</Filter>
+    <ClInclude Include="components\WorldComponent.h">
+      <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="lib\imgui-docking\imgui.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui-docking\imgui_internal.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui-docking\imstb_rectpack.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui-docking\imstb_textedit.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui-docking\imstb_truetype.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui-docking\backends\imgui_impl_opengl3.h">
-      <Filter>Header Files\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="json.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="poseChecker.h">
-      <Filter>Header Files\poseDetection</Filter>
-    </ClInclude>
-    <ClInclude Include="keyPoint.h">
-      <Filter>Header Files\poseDetection</Filter>
-    </ClInclude>
-    <ClInclude Include="poseEstimation.h">
-      <Filter>Header Files\poseDetection</Filter>
-    </ClInclude>
-    <ClInclude Include="poseRetriever.h">
-      <Filter>Header Files\poseDetection</Filter>
-    </ClInclude>
-    <ClInclude Include="settingsFromJson.h">
-      <Filter>Header Files\poseDetection</Filter>
-    </ClInclude>
-    <ClInclude Include="WorldComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CarComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MoveComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RouteComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Simulation.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="utest.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Simulation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tigl.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="log.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KeypointLocationStrings.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="easylogging++.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui-docking\imstb_truetype.h">
+      <Filter>Source Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui-docking\imconfig.h">
+      <Filter>Source Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui-docking\imgui.h">
+      <Filter>Source Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui-docking\backends\imgui_impl_opengl3.h">
+      <Filter>Source Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui-docking\imgui_internal.h">
+      <Filter>Source Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui-docking\imstb_rectpack.h">
+      <Filter>Source Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui-docking\imstb_textedit.h">
+      <Filter>Source Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyPoint.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="settingsFromJson.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pose\PoseRetriever.h">
+      <Filter>Source Files\Pose Detection</Filter>
+    </ClInclude>
+    <ClInclude Include="pose\PoseChecker.h">
+      <Filter>Source Files\Pose Detection</Filter>
+    </ClInclude>
+    <ClInclude Include="pose\PoseEstimation.h">
+      <Filter>Source Files\Pose Detection</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
