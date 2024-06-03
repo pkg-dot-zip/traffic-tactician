@@ -7,6 +7,7 @@
 #include "ModelComponent.h"
 #include "WorldComponent.h"
 #include "CarComponent.h"
+#include "RouteComponent.h"
 
 
 Scene::Scene(Simulation* sim, int worldSize)
@@ -16,16 +17,18 @@ Scene::Scene(Simulation* sim, int worldSize)
 	
 	// Create a car object at 0,0,0
 	std::shared_ptr<GameObject> car = std::make_shared<GameObject>("car", sim);
-	car->position = glm::vec3(0, 0, 0);
+	car->scale = 0.4f * car->scale;
+	car->position = glm::vec3(1, 0.000000, 1);
 	car->addComponent(std::make_shared<ModelComponent>("models/car_kit/ambulance.obj"));
-	car->addComponent(std::make_shared<CarComponent>());
-
+	//car->addComponent(std::make_shared<CarComponent>());
+	car->addComponent(std::make_shared<RouteComponent>(1, car->position));
 	objects.push_back(car);
 }
 
 void Scene::initWorld(int worldSize)
 {
 	std::shared_ptr<GameObject> worldObject = std::make_shared<GameObject>("world", sim);
+	worldObject-> scale = 4.0f * worldObject->scale;
 	std::shared_ptr<WorldComponent> world_component = std::make_shared<WorldComponent>(worldSize, 1.0f, std::make_shared<ModelComponent>("models/road_kit/tile_low.obj"));
 	for (int i = 0; i < worldSize; i++)
 	{

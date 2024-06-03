@@ -5,15 +5,18 @@
 #include "glm/ext/matrix_transform.hpp"
 using glm::vec3;
 
+
 class RouteComponent : public Component
 {
 	std::vector<vec3> routeNodes;
-	float direction;
+	vec3 direction;
 	float speed;
+
+	
 public:
-	RouteComponent(float speed);
+	RouteComponent(float speed, vec3 position);
 	~RouteComponent();
 
-	virtual void update(float elapsedTime) override;
+	virtual void update(float deltaTime) override;
 };
 

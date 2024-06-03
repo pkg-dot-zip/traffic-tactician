@@ -1,55 +1,50 @@
 #include "RouteComponent.h"
 #include "GameObject.h"
+#include <easylogging++.h>
+#include <glm/gtx/string_cast.hpp>
+#include <algorithm>
 
-RouteComponent::RouteComponent(float speed)
+RouteComponent::RouteComponent(float speed, vec3 position)
 {
     this->speed = speed;
-	routeNodes = {
-		vec3(1.081668, 0.000000, -6.142860),
-		vec3(1.111798, 0.000000, -3.522040),
-		vec3(1.224573, 0.000000, -1.149999),
-		vec3(3.659592, 0.000000, -1.280130)
+    this->direction = position;
+
+    routeNodes = {
+		vec3(0.5, 0.000000, -6.142860),
+		vec3(0.5, 0.000000, -3.522040),
+		vec3(0.5, 0.000000, -1.149999)
 	};
+
 }
 
 RouteComponent::~RouteComponent()
 {
 }
 
-void RouteComponent::update(float elapsedTime)
-{
+void RouteComponent::update(float deltaTime) {
+    // Epsilon for reaching node tolerance
+    float epsilon = 0.1f;
 
+    // Check if reached the target node with tolerance
+    if (glm::distance(gameObject->position, direction) < epsilon) {
+        if (!routeNodes.empty()) {
+            direction = routeNodes.front();
+            routeNodes.erase(routeNodes.begin()); // Remove reached node
+        }
+        else {
+            return;
+        }
+    }
 
-    //float xDistance = position.x - gameObject->position.x;
-    //float yDistance = position.y - gameObject->position.y;
-    //float zDistance = position.z - gameObject->position.z;
+    // Calculate distance to target and max movement per update
+    float distance = glm::distance(gameObject->position, direction);
+    float maxStep = speed * deltaTime;
 
-    //// Calculate steps, but first check for zero distances to avoid division by zero
-    //float xStep = (xDistance != 0) ? (xDistance / std::abs(xDistance)) * elapsedTime * speed : 0;
-    //float yStep = (yDistance != 0) ? (yDistance / std::abs(yDistance)) * elapsedTime * speed : 0;
-    //float zStep = (zDistance != 0) ? (zDistance / std::abs(zDistance)) * elapsedTime * speed : 0;
+    // Calculate movement vector with capped magnitude
+    glm::vec3 movement = glm::normalize(direction - gameObject->position) * min(distance, maxStep);
 
-    ////update x coördinate
-    //if (std::abs(xDistance) < std::abs(xStep)) {
-    //    gameObject->position.x = position.x;
-    //}
-    //else {
-    //    gameObject->position.x += xStep;
-    //}
+    // Update position with smooth movement
+    gameObject->position += movement;
 
-    ////update y coördinate
-    //if (std::abs(yDistance) < std::abs(yStep)) {
-    //    gameObject->position.y = position.y;
-    //}
-    //else {
-    //    gameObject->position.y += yStep;
-    //}
-
-    ////update z coördinate
-    //if (std::abs(zDistance) < std::abs(zStep)) {
-    //    gameObject->position.z = position.z;
-    //}
-    //else {
-    //    gameObject->position.z += zStep;
-    //}
+    LOG(INFO) << "Car at " << glm::to_string(gameObject->position) << "\n";
 }
