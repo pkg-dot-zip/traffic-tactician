@@ -4,17 +4,10 @@
 #include <glm/gtx/string_cast.hpp>
 #include <algorithm>
 
-RouteComponent::RouteComponent(float speed, vec3 position)
+RouteComponent::RouteComponent(float speed, std::vector<vec3> nodes)
 {
     this->speed = speed;
-    this->direction = position;
-
-    routeNodes = {
-		vec3(0.5, 0.000000, -6.142860),
-		vec3(0.5, 0.000000, -3.522040),
-		vec3(0.5, 0.000000, -1.149999)
-	};
-
+    this->nodes = nodes;
 }
 
 RouteComponent::~RouteComponent()
@@ -22,29 +15,33 @@ RouteComponent::~RouteComponent()
 }
 
 void RouteComponent::update(float deltaTime) {
-    // Epsilon for reaching node tolerance
-    float epsilon = 0.1f;
+    if (!setMoving) return;
 
-    // Check if reached the target node with tolerance
-    if (glm::distance(gameObject->position, direction) < epsilon) {
-        if (!routeNodes.empty()) {
-            direction = routeNodes.front();
-            routeNodes.erase(routeNodes.begin()); // Remove reached node
+    // Get the current waypoint and object's position
+    glm::vec3 currentWaypoint = nodes[currentWaypointIndex];
+    glm::vec3 currentPosition = gameObject->position;
+
+    // Calculate the direction vector towards the waypoint
+    glm::vec3 direction = glm::normalize(currentWaypoint - currentPosition);
+
+    // Move the object towards the waypoint based on speed and deltaTime
+    float distance = glm::length(currentWaypoint - currentPosition);
+    if (distance > tolerance) { // Check if within tolerance (optional)
+        float movement = speed * deltaTime;
+        if (movement > distance) {
+            movement = distance; // Avoid overshooting the waypoint
         }
-        else {
-            return;
+        gameObject->position = vec3(currentPosition + movement * direction);
+        gameObject->position.y = 0;
+    }
+    else {
+        // Reached the waypoint, handle waypoint change (optional)
+        currentWaypointIndex++;
+        if (currentWaypointIndex >= nodes.size()) {
+            // Handle reaching the end of the route (loop, stop, etc.)
+            setMoving = false;
+            nodes.clear();
         }
     }
-
-    // Calculate distance to target and max movement per update
-    float distance = glm::distance(gameObject->position, direction);
-    float maxStep = speed * deltaTime;
-
-    // Calculate movement vector with capped magnitude
-    glm::vec3 movement = glm::normalize(direction - gameObject->position) * min(distance, maxStep);
-
-    // Update position with smooth movement
-    gameObject->position += movement;
-
     LOG(INFO) << "Car at " << glm::to_string(gameObject->position) << "\n";
 }

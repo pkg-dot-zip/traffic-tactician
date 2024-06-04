@@ -18,10 +18,30 @@ Scene::Scene(Simulation* sim, int worldSize)
 	// Create a car object at 0,0,0
 	std::shared_ptr<GameObject> car = std::make_shared<GameObject>("car", sim);
 	car->scale = 0.4f * car->scale;
-	car->position = glm::vec3(1, 0.000000, 1);
+	
+	// TOP to halt point nodes
+	std::vector<glm::vec3> topToDownNodes = { 
+	vec3(0.538546, 0.000000, -6.842329),
+	vec3(0.518869, 0.000000, -6.149068),
+	vec3(0.616513, 0.000000, -4.360466),
+	vec3(0.616513, 0.000000, -4.360466),
+	vec3(0.629492, 0.000000, -2.077454)
+	};
+
+	// halt to RIGHT point nodes
+	// TODO: create list of nodes for all directions
+	std::vector<glm::vec3> haltToLeftNodes = {
+	vec3(0.629492, 0.000000, -2.077454),
+	vec3(0.65, 0.000000, -1.5),
+	vec3(0.65, 0.000000, -1.0),
+	};
+
+	
+	car->position = haltToLeftNodes.front();
 	car->addComponent(std::make_shared<ModelComponent>("models/car_kit/ambulance.obj"));
 	//car->addComponent(std::make_shared<CarComponent>());
-	car->addComponent(std::make_shared<RouteComponent>(1, car->position));
+	float speed = 1;
+	car->addComponent(std::make_shared<RouteComponent>(speed, haltToLeftNodes));
 	objects.push_back(car);
 }
 
