@@ -35,7 +35,7 @@ void RouteComponent::update(float deltaTime) {
 	// Get the current waypoint and object's position
 	glm::vec3 currentWaypoint = currentRoute[currentWaypointIndex];
 	glm::vec3 currentPosition = gameObject->position;
-	LOG(INFO) << "Car at " << glm::to_string(gameObject->position) << "\n";
+	//LOG(INFO) << "Car at " << glm::to_string(gameObject->position) << "\n";
 
 	// Calculate the direction vector towards the waypoint
 	glm::vec3 direction = glm::normalize(currentWaypoint - currentPosition);

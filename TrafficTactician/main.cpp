@@ -30,8 +30,8 @@ using tigl::Vertex;
 
 #include "stb_image.h"
 #include <random>
-#include <CarComponent.h>
 #include <RouteComponent.h>
+#include <ControllerComponent.h>
 
 #ifdef _DEBUG
 #pragma comment (lib, "opencv_world490d.lib")
@@ -173,13 +173,18 @@ void updateImGui() {
 
 	ImGui::SetNextWindowPos(ImVec2(0, 0)); // Set the window position to the top left corner
 	ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, 100)); // Set the window width to the display width and height to 100
-	std::shared_ptr<GameObject> car = sim->scene->car;
+	std::shared_ptr<GameObject> car = sim->scene->currentCarObject;
 	ImGui::Text("CarPosition: %f, %f, %f", car->position.x, car->position.y, car->position.z);
 	ImGui::SliderAngle("CarRotation:", &car->rotation.y);
 	bool continueRoute = false;
 	if (ImGui::Checkbox("Continue route", &continueRoute)) {
-		sim->scene->car->getComponent<RouteComponent>()->state = RouteComponent::RouteState::Moving;
-		sim->scene->car->getComponent<RouteComponent>()->crossed = true;
+		sim->scene->currentCarObject->getComponent<RouteComponent>()->state = RouteComponent::RouteState::Moving;
+		sim->scene->currentCarObject->getComponent<RouteComponent>()->crossed = true;
+	}
+	// check if component is not null
+	if (sim->scene->currentCarObject->getComponent<ControllerComponent>() != nullptr) {
+		auto correctPose = sim->scene->currentCarObject->getComponent<ControllerComponent>()->correctPose;
+		ImGui::Text("Correct Pose: %s",getPoseString(correctPose).c_str());
 	}
 
 

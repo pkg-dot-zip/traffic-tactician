@@ -6,42 +6,19 @@
 
 #include "ModelComponent.h"
 #include "WorldComponent.h"
-#include "CarComponent.h"
 #include "RouteComponent.h"
+#include "ControllerComponent.h"
 
 
 Scene::Scene(Simulation* sim, int worldSize)
 {
 	this->sim = sim;
+	initRouteCache();
 	initWorld(worldSize);
-
-	// Create a car object at 0,0,0
-	car = std::make_shared<GameObject>("car", sim);
-	car->scale = 0.4f * car->scale;
-
-	// TOP to halt point nodes
-	std::vector<glm::vec3> topToRightNodes = {
-		glm::vec3(-0.5, 0.000000, -6.864396),
-
-		glm::vec3(-0.5, 0.000000, -1.55),
-		glm::vec3(0.662630, 0.000000, 0.600000),
-		glm::vec3(8, 0.000000, 0.600000)
-	};
-
-	//// halt to RIGHT point nodes
-	//// TODO: create list of nodes for all directions
-	//std::vector<glm::vec3> haltToLeftNodes = {
-	//	glm::vec3(0.662630, 0.000000, 0.600000),
-	//	glm::vec3(8, 0.000000, 0.600000)
-	//};
-
-
-	car->position = topToRightNodes.front();
-	car->addComponent(std::make_shared<ModelComponent>("models/car_kit/ambulance.obj"));
-	//car->addComponent(std::make_shared<CarComponent>());
-	float speed = 1.5;
-	car->addComponent(std::make_shared<RouteComponent>(speed, topToRightNodes));
-	objects.push_back(car);
+	
+	// Create a car object with the given pose
+	currentCarObject = createCar(Pose::POSE_MOVE_RIGHT);
+	objects.push_back(currentCarObject);
 }
 
 void Scene::initWorld(int worldSize)
@@ -64,10 +41,46 @@ void Scene::initWorld(int worldSize)
 	objects.push_back(worldObject);
 }
 
+void Scene::initRouteCache()
+{
+	// TOP to halt point nodes
+	routeCache[Pose::POSE_MOVE_RIGHT] = {
+		glm::vec3(-0.5, 0.000000, -6.864396),
+		glm::vec3(-0.5, 0.000000, -1.55),
+		glm::vec3(0.662630, 0.000000, 0.600000),
+		glm::vec3(8, 0.000000, 0.600000)
+	};
+
+	// TODO: add more routes
+}
+
+// TODO: add more routes
+// TODO: add random car model
+// Create a car object with the given pose
+std::shared_ptr<GameObject> Scene::createCar(Pose pose)
+{
+	auto carObject = std::make_shared<GameObject>("car", sim);
+	carObject->scale = 0.4f * carObject->scale;
+
+	// TODO: add random car model
+	carObject->addComponent(std::make_shared<ModelComponent>("models/car_kit/ambulance.obj"));
+
+
+	// TODO: add more routes
+	std::vector<glm::vec3> route = routeCache[Pose::POSE_MOVE_RIGHT];
+	carObject->position = route.front(); // set spawn point to the first node
+
+	float speed = 1.5;
+	carObject->addComponent(std::make_shared<RouteComponent>(speed, route));
+
+	carObject->addComponent(std::make_shared<ControllerComponent>(pose));
+
+	return carObject;
+}
+
 
 void Scene::update(float deltaTime)
 {
-
 	for (auto& o : objects) {
 		o->update(deltaTime);
 	}
