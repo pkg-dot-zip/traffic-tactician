@@ -31,6 +31,7 @@ using tigl::Vertex;
 #include "stb_image.h"
 #include <random>
 #include <CarComponent.h>
+#include <RouteComponent.h>
 
 #ifdef _DEBUG
 #pragma comment (lib, "opencv_world490d.lib")
@@ -175,7 +176,10 @@ void updateImGui() {
 	std::shared_ptr<GameObject> car = sim->scene->car;
 	ImGui::Text("CarPosition: %f, %f, %f", car->position.x, car->position.y, car->position.z);
 	ImGui::SliderAngle("CarRotation:", &car->rotation.y);
-	
+	bool continueRoute = false;
+	if (ImGui::Checkbox("Continue route", &continueRoute)) {
+		sim->scene->car->getComponent<RouteComponent>()->state = RouteComponent::RouteState::MovingSecond;
+	}
 
 
 		const std::string poseString = "Pose: " + getPoseString(getInputPose());

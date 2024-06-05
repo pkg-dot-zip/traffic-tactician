@@ -19,7 +19,8 @@ RouteComponent::~RouteComponent()
 }
 
 void RouteComponent::update(float deltaTime) {
-	if (state == RouteState::Idle || currentRoute.empty()) return;
+
+	if (state == RouteState::Idle || state == RouteState::Finished || currentRoute.empty()) return;
 
 	// check if allowed to continue on the second route
 	if (currentRoute == nodesRoute2 && state != RouteState::MovingSecond) return;
@@ -52,10 +53,10 @@ void RouteComponent::update(float deltaTime) {
 		if (std::distance(currentRoute.begin(), currentRoute.end()) <= currentWaypointIndex) {
 			// Handle reaching the end of the route (loop, stop, etc.)
 			if (currentRoute == nodesRoute2) {
-				state = RouteState::Idle;
+				currentRoute.clear();
+				state = RouteState::Finished;
 				return;
 			}
-
 			currentRoute = nodesRoute2;
 		}
 	}

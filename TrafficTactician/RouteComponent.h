@@ -8,12 +8,7 @@ using glm::vec3;
 
 class RouteComponent : public Component
 {
-	enum class RouteState {
-		Idle,  // Not moving
-		MovingFirst, // Following the first route
-		MovingSecond, // Following the second route
-		Finished  // Reached the last node
-	};
+
 
 	std::vector<vec3> nodesRoute1;
 	std::vector<vec3> nodesRoute2;
@@ -22,6 +17,12 @@ class RouteComponent : public Component
 	std::vector<vec3> currentRoute;
 	int currentWaypointIndex = 0;
 public:
+	enum class RouteState {
+		Idle,  // Not moving
+		MovingFirst, // Following the first route
+		MovingSecond, // Following the second route
+		Finished  // Reached the last node
+	};
 	RouteState state = RouteState::Idle;
 
 	RouteComponent(
