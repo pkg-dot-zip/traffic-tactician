@@ -20,33 +20,27 @@ Scene::Scene(Simulation* sim, int worldSize)
 	car->scale = 0.4f * car->scale;
 
 	// TOP to halt point nodes
-	std::vector<glm::vec3> topToDownNodes = {
-		glm::vec3(0.591764, 0.000000, -6.864396),
-		glm::vec3(0.549422, 0.000000, -5.504863),
-		glm::vec3(0.609607, 0.000000, -4.175739),
-		glm::vec3(0.662630, 0.000000, -1.55)
-	};
+	std::vector<glm::vec3> topToRightNodes = {
+		glm::vec3(-0.5, 0.000000, -6.864396),
 
-	// halt to RIGHT point nodes
-	// TODO: create list of nodes for all directions
-	std::vector<glm::vec3> haltToLeftNodes = {
-		glm::vec3(0.662630, 0.000000, -1.543589),
-		glm::vec3(0.662630, 0.000000, 0.543589),
+		glm::vec3(-0.5, 0.000000, -1.55),
 		glm::vec3(0.662630, 0.000000, 0.600000),
-		glm::vec3(0.781084, 0.000000, 0.600000),
-		glm::vec3(1.420864, 0.000000, 0.600000),
-		glm::vec3(2.232835, 0.000000, 0.600000),
-		glm::vec3(3.183463, 0.000000, 0.600000),
-		glm::vec3(5, 0.000000, 0.600000),
-		glm::vec3(8, 0.000000, 0.600000),
+		glm::vec3(8, 0.000000, 0.600000)
 	};
 
+	//// halt to RIGHT point nodes
+	//// TODO: create list of nodes for all directions
+	//std::vector<glm::vec3> haltToLeftNodes = {
+	//	glm::vec3(0.662630, 0.000000, 0.600000),
+	//	glm::vec3(8, 0.000000, 0.600000)
+	//};
 
-	car->position = topToDownNodes.front();
+
+	car->position = topToRightNodes.front();
 	car->addComponent(std::make_shared<ModelComponent>("models/car_kit/ambulance.obj"));
 	//car->addComponent(std::make_shared<CarComponent>());
 	float speed = 1.5;
-	car->addComponent(std::make_shared<RouteComponent>(speed, topToDownNodes, haltToLeftNodes));
+	car->addComponent(std::make_shared<RouteComponent>(speed, topToRightNodes));
 	objects.push_back(car);
 }
 

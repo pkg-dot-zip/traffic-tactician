@@ -40,6 +40,8 @@ void Simulation::draw()
 
 	scene->draw();
 
+
+	// calculate mousePosition3D
 	glm::vec3 mouse2D;
 	double xpos, ypos;
 

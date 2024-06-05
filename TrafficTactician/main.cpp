@@ -178,7 +178,8 @@ void updateImGui() {
 	ImGui::SliderAngle("CarRotation:", &car->rotation.y);
 	bool continueRoute = false;
 	if (ImGui::Checkbox("Continue route", &continueRoute)) {
-		sim->scene->car->getComponent<RouteComponent>()->state = RouteComponent::RouteState::MovingSecond;
+		sim->scene->car->getComponent<RouteComponent>()->state = RouteComponent::RouteState::Moving;
+		sim->scene->car->getComponent<RouteComponent>()->crossed = true;
 	}
 
 

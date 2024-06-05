@@ -4,14 +4,12 @@
 #include <glm/gtx/string_cast.hpp>
 #include <algorithm>
 
-RouteComponent::RouteComponent(float speed, std::vector<vec3> nodesRoute1, std::vector<vec3> nodesRoute2)
+RouteComponent::RouteComponent(float speed, std::vector<vec3> nodesRoute)
 {
 	this->speed = speed;
-	this->nodesRoute1 = nodesRoute1;
-	this->nodesRoute2 = nodesRoute2;
+	this->currentRoute = nodesRoute;
 
-	this->currentRoute = nodesRoute1;
-	state = RouteState::MovingFirst;
+	state = RouteState::Moving;
 }
 
 RouteComponent::~RouteComponent()
@@ -23,11 +21,21 @@ void RouteComponent::update(float deltaTime) {
 	if (state == RouteState::Idle || state == RouteState::Finished || currentRoute.empty()) return;
 
 	// check if allowed to continue on the second route
-	if (currentRoute == nodesRoute2 && state != RouteState::MovingSecond) return;
+	if (state != RouteState::Moving) return;
+
+	// check if object is in radius to center of crossroads
+	vec3 center = vec3(0.0f, 0.0f, 0.0f);
+	float distanceToCenter = std::abs(glm::length(center - gameObject->position));
+	float range = 2.0f;
+	if (distanceToCenter < range && !crossed) {
+		state = RouteState::Idle;
+		return;
+	}
 
 	// Get the current waypoint and object's position
 	glm::vec3 currentWaypoint = currentRoute[currentWaypointIndex];
 	glm::vec3 currentPosition = gameObject->position;
+	LOG(INFO) << "Car at " << glm::to_string(gameObject->position) << "\n";
 
 	// Calculate the direction vector towards the waypoint
 	glm::vec3 direction = glm::normalize(currentWaypoint - currentPosition);
@@ -52,13 +60,9 @@ void RouteComponent::update(float deltaTime) {
 		currentWaypointIndex++;
 		if (std::distance(currentRoute.begin(), currentRoute.end()) <= currentWaypointIndex) {
 			// Handle reaching the end of the route (loop, stop, etc.)
-			if (currentRoute == nodesRoute2) {
 				currentRoute.clear();
 				state = RouteState::Finished;
 				return;
-			}
-			currentRoute = nodesRoute2;
 		}
 	}
-	LOG(INFO) << "Car at " << glm::to_string(gameObject->position) << "\n";
 }

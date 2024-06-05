@@ -16,19 +16,19 @@ class RouteComponent : public Component
 	float tolerance = 0;
 	std::vector<vec3> currentRoute;
 	int currentWaypointIndex = 0;
+
 public:
 	enum class RouteState {
 		Idle,  // Not moving
-		MovingFirst, // Following the first route
-		MovingSecond, // Following the second route
+		Moving, // Moving
 		Finished  // Reached the last node
 	};
 	RouteState state = RouteState::Idle;
+	bool crossed = false;
 
 	RouteComponent(
 		float speed = 1, 
-		std::vector<vec3> nodesRoute1 = std::vector<vec3>(),
-		std::vector<vec3> nodesRoute2 = std::vector<vec3>()
+		std::vector<vec3> nodesRoute1 = std::vector<vec3>()
 	);
 	~RouteComponent();
 
