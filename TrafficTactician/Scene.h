@@ -9,11 +9,11 @@
 class Scene
 {
 	void initWorld(int worldSize);
-	Simulation* sim;
 public: 
+	Simulation* sim;
 	std::vector<std::shared_ptr<GameObject>> objects;
 	std::shared_ptr<GameObject> getGameObject(const std::string& name);
-	GameObject* car;
+	std::shared_ptr<GameObject> car;
 
 	Scene(Simulation* sim, int worldSize = 11);
 	void update(float deltaTime);

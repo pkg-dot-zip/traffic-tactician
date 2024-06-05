@@ -3,6 +3,7 @@
 #include "tigl.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+#include <memory>
 
 #include "InputHandler.h"
 #include "KeyBoardInputHandler.h"
@@ -16,6 +17,7 @@ using tigl::Vertex;
 #include <backends/imgui_impl_glfw.h>
 
 #include "Simulation.h"
+#include "Scene.h"
 #include "GameObject.h"
 #include "PlayerComponent.h"
 #include <glm/gtx/string_cast.hpp>
@@ -28,6 +30,7 @@ using tigl::Vertex;
 
 #include "stb_image.h"
 #include <random>
+#include <CarComponent.h>
 
 #ifdef _DEBUG
 #pragma comment (lib, "opencv_world490d.lib")
@@ -169,7 +172,11 @@ void updateImGui() {
 
 	ImGui::SetNextWindowPos(ImVec2(0, 0)); // Set the window position to the top left corner
 	ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, 100)); // Set the window width to the display width and height to 100
-		ImGui::Text("MousePosition3D: %f, %f, %f", sim->mousePosition3D.x, sim->mousePosition3D.y, sim->mousePosition3D.z);
+	std::shared_ptr<GameObject> car = sim->scene->car;
+	ImGui::Text("CarPosition: %f, %f, %f", car->position.x, car->position.y, car->position.z);
+	ImGui::SliderAngle("CarRotation:", &car->rotation.y);
+	
+
 
 		const std::string poseString = "Pose: " + getPoseString(getInputPose());
 		ImGui::Text(poseString.c_str());
