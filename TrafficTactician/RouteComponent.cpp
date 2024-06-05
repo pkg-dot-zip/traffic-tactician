@@ -4,10 +4,14 @@
 #include <glm/gtx/string_cast.hpp>
 #include <algorithm>
 
-RouteComponent::RouteComponent(float speed, std::vector<vec3> nodes)
+RouteComponent::RouteComponent(float speed, std::vector<vec3> nodesRoute1, std::vector<vec3> nodesRoute2)
 {
 	this->speed = speed;
-	this->nodes = nodes;
+	this->nodesRoute1 = nodesRoute1;
+	this->nodesRoute2 = nodesRoute2;
+
+	this->currentRoute = nodesRoute1;
+	state = RouteState::MovingFirst;
 }
 
 RouteComponent::~RouteComponent()
@@ -15,10 +19,13 @@ RouteComponent::~RouteComponent()
 }
 
 void RouteComponent::update(float deltaTime) {
-	if (!setMoving) return;
+	if (state == RouteState::Idle || currentRoute.empty()) return;
+
+	// check if allowed to continue on the second route
+	if (currentRoute == nodesRoute2 && state != RouteState::MovingSecond) return;
 
 	// Get the current waypoint and object's position
-	glm::vec3 currentWaypoint = nodes[currentWaypointIndex];
+	glm::vec3 currentWaypoint = currentRoute[currentWaypointIndex];
 	glm::vec3 currentPosition = gameObject->position;
 
 	// Calculate the direction vector towards the waypoint
@@ -32,18 +39,24 @@ void RouteComponent::update(float deltaTime) {
 			movement = distance; // Avoid overshooting the waypoint
 		}
 
-
 		gameObject->position = vec3(currentPosition + movement * direction);
+
+		// change the angle according to the direction vector
+		// to create a "turning motion"
 		float targetAngle = glm::atan(direction.x, direction.z);
 		gameObject->rotation.y = targetAngle;
 	}
 	else {
 		// Reached the waypoint, handle waypoint change (optional)
 		currentWaypointIndex++;
-		if (std::distance(nodes.begin(), nodes.end()) <= currentWaypointIndex) {
+		if (std::distance(currentRoute.begin(), currentRoute.end()) <= currentWaypointIndex) {
 			// Handle reaching the end of the route (loop, stop, etc.)
-			setMoving = false;
-			return;
+			if (currentRoute == nodesRoute2) {
+				state = RouteState::Idle;
+				return;
+			}
+
+			currentRoute = nodesRoute2;
 		}
 	}
 	LOG(INFO) << "Car at " << glm::to_string(gameObject->position) << "\n";
