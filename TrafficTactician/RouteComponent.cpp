@@ -1,55 +1,68 @@
 #include "RouteComponent.h"
 #include "GameObject.h"
+#include <easylogging++.h>
+#include <glm/gtx/string_cast.hpp>
+#include <algorithm>
 
-RouteComponent::RouteComponent(float speed)
+RouteComponent::RouteComponent(float speed, std::vector<vec3> nodesRoute)
 {
-    this->speed = speed;
-	routeNodes = {
-		vec3(1.081668, 0.000000, -6.142860),
-		vec3(1.111798, 0.000000, -3.522040),
-		vec3(1.224573, 0.000000, -1.149999),
-		vec3(3.659592, 0.000000, -1.280130)
-	};
+	this->speed = speed;
+	this->currentRoute = nodesRoute;
+
+	state = RouteState::Moving;
 }
 
 RouteComponent::~RouteComponent()
 {
 }
 
-void RouteComponent::update(float elapsedTime)
-{
+void RouteComponent::update(float deltaTime) {
 
+	if (state == RouteState::Idle || state == RouteState::Finished || currentRoute.empty()) return;
 
-    //float xDistance = position.x - gameObject->position.x;
-    //float yDistance = position.y - gameObject->position.y;
-    //float zDistance = position.z - gameObject->position.z;
+	// check if allowed to continue on the second route
+	if (state != RouteState::Moving) return;
 
-    //// Calculate steps, but first check for zero distances to avoid division by zero
-    //float xStep = (xDistance != 0) ? (xDistance / std::abs(xDistance)) * elapsedTime * speed : 0;
-    //float yStep = (yDistance != 0) ? (yDistance / std::abs(yDistance)) * elapsedTime * speed : 0;
-    //float zStep = (zDistance != 0) ? (zDistance / std::abs(zDistance)) * elapsedTime * speed : 0;
+	// check if object is in radius to center of crossroads
+	vec3 center = vec3(0.0f, 0.0f, 0.0f);
+	float distanceToCenter = std::abs(glm::length(center - gameObject->position));
+	float range = 2.0f;
+	if (distanceToCenter < range && !crossed) {
+		state = RouteState::Idle;
+		return;
+	}
 
-    ////update x coördinate
-    //if (std::abs(xDistance) < std::abs(xStep)) {
-    //    gameObject->position.x = position.x;
-    //}
-    //else {
-    //    gameObject->position.x += xStep;
-    //}
+	// Get the current waypoint and object's position
+	glm::vec3 currentWaypoint = currentRoute[currentWaypointIndex];
+	glm::vec3 currentPosition = gameObject->position;
+	//LOG(INFO) << "Car at " << glm::to_string(gameObject->position) << "\n";
 
-    ////update y coördinate
-    //if (std::abs(yDistance) < std::abs(yStep)) {
-    //    gameObject->position.y = position.y;
-    //}
-    //else {
-    //    gameObject->position.y += yStep;
-    //}
+	// Calculate the direction vector towards the waypoint
+	glm::vec3 direction = glm::normalize(currentWaypoint - currentPosition);
 
-    ////update z coördinate
-    //if (std::abs(zDistance) < std::abs(zStep)) {
-    //    gameObject->position.z = position.z;
-    //}
-    //else {
-    //    gameObject->position.z += zStep;
-    //}
+	// Move the object towards the waypoint based on speed and deltaTime
+	float distance = glm::length(currentWaypoint - currentPosition);
+	if (distance > tolerance) { // Check if within tolerance (optional)
+		float movement = speed * deltaTime;
+		if (movement > distance) {
+			movement = distance; // Avoid overshooting the waypoint
+		}
+
+		gameObject->position = vec3(currentPosition + movement * direction);
+
+		// change the angle according to the direction vector
+		// to create a "turning motion"
+		float targetAngle = glm::atan(direction.x, direction.z);
+		gameObject->rotation.y = targetAngle;
+	}
+	else {
+		// Reached the waypoint, handle waypoint change (optional)
+		currentWaypointIndex++;
+		if (std::distance(currentRoute.begin(), currentRoute.end()) <= currentWaypointIndex) {
+			// Handle reaching the end of the route (loop, stop, etc.)
+				currentRoute.clear();
+				state = RouteState::Finished;
+				return;
+		}
+	}
 }

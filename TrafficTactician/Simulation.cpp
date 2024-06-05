@@ -16,6 +16,7 @@ Simulation::Simulation(GLFWwindow* window)
 	projection = glm::mat4();
 	view = glm::mat4();
 
+
 }
 
 void Simulation::init()
@@ -40,6 +41,8 @@ void Simulation::draw()
 
 	scene->draw();
 
+
+	// calculate mousePosition3D
 	glm::vec3 mouse2D;
 	double xpos, ypos;
 

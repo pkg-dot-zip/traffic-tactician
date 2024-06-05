@@ -1,6 +1,8 @@
 #include "TextureCache.h"
 #include "Texture.h"
 
+enum Pose { POSE_MOVE_RIGHT, POSE_MOVE_LEFT, POSE_MOVE_FORWARD, POSE_STOP, POSE_OTHER };
+
 std::map<std::string, Texture*> TextureCache::cache;
 
 Texture* TextureCache::loadTexture(const std::string& fileName)
