@@ -2,5 +2,5 @@
 #include "easylogging++.h"
 
 
-void playSoundSnippet(std::string_view fileName);
+void playSoundSnippet(const std::string& fileName);
 void forceStopSound();
