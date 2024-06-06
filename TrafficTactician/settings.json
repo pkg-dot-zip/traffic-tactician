@@ -22,5 +22,10 @@
 	"toleranceWristNearShoulderDistanceX": 30.0,
 	"toleranceWristNearShoulderDistanceY": 60.0,
 	"toleranceWristNearShoulderDistanceLeftAndDown": 5.0,
-	"personOrientationShoulderTolerance": 20.0
+	"personOrientationShoulderTolerance": 20.0,
+	"useFog": true,
+	"fogType": "exp2",
+	"fogExponentialDensity": 0.02,
+	"fogLinearNear": 0.0,
+	"fogLinearFar": 0.0,
 }
