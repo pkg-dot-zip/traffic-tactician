@@ -42,12 +42,12 @@ void initKeyCallback(GLFWwindow* window)
 
 			if (key == GLFW_KEY_0 && action == GLFW_RELEASE)
 			{
-				playSoundSnippet("test.wav");
+				SoundHandler::getInstance().playSoundSnippet("test.wav");
 			}
 
 			if (key == GLFW_KEY_9 && action == GLFW_RELEASE)
 			{
-				forceStopSound();
+				SoundHandler::getInstance().forceStopSound();
 			}
 		});
 
