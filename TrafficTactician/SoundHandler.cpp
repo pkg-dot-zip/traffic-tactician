@@ -22,11 +22,6 @@ std::wstring convertToLCPWSTR(const std::string& s)
     return r;
 }
 
-void playWindowsSound()
-{
-	PlaySound((LPCTSTR)SND_ALIAS_SYSTEMSTART, NULL, SND_ALIAS_ID);
-}
-
 void playSoundSnippet(const std::string& fileName)
 {
 	PlaySound(convertToLCPWSTR(fileName).c_str(), 0, SND_FILENAME | SND_ASYNC);
