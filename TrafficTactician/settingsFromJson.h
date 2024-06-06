@@ -14,6 +14,7 @@ struct settings_0_t {
   double fogLinearNear;
   std::string_view fogType;
   double heightDifferenceBetweenShoulderAndWristTolerance;
+  bool mxaaEnabled;
   std::uint64_t nInterpSamples;
   double pafScoreTh;
   double personOrientationShoulderTolerance;
@@ -46,6 +47,7 @@ constexpr settings_0_t settings = {
   .fogLinearNear = 0.000000, 
   .fogType = R"##(exp2)##", 
   .heightDifferenceBetweenShoulderAndWristTolerance = 40.000000, 
+  .mxaaEnabled = true, 
   .nInterpSamples = 10, 
   .pafScoreTh = 0.100000, 
   .personOrientationShoulderTolerance = 20.000000, 

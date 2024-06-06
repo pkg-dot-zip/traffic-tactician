@@ -85,6 +85,8 @@ int main(void) {
 
 	setupLogger(); // MUST go first before any log entries are submitted.
 
+	if (settings.mxaaEnabled) glfwWindowHint(GLFW_SAMPLES, 4); // Multisample anti-aliasing.
+
 	if (!glfwInit())
 		throw "Could not initialize glwf";
 	window = glfwCreateWindow(width, height, "TrafficTactician", NULL, NULL);
@@ -93,7 +95,9 @@ int main(void) {
 		glfwTerminate();
 		throw "Could not initialize glwf";
 	}
+	
 	glfwMakeContextCurrent(window);
+	if (settings.mxaaEnabled) glEnable(GL_MULTISAMPLE);
 	glfwSetWindowSizeCallback(window, resize);
 
 	tigl::init();
