@@ -9,7 +9,12 @@ struct settings_0_t {
   double confidenceMapThreshold;
   std::uint64_t downscaleTargetHeight;
   std::uint64_t downscaleTargetWidth;
+  double fogExponentialDensity;
+  double fogLinearFar;
+  double fogLinearNear;
+  std::string_view fogType;
   double heightDifferenceBetweenShoulderAndWristTolerance;
+  bool mxaaEnabled;
   std::uint64_t nInterpSamples;
   double pafScoreTh;
   double personOrientationShoulderTolerance;
@@ -22,6 +27,7 @@ struct settings_0_t {
   std::uint64_t upscaleTargetHeight;
   std::uint64_t upscaleTargetWidth;
   bool useColorsForPose;
+  bool useFog;
   bool useRealTimePriority;
 };
 
@@ -36,7 +42,12 @@ constexpr settings_0_t settings = {
   .confidenceMapThreshold = 0.100000, 
   .downscaleTargetHeight = 192, 
   .downscaleTargetWidth = 256, 
+  .fogExponentialDensity = 0.020000, 
+  .fogLinearFar = 0.000000, 
+  .fogLinearNear = 0.000000, 
+  .fogType = R"##(exp2)##", 
   .heightDifferenceBetweenShoulderAndWristTolerance = 40.000000, 
+  .mxaaEnabled = true, 
   .nInterpSamples = 10, 
   .pafScoreTh = 0.100000, 
   .personOrientationShoulderTolerance = 20.000000, 
@@ -49,5 +60,6 @@ constexpr settings_0_t settings = {
   .upscaleTargetHeight = 768, 
   .upscaleTargetWidth = 1024, 
   .useColorsForPose = true, 
+  .useFog = true, 
   .useRealTimePriority = true, 
 };

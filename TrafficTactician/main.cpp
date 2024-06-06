@@ -7,6 +7,7 @@
 
 #include "InputHandler.h"
 #include "KeyBoardInputHandler.h"
+#include "settingsFromJson.h"
 using tigl::Vertex;
 
 #include "easylogging++.h"
@@ -51,6 +52,7 @@ INITIALIZE_EASYLOGGINGPP
 
 GLFWwindow* window;
 
+void initFog();
 void init();
 void draw();
 void update();
@@ -71,6 +73,7 @@ int width = 1600, height = 900, score = 0;
 double lastFrameTime = 0, timerIsDone = 0;
 float progress = 0.0f, timerSeconds = 10.0f, remainingTime = -1.0f; // float progress start at 0% | 1.0f = 100% 
 
+std::array<float, 4> clearColor = {0.3f, 0.4f, 0.6f, 1.0f};
 
 void resize(GLFWwindow*, int w, int h) {
 	width = w;
@@ -82,6 +85,8 @@ int main(void) {
 
 	setupLogger(); // MUST go first before any log entries are submitted.
 
+	if (settings.mxaaEnabled) glfwWindowHint(GLFW_SAMPLES, 4); // Multisample anti-aliasing.
+
 	if (!glfwInit())
 		throw "Could not initialize glwf";
 	window = glfwCreateWindow(width, height, "TrafficTactician", NULL, NULL);
@@ -90,7 +95,9 @@ int main(void) {
 		glfwTerminate();
 		throw "Could not initialize glwf";
 	}
+	
 	glfwMakeContextCurrent(window);
+	if (settings.mxaaEnabled) glEnable(GL_MULTISAMPLE);
 	glfwSetWindowSizeCallback(window, resize);
 
 	tigl::init();
@@ -153,6 +160,7 @@ void init() {
 	tigl::shader->setLightDiffuse(0, glm::vec3(0.5f, 0.5f, 0.5f));
 	tigl::shader->setLightSpecular(0, glm::vec3(1, 1, 1));
 	tigl::shader->setShinyness(0);
+	initFog();
 
 	// Load textures and set the current sign texture to the stop sign
 	loadTextures();
@@ -167,6 +175,36 @@ void init() {
 
 	initKeyCallback(window);
 	initCameraInput();
+}
+
+void initFog()
+{
+	if (!settings.useFog) return;
+
+	tigl::shader->enableFog(true);
+	tigl::shader->setFogColor({clearColor[0], clearColor[1], clearColor[2]}); // Must match the clear color.
+
+
+	if (settings.fogType == "exp2")
+	{
+		tigl::shader->setFogExp2(settings.fogExponentialDensity);
+	}
+	else if (settings.fogType == "exp")
+	{
+		tigl::shader->setFogExp(settings.fogExponentialDensity);
+	}
+	else if (settings.fogType == "linear")
+	{
+		tigl::shader->setFogLinear(settings.fogLinearNear, settings.fogLinearFar);
+	}
+	else
+	{
+		tigl::shader->enableFog(false);
+		LOG(WARNING) << "Invalid fog type found in settings. Disabling fog." << std::endl;
+		return;
+	}
+
+	LOG(INFO) << "Initialized fog." << std::endl;
 }
 
 void updateImGui() {
@@ -276,7 +314,7 @@ void draw() {
 	if (width == 0 || height == 0)
 		return;
 	glViewport(0, 0, width, height);
-	glClearColor(0.3f, 0.4f, 0.6f, 1.0f);
+	glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	tigl::shader->enableTexture(false); //
