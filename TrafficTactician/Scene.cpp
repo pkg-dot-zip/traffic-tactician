@@ -17,7 +17,7 @@ Scene::Scene(Simulation* sim, int worldSize)
 	initWorld(worldSize);
 	
 	// Create a car object with the given pose
-	currentCarObject = createCar(Pose::POSE_MOVE_RIGHT);
+	currentCarObject = createCar(POSE_MOVE_RIGHT);
 	objects.push_back(currentCarObject);
 }
 
