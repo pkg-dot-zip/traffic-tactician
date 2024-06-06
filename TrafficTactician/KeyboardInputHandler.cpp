@@ -4,6 +4,7 @@
 
 #include "easylogging++.h"
 #include "InputHandler.h"
+#include "SoundHandler.h"
 
 void initKeyCallback(GLFWwindow* window)
 {
@@ -37,6 +38,16 @@ void initKeyCallback(GLFWwindow* window)
 			if (key == GLFW_KEY_5 && action == GLFW_RELEASE)
 			{
 				setInputPose(POSE_OTHER);
+			}
+
+			if (key == GLFW_KEY_0 && action == GLFW_RELEASE)
+			{
+				playSoundSnippet("test.wav");
+			}
+
+			if (key == GLFW_KEY_9 && action == GLFW_RELEASE)
+			{
+				forceStopSound();
 			}
 		});
 

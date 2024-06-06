@@ -297,6 +297,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="PoseUnitTests.cpp" />
+    <ClCompile Include="SoundHandler.cpp" />
     <ClCompile Include="SpinComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureCache.cpp" />
@@ -319,6 +320,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Simulation.h" />
     <ClInclude Include="KeypointLocationStrings.h" />
+    <ClInclude Include="SoundHandler.h" />
     <ClInclude Include="TextureCache.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="utest.h" />
