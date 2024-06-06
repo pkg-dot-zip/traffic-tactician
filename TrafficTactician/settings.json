@@ -22,5 +22,6 @@
 	"toleranceWristNearShoulderDistanceX": 30.0,
 	"toleranceWristNearShoulderDistanceY": 60.0,
 	"toleranceWristNearShoulderDistanceLeftAndDown": 5.0,
-	"personOrientationShoulderTolerance": 20.0
+	"personOrientationShoulderTolerance": 20.0,
+	"mxaaEnabled": true
 }

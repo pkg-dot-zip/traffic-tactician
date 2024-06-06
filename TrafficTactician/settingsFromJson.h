@@ -10,6 +10,7 @@ struct settings_0_t {
   std::uint64_t downscaleTargetHeight;
   std::uint64_t downscaleTargetWidth;
   double heightDifferenceBetweenShoulderAndWristTolerance;
+  bool mxaaEnabled;
   std::uint64_t nInterpSamples;
   double pafScoreTh;
   double personOrientationShoulderTolerance;
@@ -37,6 +38,7 @@ constexpr settings_0_t settings = {
   .downscaleTargetHeight = 192, 
   .downscaleTargetWidth = 256, 
   .heightDifferenceBetweenShoulderAndWristTolerance = 40.000000, 
+  .mxaaEnabled = true, 
   .nInterpSamples = 10, 
   .pafScoreTh = 0.100000, 
   .personOrientationShoulderTolerance = 20.000000, 
