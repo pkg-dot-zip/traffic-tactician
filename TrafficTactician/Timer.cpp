@@ -13,7 +13,17 @@ float Timer::getTime()
 	return timeElapsed;
 }
 
-void Timer::setCallback(std::function<void(int)> cb) {
+float Timer::getTotalElapsedTime()
+{
+	return timeElapsed + rolloverCount * rolloverTime;
+}
+
+float Timer::getTimeRemaining()
+{
+	return rolloverTime - timeElapsed;
+}
+
+void Timer::setCallback(std::function<void()> cb) {
 	callback = cb;
 }
 
@@ -28,9 +38,9 @@ void Timer::update(float deltaTime) {
 
 	if (timeElapsed >= rolloverTime) {
 		rolloverCount++;
-		timeElapsed -= rolloverTime; // or timeElapsed = 0.0f; if you want to completely reset
+		timeElapsed -= rolloverTime;
 		if (callback) {
-			callback(rolloverCount);
+			callback();
 		}
 	}
 }
