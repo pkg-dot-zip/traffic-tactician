@@ -201,7 +201,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>$(ProjectDir)json2hpp.exe "settings" "settings.json" "settingsFromJson.h"</Command>
+      <Command>$(ProjectDir)json2hpp.exe "graphsettings" "settings/graphicSettings.json" "graphicSettings.h"
+$(ProjectDir)json2hpp.exe "dnnmathsettings" "settings/dnnMathSettings.json" "dnnMathSettings.h"
+$(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings.h"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='UnitTesting|x64'">
@@ -217,7 +219,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>$(ProjectDir)json2hpp.exe "settings" "settings.json" "settingsFromJson.h"</Command>
+      <Command>$(ProjectDir)json2hpp.exe "graphsettings" "settings/graphicSettings.json" "graphicSettings.h"
+$(ProjectDir)json2hpp.exe "dnnmathsettings" "settings/dnnMathSettings.json" "dnnMathSettings.h"
+$(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings.h"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -237,7 +241,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>$(ProjectDir)json2hpp.exe "settings" "settings.json" "settingsFromJson.h"</Command>
+      <Command>$(ProjectDir)json2hpp.exe "graphsettings" "settings/graphicSettings.json" "graphicSettings.h"
+$(ProjectDir)json2hpp.exe "dnnmathsettings" "settings/dnnMathSettings.json" "dnnMathSettings.h"
+$(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings.h"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='PoseDetectionRelease|x64'">
@@ -257,7 +263,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>$(ProjectDir)json2hpp.exe "settings" "settings.json" "settingsFromJson.h"</Command>
+      <Command>$(ProjectDir)json2hpp.exe "graphsettings" "settings/graphicSettings.json" "graphicSettings.h"
+$(ProjectDir)json2hpp.exe "dnnmathsettings" "settings/dnnMathSettings.json" "dnnMathSettings.h"
+$(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings.h"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -297,6 +305,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="PoseUnitTests.cpp" />
+    <ClCompile Include="SoundHandler.cpp" />
     <ClCompile Include="SpinComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureCache.cpp" />
@@ -312,14 +321,19 @@
     <ClInclude Include="components\DrawComponent.h" />
     <ClInclude Include="components\GameObject.h" />
     <ClInclude Include="components\PlayerComponent.h" />
+    <ClInclude Include="dnnMathSettings.h" />
+    <ClInclude Include="dnnSettings.h" />
     <ClInclude Include="easylogging++.h" />
+    <ClInclude Include="graphicSettings.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="KeyboardInputHandler.h" />
     <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="RouteComponent.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SettingsRetriever.h" />
     <ClInclude Include="Simulation.h" />
     <ClInclude Include="KeypointLocationStrings.h" />
+    <ClInclude Include="SoundHandler.h" />
     <ClInclude Include="TextureCache.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Timer.h" />
@@ -339,7 +353,6 @@
     <ClInclude Include="poseChecker.h" />
     <ClInclude Include="poseEstimation.h" />
     <ClInclude Include="poseRetriever.h" />
-    <ClInclude Include="settingsFromJson.h" />
     <ClInclude Include="SpinComponent.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="tigl.h" />

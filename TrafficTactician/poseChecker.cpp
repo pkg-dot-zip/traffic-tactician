@@ -13,7 +13,7 @@
 #include "easylogging++.h"
 #include "keyPoint.h"
 #include "KeypointLocationStrings.h"
-#include "settingsFromJson.h"
+#include "SettingsRetriever.h"
 #include "utest.h"
 
 
@@ -65,10 +65,10 @@ bool isRightWristNearShoulder(std::map<std::string_view, std::vector<KeyPoint>>&
 {
 	if (map[pose_keypoint_wrist_right].empty() || map[pose_keypoint_shoulder_right].empty()) return false;
 
-	constexpr float toleranceWristNearShoulderDistanceX = settings.toleranceWristNearShoulderDistanceX;
-	constexpr float toleranceWristNearShoulderDistanceY = settings.toleranceWristNearShoulderDistanceY;
+	constexpr float toleranceWristNearShoulderDistanceX = GetDNNSettings().toleranceWristNearShoulderDistanceX;
+	constexpr float toleranceWristNearShoulderDistanceY = GetDNNSettings().toleranceWristNearShoulderDistanceY;
 
-	constexpr float toleranceWristNearShoulderDistanceLeftAndDown = settings.toleranceWristNearShoulderDistanceLeftAndDown;
+	constexpr float toleranceWristNearShoulderDistanceLeftAndDown = GetDNNSettings().toleranceWristNearShoulderDistanceLeftAndDown;
 
 	const float wristX = map[pose_keypoint_wrist_right][0].point.x;
 	const float wristY = map[pose_keypoint_wrist_right][0].point.y;
@@ -89,7 +89,7 @@ bool isPersonFacingFront(std::map<std::string_view, std::vector<KeyPoint>>& map)
 {
 	if (map[pose_keypoint_shoulder_left].empty() || map[pose_keypoint_shoulder_right].empty()) return false;
 
-	constexpr float personOrientationShoulderTolerance = settings.personOrientationShoulderTolerance;
+	constexpr float personOrientationShoulderTolerance = GetDNNSettings().personOrientationShoulderTolerance;
 
 	const float LshoulderX = map[pose_keypoint_shoulder_left][0].point.x;
 	const float RshoulderX = map[pose_keypoint_shoulder_right][0].point.x;
@@ -106,7 +106,7 @@ Pose getPose(std::map<std::string_view, std::vector<KeyPoint>>& map)
 	const float heightDifferenceElbowLeft = calculateDifferenceInHeightBetweenShoulderAndWristLeft(map);
 	const float heightDifferenceElbowRight = calculateDifferenceInHeightBetweenShoulderAndWristRight(map);
 
-	constexpr float heightDifferenceBetweenShoulderAndWristTolerance = settings.heightDifferenceBetweenShoulderAndWristTolerance;
+	constexpr float heightDifferenceBetweenShoulderAndWristTolerance = GetDNNSettings().heightDifferenceBetweenShoulderAndWristTolerance;
 
 	if (leftArmDirection == DIRECTION_LEFT && (rightArmDirection == DIRECTION_DOWN || rightArmDirection ==
 			DIRECTION_UNCLEAR) && heightDifferenceElbowLeft >= 0 - heightDifferenceBetweenShoulderAndWristTolerance && heightDifferenceElbowLeft <=
@@ -256,7 +256,7 @@ PoseDirection getDirectionForArm(const float angleInDegrees)
 {
 	if (angleInDegrees == NAN) return DIRECTION_UNCLEAR;
 
-	constexpr float anglesForDirectionCalculationTolerance = settings.anglesForDirectionCalculationTolerance; // Tolerance in degrees.
+	constexpr float anglesForDirectionCalculationTolerance = GetDNNSettings().anglesForDirectionCalculationTolerance; // Tolerance in degrees.
 
 	if (angleInDegrees < (90.0F + anglesForDirectionCalculationTolerance) && angleInDegrees > (90.0F - anglesForDirectionCalculationTolerance))
 	{

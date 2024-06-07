@@ -37,6 +37,9 @@
     <Filter Include="Header Files\inputSystem">
       <UniqueIdentifier>{230bc179-0d42-4894-895f-32060948a5f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\settings">
+      <UniqueIdentifier>{46e66bea-d890-4e0b-a8f8-b3a3ca4fb916}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tigl.cpp">
@@ -153,6 +156,9 @@
     <ClCompile Include="ControllerComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SoundHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="easylogging++.h">
@@ -221,9 +227,6 @@
     <ClInclude Include="poseRetriever.h">
       <Filter>Header Files\poseDetection</Filter>
     </ClInclude>
-    <ClInclude Include="settingsFromJson.h">
-      <Filter>Header Files\poseDetection</Filter>
-    </ClInclude>
     <ClInclude Include="WorldComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -271,6 +274,21 @@
     </ClInclude>
     <ClInclude Include="TextureCache.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingsRetriever.h">
+      <Filter>Header Files\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="graphicSettings.h">
+      <Filter>Header Files\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="dnnMathSettings.h">
+      <Filter>Header Files\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="dnnSettings.h">
+      <Filter>Header Files\settings</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
