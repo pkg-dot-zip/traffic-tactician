@@ -7,7 +7,7 @@
 
 #include "InputHandler.h"
 #include "KeyBoardInputHandler.h"
-#include "settingsFromJson.h"
+#include "SettingsRetriever.h"
 using tigl::Vertex;
 
 #include "easylogging++.h"
@@ -85,7 +85,7 @@ int main(void) {
 
 	setupLogger(); // MUST go first before any log entries are submitted.
 
-	if (settings.mxaaEnabled) glfwWindowHint(GLFW_SAMPLES, 4); // Multisample anti-aliasing.
+	if (GetGraphicSettings().mxaaEnabled) glfwWindowHint(GLFW_SAMPLES, 4); // Multisample anti-aliasing.
 
 	if (!glfwInit())
 		throw "Could not initialize glwf";
@@ -97,7 +97,7 @@ int main(void) {
 	}
 	
 	glfwMakeContextCurrent(window);
-	if (settings.mxaaEnabled) glEnable(GL_MULTISAMPLE);
+	if (GetGraphicSettings().mxaaEnabled) glEnable(GL_MULTISAMPLE);
 	glfwSetWindowSizeCallback(window, resize);
 
 	tigl::init();
@@ -179,23 +179,23 @@ void init() {
 
 void initFog()
 {
-	if (!settings.useFog) return;
+	if (!GetGraphicSettings().useFog) return;
 
 	tigl::shader->enableFog(true);
 	tigl::shader->setFogColor({clearColor[0], clearColor[1], clearColor[2]}); // Must match the clear color.
 
 
-	if (settings.fogType == "exp2")
+	if (GetGraphicSettings().fogType == "exp2")
 	{
-		tigl::shader->setFogExp2(settings.fogExponentialDensity);
+		tigl::shader->setFogExp2(GetGraphicSettings().fogExponentialDensity);
 	}
-	else if (settings.fogType == "exp")
+	else if (GetGraphicSettings().fogType == "exp")
 	{
-		tigl::shader->setFogExp(settings.fogExponentialDensity);
+		tigl::shader->setFogExp(GetGraphicSettings().fogExponentialDensity);
 	}
-	else if (settings.fogType == "linear")
+	else if (GetGraphicSettings().fogType == "linear")
 	{
-		tigl::shader->setFogLinear(settings.fogLinearNear, settings.fogLinearFar);
+		tigl::shader->setFogLinear(GetGraphicSettings().fogLinearNear, GetGraphicSettings().fogLinearFar);
 	}
 	else
 	{

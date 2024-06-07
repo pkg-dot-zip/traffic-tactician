@@ -16,7 +16,7 @@
 #include "keyPoint.h"
 #include "poseChecker.h"
 #include "poseEstimation.h"
-#include "settingsFromJson.h"
+#include "SettingsRetriever.h"
 
 
 bool isPoseEstimationEnabled = true;
@@ -24,25 +24,25 @@ bool isPoseEstimationEnabled = true;
 // This forces higher priority on your windows system. You can check this in task manager -> details.
 static void doExternalOptimizations()
 {
-	SetThreadPriority(GetCurrentThread(), settings.useRealTimePriority ? REALTIME_PRIORITY_CLASS : HIGH_PRIORITY_CLASS);
-	SetPriorityClass(GetCurrentProcess(), settings.useRealTimePriority ? REALTIME_PRIORITY_CLASS : HIGH_PRIORITY_CLASS);
+	SetThreadPriority(GetCurrentThread(), GetDNNSettings().useRealTimePriority ? REALTIME_PRIORITY_CLASS : HIGH_PRIORITY_CLASS);
+	SetPriorityClass(GetCurrentProcess(), GetDNNSettings().useRealTimePriority ? REALTIME_PRIORITY_CLASS : HIGH_PRIORITY_CLASS);
 }
 
 // Attempts to initialize the camera, then returns true if cameraCapture was successfully opened.
 static bool initCamera(cv::VideoCapture& camera)
 {
-	camera = cv::VideoCapture(settings.cameraToUse);
+	camera = cv::VideoCapture(GetDNNSettings().cameraToUse);
 	return camera.isOpened();
 }
 
 static void setCpuOrGpu(cv::dnn::Net& inputNet)
 {
-	if (settings.preferredDevice == "cpu")
+	if (GetDNNSettings().preferredDevice == "cpu")
 	{
 		LOG(INFO) << "Attempting to use CPU device!" << std::endl;
 		inputNet.setPreferableBackend(cv::dnn::DNN_TARGET_CPU);
 	}
-	else if (settings.preferredDevice == "gpu") // NOTE: Requires custom OpenCV built with CUDA sdk.
+	else if (GetDNNSettings().preferredDevice == "gpu") // NOTE: Requires custom OpenCV built with CUDA sdk.
 	{
 		LOG(INFO) << "Attempting to use GPU device!" << std::endl;
 		inputNet.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
@@ -55,8 +55,8 @@ bool loadDnnModel(cv::dnn::Net& inputNet)
 {
 	try
 	{
-		inputNet = cv::dnn::readNetFromCaffe(static_cast<std::string>(settings.prototxt),
-		                                     static_cast<std::string>(settings.caffemodel));
+		inputNet = cv::dnn::readNetFromCaffe(static_cast<std::string>(GetDNNSettings().prototxt),
+		                                     static_cast<std::string>(GetDNNSettings().caffemodel));
 	}
 	catch (cv::Exception e)
 	{
@@ -78,7 +78,7 @@ void displayCurrentPose(const cv::Mat& outputFrame, std::map<std::string_view, s
 	const cv::Scalar color = {0, 0, 0, 0};
 
 	cv::putText(outputFrame, baseString.append(poseString),
-	            {offset, settings.upscaleTargetHeight - offset},
+	            {offset, GetDNNSettings().upscaleTargetHeight - offset},
 	            fontFace, fontScale, color);
 }
 
