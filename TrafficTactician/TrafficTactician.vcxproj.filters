@@ -156,6 +156,9 @@
     <ClCompile Include="TextureCache.cpp">
       <Filter>Source Files\texture</Filter>
     </ClCompile>
+    <ClCompile Include="StatusHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="components\Component.h">
@@ -274,6 +277,9 @@
     </ClInclude>
     <ClInclude Include="TextureCache.h">
       <Filter>Header Files\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="StatusHandler.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
