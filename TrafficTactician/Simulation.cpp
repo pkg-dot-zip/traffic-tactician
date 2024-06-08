@@ -4,10 +4,6 @@
 #include "tigl.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <iostream>
-
-#include "Simulation.h"
-#include "Scene.h"
 
 Simulation::Simulation(GLFWwindow* window)
 {
@@ -15,25 +11,23 @@ Simulation::Simulation(GLFWwindow* window)
 	mousePosition3D = glm::vec3();
 	projection = glm::mat4();
 	view = glm::mat4();
-
-
 }
 
-void Simulation::init()
+void Simulation::init(const std::weak_ptr<Simulation>& sim)
 {
-	scene = new Scene(this);
+	scene = std::make_unique<Scene>(sim);
 }
 
-void Simulation::update(float deltaTime)
+void Simulation::update(float deltaTime) const
 {
 	scene->update(deltaTime);
 }
 
 void Simulation::draw()
 {
-	int viewport[4];
-	glGetIntegerv(GL_VIEWPORT, viewport);
-	projection = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 10.0f);
+	std::array<int, 4> viewport;
+	glGetIntegerv(GL_VIEWPORT, viewport.data());
+	projection = glm::perspective(glm::radians(75.0f), viewport[2] / static_cast<float>(viewport[3]), 0.01f, 10.0f);
 	view = glm::lookAt(glm::vec3(0, 4.5f, 2), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	tigl::shader->setProjectionMatrix(projection);
 	tigl::shader->setViewMatrix(view);
@@ -47,9 +41,9 @@ void Simulation::draw()
 	double xpos, ypos;
 
 	glfwGetCursorPos(window, &xpos, &ypos);
-	mouse2D.x = (float)xpos;
-	mouse2D.y = viewport[3] - (float)ypos;
-	glReadPixels((int)xpos, viewport[3] - (int)ypos, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &mouse2D.z);
+	mouse2D.x = static_cast<float>(xpos);
+	mouse2D.y = viewport[3] - static_cast<float>(ypos);
+	glReadPixels(static_cast<int>(xpos), viewport[3] - static_cast<int>(ypos), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &mouse2D.z);
 
 	mousePosition3D = glm::unProject(
 		mouse2D,
@@ -59,13 +53,11 @@ void Simulation::draw()
 
 }
 
-// Extract camera position from the inverse of the view matrix
-glm::vec3 Simulation::getCameraPosition()
+// Extract camera position from the inverse of the view matrix.
+glm::vec3 Simulation::getCameraPosition() const
 {
 	glm::mat4 inverseView = glm::inverse(view);
-	glm::vec3 cameraPosition = glm::vec3(inverseView[3]);
+	const glm::vec3 cameraPosition = glm::vec3(inverseView[3]);
 
 	return cameraPosition;
 }
-
-

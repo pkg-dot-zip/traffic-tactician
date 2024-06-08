@@ -3,6 +3,14 @@
 
 class SoundHandler
 {
+public:
+	static SoundHandler& getInstance() {
+		static SoundHandler instance;
+		return instance;
+	}
+
+	static void playSoundSnippet(const std::string& fileName);
+	static void forceStopSound();
 private:
 	SoundHandler() = default;
 	~SoundHandler() = default;
@@ -12,12 +20,4 @@ private:
 
 
 	static std::wstring convertToLCPWSTR(const std::string& s);
-public:
-	static SoundHandler& getInstance() {
-		static SoundHandler instance;
-		return instance;
-	}
-
-	static void playSoundSnippet(const std::string& fileName);
-	static void forceStopSound();
 };

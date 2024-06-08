@@ -9,6 +9,7 @@
 #include "KeyBoardInputHandler.h"
 #include "TextureCache.h"
 #include "SettingsRetriever.h"
+#include "StatusHandler.h"
 using tigl::Vertex;
 
 #include "easylogging++.h"
@@ -21,16 +22,9 @@ using tigl::Vertex;
 #include "Simulation.h"
 #include "Scene.h"
 #include "GameObject.h"
-#include "PlayerComponent.h"
 #include <glm/gtx/string_cast.hpp>
-#include "CubeComponent.h"
-#include "ModelComponent.h"
-#include "SpinComponent.h"
 #include "utest.h"
-#include "WorldComponent.h"
-using tigl::Vertex;
 
-#include "stb_image.h"
 #include <random>
 #include <RouteComponent.h>
 #include <ControllerComponent.h>
@@ -62,10 +56,10 @@ void onDestroy();
 void initImGui();
 void updateImGui();
 
-Simulation* sim;
+std::shared_ptr<Simulation> sim;
 void loadTextures();
 
-int width = 1600, height = 900;
+int width = GetGraphicSettings().screenWidth, height = GetGraphicSettings().screenHeight;
 double lastFrameTime = 0;
 
 std::array<float, 4> clearColor = { 0.3f, 0.4f, 0.6f, 1.0f };
@@ -82,13 +76,12 @@ int main(void) {
 
 	if (GetGraphicSettings().mxaaEnabled) glfwWindowHint(GLFW_SAMPLES, 4); // Multisample anti-aliasing.
 
-	if (!glfwInit())
-		throw "Could not initialize glwf";
+	if (!glfwInit()) throw std::exception("Could not initialize glwf");
 	window = glfwCreateWindow(width, height, "TrafficTactician", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
-		throw "Could not initialize glwf";
+		throw std::exception("Could not initialize glwf");
 	}
 
 	glfwMakeContextCurrent(window);
@@ -96,7 +89,7 @@ int main(void) {
 	glfwSetWindowSizeCallback(window, resize);
 
 	tigl::init();
-	sim = new Simulation(window);
+	sim = std::make_shared<Simulation>(window);
 	init();
 
 	while (!glfwWindowShouldClose(window))
@@ -129,9 +122,6 @@ void initImGui() {
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-	// Load a font for ImGui 
-	//io.Fonts->AddFontFromFileTTF("font.ttf", 24.0f);
-
 	// Setup Platform/Renderer settings.
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 130");
@@ -160,8 +150,8 @@ void init() {
 
 	initImGui();
 	LOG(INFO) << "Initialized ImGui window." << std::endl;
-
-	sim->init();
+	
+	sim->init(sim);
 	LOG(INFO) << "Initialized simulation." << std::endl;
 
 
@@ -203,81 +193,46 @@ void updateImGui() {
 
 	ImGui::SetNextWindowPos(ImVec2(0, 0)); // Set the window position to the top left corner
 	ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, 100)); // Set the window width to the display width and height to 100
-	std::shared_ptr<GameObject> car = sim->scene->currentCarObject;
+	const std::shared_ptr<GameObject> car = sim->scene->currentCarObject;
 	ImGui::Text("CarPosition: %f, %f, %f", car->position.x, car->position.y, car->position.z);
 	ImGui::SliderAngle("CarRotation:", &car->rotation.y);
 	bool continueRoute = false;
 	if (ImGui::Checkbox("Continue route", &continueRoute)) {
-		sim->scene->currentCarObject->getComponent<RouteComponent>()->state = RouteComponent::RouteState::Moving;
-		sim->scene->currentCarObject->getComponent<RouteComponent>()->crossed = true;
+
+		if (sim->scene->currentCarObject->getComponent<RouteComponent>().has_value())
+		{
+			sim->scene->currentCarObject->getComponent<RouteComponent>().value()->state = RouteComponent::RouteState::Moving;
+			sim->scene->currentCarObject->getComponent<RouteComponent>().value()->crossed = true;
+		} else
+		{
+			LOG(ERROR) << "Error: Can not update UI when no RouteComponent can be found." << std::endl;
+			throw std::exception("Error: Can not update UI when no RouteComponent can be found.");
+		}
+		
 	}
-	// check if component is not null
-	if (sim->scene->currentCarObject->getComponent<ControllerComponent>() != nullptr) {
-		auto correctPose = sim->scene->currentCarObject->getComponent<ControllerComponent>()->correctPose;
+	
+	if (sim->scene->currentCarObject->getComponent<ControllerComponent>().has_value()) {
+		const auto correctPose = sim->scene->currentCarObject->getComponent<ControllerComponent>().value()->correctPose;
 		ImGui::Text("Correct Pose: %s", getPoseString(correctPose).c_str());
+	} else
+	{
+		LOG(ERROR) << "Error: Can not update UI when no ControllerComponent can be found." << std::endl;
+		throw std::exception("Error: Can not update UI when no ControllerComponent can be found.");
 	}
 
 
 	const std::string poseString = "Pose: " + getPoseString(getInputPose());
 	ImGui::Text(poseString.c_str());
-	//float scale = world->scale.y;
 
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.25f)); // Set the window background color to semi-transparent black
-
-	// TODO uit de main halen smh
-	if (ImGui::Begin("Status", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar)) { // Add ImGuiWindowFlags_NoTitleBar to hide the title bar
-
-		//// Select a random texture
-		//std::random_device rd;
-		//std::mt19937 gen(rd());
-		//std::uniform_int_distribution<> dis(1, textures.size());
-		//auto it = textures.begin();
-		//std::advance(it, dis(gen) - 1);
-		//GLuint randomTexture = it->second;
-		//ImGui::Image((void*)(intptr_t)randomTexture, ImVec2(31, 31)); // Display the random icon
-
-		Scene::OverlayData data = sim->scene->data;
-		ImGui::Image((void*)(intptr_t)*data.currentSignTexture, ImVec2(31, 31), { 0,1 }, { 1,0 }); // Display the icon
-
-		ImGui::SameLine(); // Keep the following items on the same line with an offset
-
-		int score = data.points;
-
-		float windowWidth = ImGui::GetWindowWidth();
-		float imageWidth = 31.0f; // Width of the image
-		float textWidth = ImGui::CalcTextSize(std::to_string(score).c_str()).x; // Width of the text
-
-		ImGui::SetCursorPosX(windowWidth - imageWidth - textWidth - 20.0f); // Set the cursor position to align the image and score to the right, with a small padding of 20.0f
-
-		ImGui::Image((void*)(intptr_t)data.textures["scoreLogo"], ImVec2(31, 31), {0,1}, {1,0}); // Display the icon
-		//ImGui::SameLine(0.0f, ImGui::GetTextLineHeight() / 2); // Keep the following items on the same line with an offset
-		ImGui::SameLine(); // Keep the following items on the same line with an offset
-
-		ImGui::Text("%d", score); // Display the text and integer
-
-		//ImGui::Text("MousePosition3D: %f, %f, %f", sim->mousePosition3D.x, sim->mousePosition3D.y, sim->mousePosition3D.z);
-
-
-		if (sim->scene->currentCarObject->getComponent<RouteComponent>()->state == RouteComponent::RouteState::Idle)
-		{
-			// Start timer
-			sim->scene->currentCarObject->getComponent<ControllerComponent>()->timer->toggleTimer(true);
-
-			char overlay[32];
-			sprintf_s(overlay, "%.2f s", data.remainingTime);
-			ImGui::ProgressBar(data.progress, ImVec2(-1.0f, 0.0f), overlay); // Full width progress bar 
-		}
-
-
-		ImGui::End();
-	}
-
-	ImGui::PopStyleColor(); // Reset the window background color to the default
+	showStatus(sim);
+	
+	ImGui::PopStyleColor(); // Reset the window background color to the default.
 }
 
 void update() {
-	double currentFrameTime = glfwGetTime();
-	double deltaTime = currentFrameTime - lastFrameTime;
+	const double currentFrameTime = glfwGetTime();
+	const double deltaTime = currentFrameTime - lastFrameTime;
 	lastFrameTime = currentFrameTime;
 
 	sim->update(static_cast<float>(deltaTime));
@@ -286,14 +241,12 @@ void update() {
 }
 
 void draw() {
-
-	if (width == 0 || height == 0)
-		return;
+	if (width == 0 || height == 0) return;
 	glViewport(0, 0, width, height);
 	glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	tigl::shader->enableTexture(false); //
+	tigl::shader->enableTexture(false);
 	tigl::shader->enableColor(true);
 	tigl::shader->enableLighting(true);
 	tigl::shader->setLightCount(1);
@@ -306,7 +259,7 @@ void draw() {
 
 	sim->draw();
 
-	// Draw ImGui
+	// Draw ImGui.
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
@@ -319,10 +272,9 @@ void onDestroy() {
 	glfwTerminate();
 }
 
-
+// preload textures
 void loadTextures()
 {
-	// preload textures
 	TextureCache::loadTexture("score_logo.png");
 	TextureCache::loadTexture("sign_stop.png");
 	TextureCache::loadTexture("sign_forward.png");

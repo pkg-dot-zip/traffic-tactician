@@ -1,4 +1,6 @@
 {
+	"screenWidth": 1600,
+	"screenHeight": 900,
 	"useFog": true,
 	"fogType": "exp2",
 	"fogExponentialDensity": 0.02,

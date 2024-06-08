@@ -40,6 +40,18 @@
     <Filter Include="Header Files\settings">
       <UniqueIdentifier>{46e66bea-d890-4e0b-a8f8-b3a3ca4fb916}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\logging">
+      <UniqueIdentifier>{b3b0c723-d3d4-48f1-b931-a86f9c718e19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\logging">
+      <UniqueIdentifier>{54c87a65-05a2-4250-a4f5-09a4446529a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\texture">
+      <UniqueIdentifier>{7bedfe35-ddb1-49b5-a3c9-5de8a4b5ba62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\texture">
+      <UniqueIdentifier>{3f2deab9-a3c1-46b8-88a2-3d2561742247}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tigl.cpp">
@@ -48,31 +60,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="easylogging++.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="log.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="components\BoundingBoxComponent.cpp">
-      <Filter>components</Filter>
-    </ClCompile>
-    <ClCompile Include="components\Component.cpp">
-      <Filter>components</Filter>
-    </ClCompile>
-    <ClCompile Include="components\CubeComponent.cpp">
-      <Filter>components</Filter>
-    </ClCompile>
-    <ClCompile Include="components\DrawComponent.cpp">
-      <Filter>components</Filter>
-    </ClCompile>
     <ClCompile Include="components\GameObject.cpp">
-      <Filter>components</Filter>
-    </ClCompile>
-    <ClCompile Include="components\PlayerComponent.cpp">
-      <Filter>components</Filter>
-    </ClCompile>
-    <ClCompile Include="SpinComponent.cpp">
       <Filter>components</Filter>
     </ClCompile>
     <ClCompile Include="lib\imgui-docking\imgui.cpp">
@@ -108,24 +96,6 @@
     <ClCompile Include="poseRetriever.cpp">
       <Filter>Source Files\poseDetection</Filter>
     </ClCompile>
-    <ClCompile Include="ModelComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WorldComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CarComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MoveComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RouteComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -150,30 +120,48 @@
     <ClCompile Include="InputHandler.cpp">
       <Filter>Source Files\inputSystem</Filter>
     </ClCompile>
-    <ClCompile Include="TextureCache.cpp">
+    <ClCompile Include="SoundHandler.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteComponent.cpp">
+      <Filter>components</Filter>
     </ClCompile>
     <ClCompile Include="ControllerComponent.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>components</Filter>
     </ClCompile>
-    <ClCompile Include="SoundHandler.cpp">
+    <ClCompile Include="CarComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="log.cpp">
+      <Filter>Source Files\logging</Filter>
+    </ClCompile>
+    <ClCompile Include="easylogging++.cpp">
+      <Filter>Source Files\logging</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureCache.cpp">
+      <Filter>Source Files\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="StatusHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="easylogging++.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="log.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="components\BoundingBoxComponent.h">
-      <Filter>components</Filter>
-    </ClInclude>
     <ClInclude Include="components\Component.h">
-      <Filter>components</Filter>
-    </ClInclude>
-    <ClInclude Include="components\CubeComponent.h">
       <Filter>components</Filter>
     </ClInclude>
     <ClInclude Include="components\DrawComponent.h">
@@ -182,14 +170,8 @@
     <ClInclude Include="components\GameObject.h">
       <Filter>components</Filter>
     </ClInclude>
-    <ClInclude Include="components\PlayerComponent.h">
-      <Filter>components</Filter>
-    </ClInclude>
     <ClInclude Include="tigl.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpinComponent.h">
-      <Filter>components</Filter>
     </ClInclude>
     <ClInclude Include="lib\imgui-docking\imconfig.h">
       <Filter>Header Files\imgui</Filter>
@@ -212,9 +194,6 @@
     <ClInclude Include="lib\imgui-docking\backends\imgui_impl_opengl3.h">
       <Filter>Header Files\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="json.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="poseChecker.h">
       <Filter>Header Files\poseDetection</Filter>
     </ClInclude>
@@ -227,31 +206,10 @@
     <ClInclude Include="poseRetriever.h">
       <Filter>Header Files\poseDetection</Filter>
     </ClInclude>
-    <ClInclude Include="WorldComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CarComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MoveComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RouteComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Simulation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="KeypointLocationStrings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="utest.h">
@@ -269,12 +227,6 @@
     <ClInclude Include="KeyboardInputHandler.h">
       <Filter>Header Files\inputSystem</Filter>
     </ClInclude>
-    <ClInclude Include="InputHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureCache.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SoundHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -289,6 +241,45 @@
     </ClInclude>
     <ClInclude Include="dnnSettings.h">
       <Filter>Header Files\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CarComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="KeypointLocationStrings.h">
+      <Filter>Header Files\poseDetection</Filter>
+    </ClInclude>
+    <ClInclude Include="InputHandler.h">
+      <Filter>Header Files\inputSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="log.h">
+      <Filter>Header Files\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="easylogging++.h">
+      <Filter>Header Files\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureCache.h">
+      <Filter>Header Files\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="StatusHandler.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

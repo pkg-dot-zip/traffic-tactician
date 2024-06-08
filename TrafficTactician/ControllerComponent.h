@@ -16,8 +16,8 @@ public:
 	ControllerComponent(Pose pose, Scene* scene);
 	~ControllerComponent() = default;
 
-	bool checkPose();
-	void timerCallback();
+	bool checkPose() const;
+	void timerCallback() const;
 
 	virtual void update(float deltaTime) override;
 };

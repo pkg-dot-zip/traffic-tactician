@@ -1,9 +1,8 @@
-
 #include <mutex>
-
 #include "easylogging++.h"
 #include "poseChecker.h"
 #include "poseRetriever.h"
+
 Pose currentPose;
 std::mutex mtx;
 

@@ -3,10 +3,9 @@
 #include "DrawComponent.h"
 #include "tigl.h"
 #include <glm/gtc/matrix_transform.hpp>
-#include "BoundingBoxComponent.h"
 
 
-GameObject::GameObject(const std::string& name, Simulation* sim)
+GameObject::GameObject(const std::string& name, const std::weak_ptr<Simulation>& sim)
 {
 	this->name = name;
 	this->sim = sim;
@@ -14,7 +13,7 @@ GameObject::GameObject(const std::string& name, Simulation* sim)
 
 GameObject::~GameObject() = default;
 
-void GameObject::addComponent(std::shared_ptr<Component> component)
+void GameObject::addComponent(const std::shared_ptr<Component>& component)
 {
 	component->setGameObject(this);
 	components.push_back(component);
@@ -25,17 +24,17 @@ void GameObject::addComponent(std::shared_ptr<Component> component)
 	}
 }
 
-void GameObject::removeComponent(std::shared_ptr<Component> component)
+void GameObject::removeComponent(const std::shared_ptr<Component>& component)
 {
 	components.remove(component);
 }
 
-std::list<std::shared_ptr<Component>> GameObject::getComponents()
+std::list<std::shared_ptr<Component>>& GameObject::getComponents()
 {
 	return components;
 }
 
-void GameObject::draw(const glm::mat4& parentMatrix)
+void GameObject::draw(const glm::mat4& parentMatrix) const
 {
 	if (!drawComponent) return;
 
@@ -49,9 +48,9 @@ void GameObject::draw(const glm::mat4& parentMatrix)
 	drawComponent->draw(modelMatrix);
 }
 
-void GameObject::update(float deltaTime)
+void GameObject::update(float deltaTime) const
 {
-	for (auto& c : components)
+	for (const auto& c : components)
 	{
 		c->update(deltaTime);
 	}

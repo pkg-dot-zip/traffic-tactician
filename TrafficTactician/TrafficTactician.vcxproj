@@ -270,12 +270,7 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CarComponent.cpp" />
-    <ClCompile Include="components\BoundingBoxComponent.cpp" />
-    <ClCompile Include="components\Component.cpp" />
-    <ClCompile Include="components\CubeComponent.cpp" />
-    <ClCompile Include="components\DrawComponent.cpp" />
     <ClCompile Include="components\GameObject.cpp" />
-    <ClCompile Include="components\PlayerComponent.cpp" />
     <ClCompile Include="ControllerComponent.cpp" />
     <ClCompile Include="detectionMain.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -306,7 +301,7 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="PoseUnitTests.cpp" />
     <ClCompile Include="SoundHandler.cpp" />
-    <ClCompile Include="SpinComponent.cpp" />
+    <ClCompile Include="StatusHandler.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureCache.cpp" />
     <ClCompile Include="tigl.cpp" />
@@ -315,12 +310,9 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CarComponent.h" />
-    <ClInclude Include="components\BoundingBoxComponent.h" />
     <ClInclude Include="components\Component.h" />
-    <ClInclude Include="components\CubeComponent.h" />
     <ClInclude Include="components\DrawComponent.h" />
     <ClInclude Include="components\GameObject.h" />
-    <ClInclude Include="components\PlayerComponent.h" />
     <ClInclude Include="dnnMathSettings.h" />
     <ClInclude Include="dnnSettings.h" />
     <ClInclude Include="easylogging++.h" />
@@ -334,12 +326,12 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     <ClInclude Include="Simulation.h" />
     <ClInclude Include="KeypointLocationStrings.h" />
     <ClInclude Include="SoundHandler.h" />
+    <ClInclude Include="StatusHandler.h" />
     <ClInclude Include="TextureCache.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="utest.h" />
     <ClInclude Include="WorldComponent.h" />
-    <ClInclude Include="json.h" />
     <ClInclude Include="keyPoint.h" />
     <ClInclude Include="lib\imgui-docking\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="lib\imgui-docking\imconfig.h" />
@@ -353,7 +345,6 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     <ClInclude Include="poseChecker.h" />
     <ClInclude Include="poseEstimation.h" />
     <ClInclude Include="poseRetriever.h" />
-    <ClInclude Include="SpinComponent.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="tigl.h" />
   </ItemGroup>

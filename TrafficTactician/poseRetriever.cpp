@@ -136,7 +136,7 @@ int runPoseRetriever()
 	
 		displayCurrentPose(outputFrame, keyPoints);
 		displayCurrentOrientation(outputFrame, keyPoints);
-		//
+		
 		cv::imshow("Detected Pose", outputFrame);
 		cv::waitKey(1);
 	

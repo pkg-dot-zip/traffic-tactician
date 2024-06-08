@@ -1,5 +1,4 @@
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 
 #include "Scene.h"
 #include "GameObject.h"
@@ -8,12 +7,11 @@
 #include "WorldComponent.h"
 #include "RouteComponent.h"
 #include "ControllerComponent.h"
-#include "stb_image.h"
 #include "Texture.h"
 #include "TextureCache.h"
 
 
-Scene::Scene(Simulation* sim, int worldSize)
+Scene::Scene(const std::weak_ptr<Simulation>& sim, int worldSize)
 {
 	this->sim = sim;
 	initRouteCache();
@@ -26,20 +24,19 @@ Scene::Scene(Simulation* sim, int worldSize)
 	data.textures["rightSign"] = TextureCache::loadTexture("sign_right.png")->id;
 	data.currentSignTexture = &data.textures["stopSign"];
 
-	// Create a car object with the given pose
+	// Create a car object with the given pose.
 	currentCarObject = createCar(POSE_MOVE_RIGHT);
 	objects.push_back(currentCarObject);
 }
 
 void Scene::initWorld(int worldSize)
 {
-	std::shared_ptr<GameObject> worldObject = std::make_shared<GameObject>("world", sim);
+	const std::shared_ptr<GameObject> worldObject = std::make_shared<GameObject>("world", sim);
 	worldObject->scale = 4.0f * worldObject->scale;
-	std::shared_ptr<WorldComponent> world_component = std::make_shared<WorldComponent>(worldSize, 1.0f, std::make_shared<ModelComponent>("models/road_kit/tile_low.obj"));
+	const std::shared_ptr<WorldComponent> world_component = std::make_shared<WorldComponent>(worldSize, 1.0f, std::make_shared<ModelComponent>("models/road_kit/tile_low.obj"));
 	for (int i = 0; i < worldSize; i++)
 	{
-		if (i == worldSize / 2)
-			continue;
+		if (i == worldSize / 2) continue;
 
 		world_component->setModel(worldSize / 2, i, std::make_shared<ModelComponent>("models/road_kit/road_straight_rotated.obj"));
 		world_component->setModel(i, worldSize / 2, std::make_shared<ModelComponent>("models/road_kit/road_straight.obj"));
@@ -72,15 +69,15 @@ std::shared_ptr<GameObject> Scene::createCar(Pose pose)
 	auto carObject = std::make_shared<GameObject>("car", sim);
 	carObject->scale = 0.4f * carObject->scale;
 
-	// TODO: add random car model
+	// TODO: Add random car model.
 	carObject->addComponent(std::make_shared<ModelComponent>("models/car_kit/ambulance.obj"));
 
 
-	// TODO: add more routes
+	// TODO: Add more routes.
 	std::vector<glm::vec3> route = routeCache[Pose::POSE_MOVE_RIGHT];
 	carObject->position = route.front(); // set spawn point to the first node
 
-	float speed = 1.5;
+	constexpr float speed = 1.5;
 	carObject->addComponent(std::make_shared<RouteComponent>(speed, route));
 
 	carObject->addComponent(std::make_shared<ControllerComponent>(pose, this));
@@ -89,14 +86,14 @@ std::shared_ptr<GameObject> Scene::createCar(Pose pose)
 }
 
 
-void Scene::update(float deltaTime)
+void Scene::update(float deltaTime) const
 {
-	for (auto& o : objects) {
+	for (const auto& o : objects) {
 		o->update(deltaTime);
 	}
 }
 
-void Scene::draw()
+void Scene::draw() const
 {
 	for (auto& o : objects) {
 		o->draw();
