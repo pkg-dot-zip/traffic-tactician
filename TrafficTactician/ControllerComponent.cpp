@@ -11,16 +11,12 @@
 
 ControllerComponent::ControllerComponent(Pose pose, Scene* scene) : correctPose(pose), scene(scene)
 {
-	this->timer = std::make_shared<Timer>();
-
-	timer->setCallback([this] { timerCallback(); });
+	this->timer = std::make_shared<Timer>([this] { timerCallback(); });
 }
 
 bool ControllerComponent::checkPose()
 {
-	Pose pose = getInputPose();
-
-	return (pose == correctPose);
+	return getInputPose() == correctPose;
 }
 
 void ControllerComponent::timerCallback()
