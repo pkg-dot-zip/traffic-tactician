@@ -36,12 +36,10 @@ static std::string replace(std::string str, const std::string& toReplace, const 
 static std::vector<std::string> split(std::string str, const std::string& seperator)
 {
 	std::vector<std::string> ret;
-	size_t index;
 	while (true)
 	{
-		index = str.find(seperator);
-		if (index == std::string::npos)
-			break;
+		const size_t index = str.find(seperator);
+		if (index == std::string::npos) break;
 		ret.push_back(str.substr(0, index));
 		str = str.substr(index + 1);
 	}
@@ -54,10 +52,9 @@ static std::vector<std::string> split(std::string str, const std::string& sepera
 */
 static inline std::string toLower(std::string data)
 {
-	std::transform(data.begin(), data.end(), data.begin(), ::tolower);
+	std::ranges::transform(data, data.begin(), ::tolower);
 	return data;
 }
-
 
 /**
 * Cleans up a line for processing
@@ -78,9 +75,6 @@ static inline std::string cleanLine(std::string line)
 	return line;
 }
 
-
-
-
 /**
 * Loads an object model
 */
@@ -95,7 +89,6 @@ ModelComponent::ModelComponent(const std::string& fileName)
 	if (fileName == dirName)
 		dirName = "";
 
-
 	std::ifstream pFile(fileName.c_str());
 
 	if (!pFile.is_open())
@@ -104,10 +97,8 @@ ModelComponent::ModelComponent(const std::string& fileName)
 		return;
 	}
 
-
 	ObjGroup* currentGroup = new ObjGroup();
 	currentGroup->materialIndex = -1;
-
 
 	while (!pFile.eof())
 	{
@@ -183,12 +174,6 @@ ModelComponent::ModelComponent(const std::string& fileName)
 
 }
 
-
-ModelComponent::~ModelComponent(void)
-{
-}
-
-
 void ModelComponent::draw(glm::mat4 parentMatrix)
 {
 	//foreach group in groups
@@ -200,14 +185,14 @@ void ModelComponent::draw(glm::mat4 parentMatrix)
 
 	tigl::shader->setModelMatrix(parentMatrix);
 
-	for (auto& group : groups)
+	for (const auto& group : groups)
 	{
 		materials[group->materialIndex]->texture->bind();
 		tigl::shader->enableTexture(true);
 		tigl::begin(GL_TRIANGLES);
 		for (auto& face : group->faces)
 		{
-			for (auto& vertex : face.vertices)
+			for (const auto& vertex : face.vertices)
 			{
 				tigl::addVertex(tigl::Vertex::PTN(vertices[vertex.position], texcoords[vertex.texcoord], normals[vertex.normal]));
 			}
@@ -235,8 +220,7 @@ void ModelComponent::loadMaterialFile(const std::string& fileName, const std::st
 		std::string line;
 		std::getline(pFile, line);
 		line = cleanLine(line);
-		if (line == "" || line[0] == '#')
-			continue;
+		if (line == "" || line[0] == '#') continue;
 
 		std::vector<std::string> params = split(line, " ");
 		params[0] = toLower(params[0]);

@@ -314,7 +314,7 @@ void getPersonwiseKeypoints(const std::vector<std::vector<ValidPair>>& validPair
 {
 	for (int k = 0; k < mapIdx.size(); ++k)
 	{
-		if (invalidPairs.find(k) != invalidPairs.end()) continue;
+		if (invalidPairs.contains(k)) continue;
 
 		const std::vector<ValidPair>& localValidPairs(validPairs[k]);
 
@@ -392,8 +392,6 @@ void getCalculatedPose(std::map<std::string_view, std::vector<KeyPoint>>& keyPoi
 		std::vector<KeyPoint> keyPoints;
 
 		getKeyPoints(netOutputParts[i], GetDNNMathSettings().confidenceMapThreshold, keyPoints);
-
-		// LOG(INFO) << "Keypoints - " << keypointsMapping[i] << " : " << keyPoints << std::endl;
 
 		keyPointsToUseInCalculation.insert(std::make_pair(keypointsMapping[i], keyPoints));
 

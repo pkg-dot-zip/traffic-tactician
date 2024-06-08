@@ -121,9 +121,6 @@ void initImGui() {
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-	// Load a font for ImGui 
-	//io.Fonts->AddFontFromFileTTF("font.ttf", 24.0f);
-
 	// Setup Platform/Renderer settings.
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 130");
@@ -237,11 +234,11 @@ void updateImGui() {
 
 		ImGui::SameLine(); // Keep the following items on the same line with an offset
 
-		int score = data.points;
+		const int score = data.points;
 
-		float windowWidth = ImGui::GetWindowWidth();
+		const float windowWidth = ImGui::GetWindowWidth();
 		constexpr float imageWidth = 31.0f; // Width of the image
-		float textWidth = ImGui::CalcTextSize(std::to_string(score).c_str()).x; // Width of the text
+		const float textWidth = ImGui::CalcTextSize(std::to_string(score).c_str()).x; // Width of the text
 
 		ImGui::SetCursorPosX(windowWidth - imageWidth - textWidth - 20.0f); // Set the cursor position to align the image and score to the right, with a small padding of 20.0f
 
@@ -316,10 +313,9 @@ void onDestroy() {
 	glfwTerminate();
 }
 
-
+// preload textures
 void loadTextures()
 {
-	// preload textures
 	TextureCache::loadTexture("score_logo.png");
 	TextureCache::loadTexture("sign_stop.png");
 	TextureCache::loadTexture("sign_forward.png");

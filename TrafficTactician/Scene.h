@@ -6,7 +6,7 @@
 #include "GameObject.h"
 #include "Simulation.h"
 #include "poseChecker.h"
-#include "Timer.h"
+
 class Scene
 {
 public:
@@ -36,4 +36,3 @@ private:
 	void initRouteCache();
 	std::shared_ptr<GameObject> createCar(Pose pose);
 };
-

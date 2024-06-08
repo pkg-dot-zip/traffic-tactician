@@ -1,5 +1,4 @@
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 
 #include "Scene.h"
 #include "GameObject.h"
@@ -8,7 +7,6 @@
 #include "WorldComponent.h"
 #include "RouteComponent.h"
 #include "ControllerComponent.h"
-#include "stb_image.h"
 #include "Texture.h"
 #include "TextureCache.h"
 
@@ -38,8 +36,7 @@ void Scene::initWorld(int worldSize)
 	const std::shared_ptr<WorldComponent> world_component = std::make_shared<WorldComponent>(worldSize, 1.0f, std::make_shared<ModelComponent>("models/road_kit/tile_low.obj"));
 	for (int i = 0; i < worldSize; i++)
 	{
-		if (i == worldSize / 2)
-			continue;
+		if (i == worldSize / 2) continue;
 
 		world_component->setModel(worldSize / 2, i, std::make_shared<ModelComponent>("models/road_kit/road_straight_rotated.obj"));
 		world_component->setModel(i, worldSize / 2, std::make_shared<ModelComponent>("models/road_kit/road_straight.obj"));

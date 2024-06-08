@@ -270,8 +270,6 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CarComponent.cpp" />
-    <ClCompile Include="components\Component.cpp" />
-    <ClCompile Include="components\DrawComponent.cpp" />
     <ClCompile Include="components\GameObject.cpp" />
     <ClCompile Include="ControllerComponent.cpp" />
     <ClCompile Include="detectionMain.cpp">

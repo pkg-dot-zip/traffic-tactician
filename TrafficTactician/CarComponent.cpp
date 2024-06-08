@@ -8,15 +8,6 @@
 
 
 extern GLFWwindow* window;
-extern std::vector<tigl::Vertex> verts;
-
-CarComponent::CarComponent()
-{
-}
-
-CarComponent::~CarComponent()
-{
-}
 
 void CarComponent::update(float deltaTime)
 {
@@ -29,7 +20,7 @@ void CarComponent::update(float deltaTime)
 
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && lastSpawn + clickDelay < glfwGetTime())
 	{
-		const auto sim = gameObject->sim.lock();
+		const auto sim = this->gameObject->sim.lock();
 		const glm::vec3 rayOrigin = sim->getCameraPosition();
 		const glm::vec3 mousePosition3D = sim->mousePosition3D;
 		const glm::vec3 rayDirection = glm::normalize(mousePosition3D - rayOrigin);
@@ -40,7 +31,6 @@ void CarComponent::update(float deltaTime)
 
 		LOG(INFO) << glm::to_string(intersectionPoint) << std::endl;
 
-		gameObject->position = intersectionPoint;
-
+		this->gameObject->position = intersectionPoint;
 	}
 }

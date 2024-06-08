@@ -5,7 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 
-GameObject::GameObject(const std::string& name, std::weak_ptr<Simulation> sim)
+GameObject::GameObject(const std::string& name, const std::weak_ptr<Simulation>& sim)
 {
 	this->name = name;
 	this->sim = sim;
@@ -13,7 +13,7 @@ GameObject::GameObject(const std::string& name, std::weak_ptr<Simulation> sim)
 
 GameObject::~GameObject() = default;
 
-void GameObject::addComponent(std::shared_ptr<Component> component)
+void GameObject::addComponent(const std::shared_ptr<Component>& component)
 {
 	component->setGameObject(this);
 	components.push_back(component);
@@ -24,7 +24,7 @@ void GameObject::addComponent(std::shared_ptr<Component> component)
 	}
 }
 
-void GameObject::removeComponent(std::shared_ptr<Component> component)
+void GameObject::removeComponent(const std::shared_ptr<Component>& component)
 {
 	components.remove(component);
 }

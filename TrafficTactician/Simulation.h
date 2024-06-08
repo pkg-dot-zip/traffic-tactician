@@ -9,14 +9,7 @@
 class Scene;
 
 class Simulation 
-
 {
-private:
-	GLFWwindow* window;
-	int width = 1600;
-	int height = 900;
-	glm::mat4 projection;
-	glm::mat4 view;
 public:
 	std::unique_ptr<Scene> scene;
 	glm::vec3 mousePosition3D;
@@ -27,5 +20,10 @@ public:
 	void draw();
 
 	glm::vec3 getCameraPosition() const;
+private:
+	GLFWwindow* window;
+	int width = 1600;
+	int height = 900;
+	glm::mat4 projection;
+	glm::mat4 view;
 };
-

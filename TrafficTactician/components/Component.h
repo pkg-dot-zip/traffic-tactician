@@ -4,16 +4,15 @@ class GameObject;
 
 class Component
 {
-protected:
-	GameObject* gameObject;
-
 public:
-	Component();
-	~Component();
+	Component() = default;
+	~Component() = default;
 
 	virtual void update(float deltaTime)
 	{
 	};
 
 	inline void setGameObject(GameObject* gameObject) { this->gameObject = gameObject; }
+protected:
+	GameObject* gameObject;
 };

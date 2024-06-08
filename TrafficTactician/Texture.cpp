@@ -30,7 +30,7 @@ Texture::Texture(const std::string& fileName)
 
 Texture::Texture(const glm::vec3& color)
 {
-	int size = 1;
+	constexpr int size = 1;
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);
 	// Create image data for 1x1 with given color
@@ -55,7 +55,7 @@ Texture::~Texture() {
 	glDeleteTextures(1, &id);
 }
 
-void Texture::bind()
+void Texture::bind() const
 {
 	glBindTexture(GL_TEXTURE_2D, id);
 }

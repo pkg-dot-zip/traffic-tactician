@@ -5,18 +5,8 @@
 #include "glm/ext/matrix_transform.hpp"
 using glm::vec3;
 
-
 class RouteComponent : public Component
 {
-
-
-	std::vector<vec3> nodesRoute1;
-	std::vector<vec3> nodesRoute2;
-	float speed;
-	float tolerance = 0;
-	std::vector<vec3> currentRoute;
-	int currentWaypointIndex = 0;
-
 public:
 	enum class RouteState {
 		Idle,  // Not moving
@@ -27,11 +17,19 @@ public:
 	bool crossed = false;
 
 	RouteComponent(
-		float speed = 1, 
-		std::vector<vec3> nodesRoute1 = std::vector<vec3>()
+		float speed = 1,
+		const std::vector<vec3>& nodesRoute1 = std::vector<vec3>()
 	);
-	~RouteComponent();
+
+	~RouteComponent() = default;
 
 	virtual void update(float deltaTime) override;
-};
 
+private:
+	std::vector<vec3> nodesRoute1;
+	std::vector<vec3> nodesRoute2;
+	float speed;
+	float tolerance = 0;
+	std::vector<vec3> currentRoute;
+	int currentWaypointIndex = 0;
+};
