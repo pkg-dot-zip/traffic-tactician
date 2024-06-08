@@ -237,7 +237,7 @@ void updateImGui() {
 		//ImGui::Image((void*)(intptr_t)randomTexture, ImVec2(31, 31)); // Display the random icon
 
 		Scene::OverlayData data = sim->scene->data;
-		ImGui::Image((void*)(intptr_t)*data.currentSignTexture, ImVec2(31, 31)); // Display the icon
+		ImGui::Image((void*)(intptr_t)*data.currentSignTexture, ImVec2(31, 31), { 0,1 }, { 1,0 }); // Display the icon
 
 		ImGui::SameLine(); // Keep the following items on the same line with an offset
 
@@ -249,7 +249,7 @@ void updateImGui() {
 
 		ImGui::SetCursorPosX(windowWidth - imageWidth - textWidth - 20.0f); // Set the cursor position to align the image and score to the right, with a small padding of 20.0f
 
-		ImGui::Image((void*)(intptr_t)data.textures["scoreLogo"], ImVec2(31, 31)); // Display the icon
+		ImGui::Image((void*)(intptr_t)data.textures["scoreLogo"], ImVec2(31, 31), {0,1}, {1,0}); // Display the icon
 		//ImGui::SameLine(0.0f, ImGui::GetTextLineHeight() / 2); // Keep the following items on the same line with an offset
 		ImGui::SameLine(); // Keep the following items on the same line with an offset
 
