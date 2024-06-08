@@ -59,7 +59,7 @@ void updateImGui();
 std::shared_ptr<Simulation> sim;
 void loadTextures();
 
-int width = 1600, height = 900;
+int width = GetGraphicSettings().screenWidth, height = GetGraphicSettings().screenHeight;
 double lastFrameTime = 0;
 
 std::array<float, 4> clearColor = { 0.3f, 0.4f, 0.6f, 1.0f };

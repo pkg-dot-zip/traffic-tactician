@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 
 #include "Scene.h"
+#include "SettingsRetriever.h"
 
 class Scene;
 
@@ -22,8 +23,8 @@ public:
 	glm::vec3 getCameraPosition() const;
 private:
 	GLFWwindow* window;
-	int width = 1600;
-	int height = 900;
+	int width = GetGraphicSettings().screenWidth;
+	int height = GetGraphicSettings().screenHeight;
 	glm::mat4 projection;
 	glm::mat4 view;
 };
