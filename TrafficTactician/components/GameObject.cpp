@@ -3,7 +3,6 @@
 #include "DrawComponent.h"
 #include "tigl.h"
 #include <glm/gtc/matrix_transform.hpp>
-#include "BoundingBoxComponent.h"
 
 
 GameObject::GameObject(const std::string& name, std::weak_ptr<Simulation> sim)
