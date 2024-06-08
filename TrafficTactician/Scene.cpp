@@ -8,6 +8,9 @@
 #include "WorldComponent.h"
 #include "RouteComponent.h"
 #include "ControllerComponent.h"
+#include "stb_image.h"
+#include "Texture.h"
+#include "TextureCache.h"
 
 
 Scene::Scene(Simulation* sim, int worldSize)
@@ -15,7 +18,14 @@ Scene::Scene(Simulation* sim, int worldSize)
 	this->sim = sim;
 	initRouteCache();
 	initWorld(worldSize);
-	
+
+	data.textures["scoreLogo"] = TextureCache::loadTexture("score_logo.png")->id;
+	data.textures["stopSign"] = TextureCache::loadTexture("sign_stop.png")->id;
+	data.textures["forwardSign"] = TextureCache::loadTexture("sign_forward.png")->id;
+	data.textures["leftSign"] = TextureCache::loadTexture("sign_left.png")->id;
+	data.textures["rightSign"] = TextureCache::loadTexture("sign_right.png")->id;
+	data.currentSignTexture = &data.textures["stopSign"];
+
 	// Create a car object with the given pose
 	currentCarObject = createCar(POSE_MOVE_RIGHT);
 	objects.push_back(currentCarObject);
@@ -73,7 +83,7 @@ std::shared_ptr<GameObject> Scene::createCar(Pose pose)
 	float speed = 1.5;
 	carObject->addComponent(std::make_shared<RouteComponent>(speed, route));
 
-	carObject->addComponent(std::make_shared<ControllerComponent>(pose));
+	carObject->addComponent(std::make_shared<ControllerComponent>(pose, this));
 
 	return carObject;
 }
@@ -92,5 +102,3 @@ void Scene::draw()
 		o->draw();
 	}
 }
-
-

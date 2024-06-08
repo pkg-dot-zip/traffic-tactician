@@ -7,6 +7,7 @@
 
 #include "InputHandler.h"
 #include "KeyBoardInputHandler.h"
+#include "TextureCache.h"
 #include "SettingsRetriever.h"
 using tigl::Vertex;
 
@@ -61,19 +62,13 @@ void onDestroy();
 void initImGui();
 void updateImGui();
 
-void loadTextures();
-GLuint loadTexture(const std::string& imageName);
-void restartTimer();
-
 Simulation* sim;
-GLuint* currentSignTexture = nullptr; // Change this to a pointer to the current sign texture e.g. currentSignTexture = &textures["stopSign"];
-std::map<std::string, GLuint> textures; // scoreLogo, stopSign, forwardSign, leftSign, rightSign
+void loadTextures();
 
-int width = 1600, height = 900, score = 0;
-double lastFrameTime = 0, timerIsDone = 0;
-float progress = 0.0f, timerSeconds = 10.0f, remainingTime = -1.0f; // float progress start at 0% | 1.0f = 100% 
+int width = 1600, height = 900;
+double lastFrameTime = 0;
 
-std::array<float, 4> clearColor = {0.3f, 0.4f, 0.6f, 1.0f};
+std::array<float, 4> clearColor = { 0.3f, 0.4f, 0.6f, 1.0f };
 
 void resize(GLFWwindow*, int w, int h) {
 	width = w;
@@ -95,7 +90,7 @@ int main(void) {
 		glfwTerminate();
 		throw "Could not initialize glwf";
 	}
-	
+
 	glfwMakeContextCurrent(window);
 	if (GetGraphicSettings().mxaaEnabled) glEnable(GL_MULTISAMPLE);
 	glfwSetWindowSizeCallback(window, resize);
@@ -148,7 +143,6 @@ void initImGui() {
 }
 
 void init() {
-
 	glEnable(GL_DEPTH_TEST);
 
 	tigl::shader->enableColor(true);
@@ -162,9 +156,7 @@ void init() {
 	tigl::shader->setShinyness(0);
 	initFog();
 
-	// Load textures and set the current sign texture to the stop sign
 	loadTextures();
-	currentSignTexture = &textures["stopSign"];
 
 	initImGui();
 	LOG(INFO) << "Initialized ImGui window." << std::endl;
@@ -182,7 +174,7 @@ void initFog()
 	if (!GetGraphicSettings().useFog) return;
 
 	tigl::shader->enableFog(true);
-	tigl::shader->setFogColor({clearColor[0], clearColor[1], clearColor[2]}); // Must match the clear color.
+	tigl::shader->setFogColor({ clearColor[0], clearColor[1], clearColor[2] }); // Must match the clear color.
 
 
 	if (GetGraphicSettings().fogType == "exp2")
@@ -222,16 +214,17 @@ void updateImGui() {
 	// check if component is not null
 	if (sim->scene->currentCarObject->getComponent<ControllerComponent>() != nullptr) {
 		auto correctPose = sim->scene->currentCarObject->getComponent<ControllerComponent>()->correctPose;
-		ImGui::Text("Correct Pose: %s",getPoseString(correctPose).c_str());
+		ImGui::Text("Correct Pose: %s", getPoseString(correctPose).c_str());
 	}
 
 
-		const std::string poseString = "Pose: " + getPoseString(getInputPose());
-		ImGui::Text(poseString.c_str());
-		//float scale = world->scale.y;
+	const std::string poseString = "Pose: " + getPoseString(getInputPose());
+	ImGui::Text(poseString.c_str());
+	//float scale = world->scale.y;
 
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.25f)); // Set the window background color to semi-transparent black
 
+	// TODO uit de main halen smh
 	if (ImGui::Begin("Status", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar)) { // Add ImGuiWindowFlags_NoTitleBar to hide the title bar
 
 		//// Select a random texture
@@ -243,9 +236,12 @@ void updateImGui() {
 		//GLuint randomTexture = it->second;
 		//ImGui::Image((void*)(intptr_t)randomTexture, ImVec2(31, 31)); // Display the random icon
 
-		ImGui::Image((void*)(intptr_t)*currentSignTexture, ImVec2(31, 31)); // Display the icon
+		Scene::OverlayData data = sim->scene->data;
+		ImGui::Image((void*)(intptr_t)*data.currentSignTexture, ImVec2(31, 31), { 0,1 }, { 1,0 }); // Display the icon
 
 		ImGui::SameLine(); // Keep the following items on the same line with an offset
+
+		int score = data.points;
 
 		float windowWidth = ImGui::GetWindowWidth();
 		float imageWidth = 31.0f; // Width of the image
@@ -253,7 +249,7 @@ void updateImGui() {
 
 		ImGui::SetCursorPosX(windowWidth - imageWidth - textWidth - 20.0f); // Set the cursor position to align the image and score to the right, with a small padding of 20.0f
 
-		ImGui::Image((void*)(intptr_t)textures["scoreLogo"], ImVec2(31, 31)); // Display the icon
+		ImGui::Image((void*)(intptr_t)data.textures["scoreLogo"], ImVec2(31, 31), {0,1}, {1,0}); // Display the icon
 		//ImGui::SameLine(0.0f, ImGui::GetTextLineHeight() / 2); // Keep the following items on the same line with an offset
 		ImGui::SameLine(); // Keep the following items on the same line with an offset
 
@@ -261,9 +257,17 @@ void updateImGui() {
 
 		//ImGui::Text("MousePosition3D: %f, %f, %f", sim->mousePosition3D.x, sim->mousePosition3D.y, sim->mousePosition3D.z);
 
-		char overlay[32];
-		sprintf_s(overlay, "%.2f s", remainingTime);
-		ImGui::ProgressBar(progress, ImVec2(-1.0f, 0.0f), overlay); // Full width progress bar 
+
+		if (sim->scene->currentCarObject->getComponent<RouteComponent>()->state == RouteComponent::RouteState::Idle)
+		{
+			// Start timer
+			sim->scene->currentCarObject->getComponent<ControllerComponent>()->timer->toggleTimer(true);
+
+			char overlay[32];
+			sprintf_s(overlay, "%.2f s", data.remainingTime);
+			ImGui::ProgressBar(data.progress, ImVec2(-1.0f, 0.0f), overlay); // Full width progress bar 
+		}
+
 
 		ImGui::End();
 	}
@@ -271,38 +275,10 @@ void updateImGui() {
 	ImGui::PopStyleColor(); // Reset the window background color to the default
 }
 
-void restartTimer() {
-	if (progress >= 1.00f) {
-		progress = 0.0f; // Clamp to 0
-		timerIsDone = false;
-		std::cout << "Timer has been restarted!" << std::endl;
-	}
-	else {
-		std::cout << "Timer is not done yet!" << std::endl;
-	}
-}
-
 void update() {
 	double currentFrameTime = glfwGetTime();
 	double deltaTime = currentFrameTime - lastFrameTime;
 	lastFrameTime = currentFrameTime;
-
-	if (progress >= 1.0f) {
-		timerIsDone = true;
-		restartTimer();
-	}
-	else {
-		// Increase the progress over time (timerSeconds) 
-		progress += 1.0f / timerSeconds * deltaTime; // Increase the timer 1.0f/timerSeconds 
-	}
-
-	// Calculate the remaining time
-	remainingTime = timerSeconds * (1.0f - progress);
-
-	// Set the remaining time to 0 if it's less than 0 
-	if (remainingTime < 0.0f) {
-		remainingTime = 0.0f;
-	}
 
 	sim->update(static_cast<float>(deltaTime));
 
@@ -343,36 +319,13 @@ void onDestroy() {
 	glfwTerminate();
 }
 
-void loadTextures() {
-	textures["scoreLogo"] = loadTexture("score_logo.png");
-	textures["stopSign"] = loadTexture("sign_stop.png");
-	textures["forwardSign"] = loadTexture("sign_forward.png");
-	textures["leftSign"] = loadTexture("sign_left.png");
-	textures["rightSign"] = loadTexture("sign_sign.png");
-}
 
-GLuint loadTexture(const std::string& imageName) {
-	GLuint texture = 0; // Initialize texture to 0
-
-	int width, height, nrChannels;
-	const char* imageName2 = imageName.c_str();
-	unsigned char* data = stbi_load(imageName2, &width, &height, &nrChannels, STBI_rgb_alpha);
-	if (data)
-	{
-		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, texture);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		std::cout << "Failed to load texture" << std::endl;
-	}
-	stbi_image_free(data);
-
-	return texture;
+void loadTextures()
+{
+	// preload textures
+	TextureCache::loadTexture("score_logo.png");
+	TextureCache::loadTexture("sign_stop.png");
+	TextureCache::loadTexture("sign_forward.png");
+	TextureCache::loadTexture("sign_left.png");
+	TextureCache::loadTexture("sign_right.png");
 }

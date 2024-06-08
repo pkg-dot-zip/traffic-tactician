@@ -3,40 +3,46 @@
 #include "RouteComponent.h"
 #include "InputHandler.h"
 #include <iostream>
+#include <memory>
 
-ControllerComponent::ControllerComponent(Pose pose)
+#include "easylogging++.h"
+#include "Scene.h"
+#include "Timer.h"
+
+ControllerComponent::ControllerComponent(Pose pose, Scene* scene) : correctPose(pose), scene(scene)
 {
-	this->correctPose = pose;
-}
+	this->timer = std::make_shared<Timer>();
 
+	timer->setCallback([this] { timerCallback(); });
+}
 
 bool ControllerComponent::checkPose()
 {
-	// get the pose of the person
 	Pose pose = getInputPose();
-	// if the pose is the same as the correct pose, return true
-	if (pose == correctPose)
+
+	return (pose == correctPose);
+}
+
+void ControllerComponent::timerCallback()
+{
+	if (!checkPose())
 	{
-		return true;
+		scene->data.points--;
+		return;
 	}
-	return false;
+
+	gameObject->getComponent<RouteComponent>()->crossed = true;
+	gameObject->getComponent<RouteComponent>()->state = RouteComponent::RouteState::Moving;
+
+	timer->toggleTimer(false);
+	scene->data.points++;
 }
 
 void ControllerComponent::update(float deltaTime)
 {
-	//std::cout << "Pose : " << getPoseString(correctPose) << std::endl;
+	timer->update(deltaTime);
 
-	// create a timer for 5 seconds
-	poseTimer += deltaTime;
-	if (poseTimer >= 5)
-	{
-		// if the timer is greater than 5 seconds, reset the timer 
-		poseTimer = 0;
-		if (!checkPose()) return;
-
-		gameObject->getComponent<RouteComponent>()->crossed = true;
-		gameObject->getComponent<RouteComponent>()->state = RouteComponent::RouteState::Moving;
-	}
-
-	
+	// Update overlay data
+	scene->data.remainingTime = timer->getTimeRemaining();
+	scene->data.progress = timer->getTimeRemaining() / timer->rolloverTime;
 }

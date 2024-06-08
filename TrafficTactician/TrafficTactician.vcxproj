@@ -310,6 +310,7 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureCache.cpp" />
     <ClCompile Include="tigl.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WorldComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -335,6 +336,7 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     <ClInclude Include="SoundHandler.h" />
     <ClInclude Include="TextureCache.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="utest.h" />
     <ClInclude Include="WorldComponent.h" />
     <ClInclude Include="json.h" />
