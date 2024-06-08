@@ -30,7 +30,7 @@ void GameObject::removeComponent(std::shared_ptr<Component> component)
 	components.remove(component);
 }
 
-std::list<std::shared_ptr<Component>> GameObject::getComponents()
+std::list<std::shared_ptr<Component>>& GameObject::getComponents()
 {
 	return components;
 }
@@ -51,7 +51,7 @@ void GameObject::draw(const glm::mat4& parentMatrix)
 
 void GameObject::update(float deltaTime)
 {
-	for (auto& c : components)
+	for (const auto& c : components)
 	{
 		c->update(deltaTime);
 	}

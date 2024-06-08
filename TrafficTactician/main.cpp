@@ -200,13 +200,26 @@ void updateImGui() {
 	ImGui::SliderAngle("CarRotation:", &car->rotation.y);
 	bool continueRoute = false;
 	if (ImGui::Checkbox("Continue route", &continueRoute)) {
-		sim->scene->currentCarObject->getComponent<RouteComponent>()->state = RouteComponent::RouteState::Moving;
-		sim->scene->currentCarObject->getComponent<RouteComponent>()->crossed = true;
+
+		if (sim->scene->currentCarObject->getComponent<RouteComponent>().has_value())
+		{
+			sim->scene->currentCarObject->getComponent<RouteComponent>().value()->state = RouteComponent::RouteState::Moving;
+			sim->scene->currentCarObject->getComponent<RouteComponent>().value()->crossed = true;
+		} else
+		{
+			LOG(ERROR) << "Error: Can not update UI when no RouteComponent can be found." << std::endl;
+			throw std::exception("Error: Can not update UI when no RouteComponent can be found.");
+		}
+		
 	}
-	// check if component is not null
-	if (sim->scene->currentCarObject->getComponent<ControllerComponent>() != nullptr) {
-		auto correctPose = sim->scene->currentCarObject->getComponent<ControllerComponent>()->correctPose;
+	
+	if (sim->scene->currentCarObject->getComponent<ControllerComponent>().has_value()) {
+		const auto correctPose = sim->scene->currentCarObject->getComponent<ControllerComponent>().value()->correctPose;
 		ImGui::Text("Correct Pose: %s", getPoseString(correctPose).c_str());
+	} else
+	{
+		LOG(ERROR) << "Error: Can not update UI when no ControllerComponent can be found." << std::endl;
+		throw std::exception("Error: Can not update UI when no ControllerComponent can be found.");
 	}
 
 
@@ -237,16 +250,23 @@ void updateImGui() {
 
 		ImGui::Text("%d", score); // Display the text and integer
 
-		if (sim->scene->currentCarObject->getComponent<RouteComponent>()->state == RouteComponent::RouteState::Idle)
+		if (sim->scene->currentCarObject->getComponent<RouteComponent>().has_value())
 		{
-			// Start timer
-			sim->scene->currentCarObject->getComponent<ControllerComponent>()->timer->toggleTimer(true);
+			if (sim->scene->currentCarObject->getComponent<RouteComponent>().value()->state == RouteComponent::RouteState::Idle)
+			{
+				// Start timer
+				sim->scene->currentCarObject->getComponent<ControllerComponent>().value()->timer->toggleTimer(true);
 
-			char overlay[32];
-			sprintf_s(overlay, "%.2f s", data.remainingTime);
-			ImGui::ProgressBar(data.progress, ImVec2(-1.0f, 0.0f), overlay); // Full width progress bar .
+				char overlay[32];
+				sprintf_s(overlay, "%.2f s", data.remainingTime);
+				ImGui::ProgressBar(data.progress, ImVec2(-1.0f, 0.0f), overlay); // Full width progress bar .
+			}
 		}
-
+		else
+		{
+			LOG(ERROR) << "Error: Can not update UI when no ControllerComponent can be found." << std::endl;
+			throw std::exception("Error: Can not update UI when no ControllerComponent can be found.");
+		}
 
 		ImGui::End();
 	}

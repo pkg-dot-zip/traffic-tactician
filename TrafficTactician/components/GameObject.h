@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <list>
 #include <memory>
+#include <optional>
 #include <string>
 
 class Simulation;
@@ -29,19 +30,18 @@ public:
 
 	void addComponent(std::shared_ptr<Component> component);
 	void removeComponent(std::shared_ptr<Component> component);
-	std::list<std::shared_ptr<Component>> getComponents();
+	std::list<std::shared_ptr<Component>>& getComponents();
 	void update(float deltaTime);
 	void draw(const glm::mat4 & = glm::mat4(1.0f));
 
 	template <class T>
-	std::shared_ptr<T> getComponent()
+	std::optional<std::shared_ptr<T>> getComponent()
 	{
 		for (auto c : components)
 		{
-			std::shared_ptr<T> t = dynamic_pointer_cast<T>(c);
-			if (t) return t;
+			if (std::shared_ptr<T> t = dynamic_pointer_cast<T>(c)) return t;
 		}
-		return nullptr;
+		return std::nullopt;
 	}
 
 	template <class T>
