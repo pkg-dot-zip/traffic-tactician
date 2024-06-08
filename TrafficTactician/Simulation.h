@@ -4,7 +4,9 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-class Scene; 
+#include "Scene.h"
+
+class Scene;
 
 class Simulation 
 
@@ -16,14 +18,14 @@ private:
 	glm::mat4 projection;
 	glm::mat4 view;
 public:
-	Scene* scene;
+	std::unique_ptr<Scene> scene;
 	glm::vec3 mousePosition3D;
 
 	Simulation(GLFWwindow* window);
-	void init();
-	void update(float deltaTime);
+	void init(const std::weak_ptr<Simulation>& sim);
+	void update(float deltaTime) const;
 	void draw();
 
-	glm::vec3 getCameraPosition();
+	glm::vec3 getCameraPosition() const;
 };
 

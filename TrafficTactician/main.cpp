@@ -55,7 +55,7 @@ void onDestroy();
 void initImGui();
 void updateImGui();
 
-Simulation* sim;
+std::shared_ptr<Simulation> sim;
 void loadTextures();
 
 int width = 1600, height = 900;
@@ -88,7 +88,7 @@ int main(void) {
 	glfwSetWindowSizeCallback(window, resize);
 
 	tigl::init();
-	sim = new Simulation(window);
+	sim = std::make_shared<Simulation>(window);
 	init();
 
 	while (!glfwWindowShouldClose(window))
@@ -152,8 +152,8 @@ void init() {
 
 	initImGui();
 	LOG(INFO) << "Initialized ImGui window." << std::endl;
-
-	sim->init();
+	
+	sim->init(sim);
 	LOG(INFO) << "Initialized simulation." << std::endl;
 
 

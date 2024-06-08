@@ -18,11 +18,11 @@ class GameObject
 	std::list<std::shared_ptr<Component>> components;
 
 public:
-	GameObject(const std::string &name, Simulation* sim);
+	GameObject(const std::string &name, std::weak_ptr<Simulation> sim);
 	~GameObject();
 
 	std::string name;
-	Simulation* sim;
+	std::weak_ptr<Simulation> sim;
 
 	glm::vec3 position = glm::vec3(0.0f);
 	glm::vec3 rotation = glm::vec3(0, 0, 0);
@@ -31,8 +31,8 @@ public:
 	void addComponent(std::shared_ptr<Component> component);
 	void removeComponent(std::shared_ptr<Component> component);
 	std::list<std::shared_ptr<Component>>& getComponents();
-	void update(float deltaTime);
-	void draw(const glm::mat4 & = glm::mat4(1.0f));
+	void update(float deltaTime) const;
+	void draw(const glm::mat4 & = glm::mat4(1.0f)) const;
 
 	template <class T>
 	std::optional<std::shared_ptr<T>> getComponent()

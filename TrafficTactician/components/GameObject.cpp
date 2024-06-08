@@ -6,7 +6,7 @@
 #include "BoundingBoxComponent.h"
 
 
-GameObject::GameObject(const std::string& name, Simulation* sim)
+GameObject::GameObject(const std::string& name, std::weak_ptr<Simulation> sim)
 {
 	this->name = name;
 	this->sim = sim;
@@ -35,7 +35,7 @@ std::list<std::shared_ptr<Component>>& GameObject::getComponents()
 	return components;
 }
 
-void GameObject::draw(const glm::mat4& parentMatrix)
+void GameObject::draw(const glm::mat4& parentMatrix) const
 {
 	if (!drawComponent) return;
 
@@ -49,7 +49,7 @@ void GameObject::draw(const glm::mat4& parentMatrix)
 	drawComponent->draw(modelMatrix);
 }
 
-void GameObject::update(float deltaTime)
+void GameObject::update(float deltaTime) const
 {
 	for (const auto& c : components)
 	{

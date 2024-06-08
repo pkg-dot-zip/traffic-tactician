@@ -20,7 +20,6 @@ CarComponent::~CarComponent()
 
 void CarComponent::update(float deltaTime)
 {
-
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
 		allowPointClicks = !allowPointClicks;
 		LOG(INFO) << "Clicks allowed" << std::endl;
@@ -30,13 +29,14 @@ void CarComponent::update(float deltaTime)
 
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && lastSpawn + clickDelay < glfwGetTime())
 	{
-		glm::vec3 rayOrigin = gameObject->sim->getCameraPosition();
-		glm::vec3 mousePosition3D = gameObject->sim->mousePosition3D;
-		glm::vec3 rayDirection = glm::normalize(mousePosition3D - rayOrigin);
+		const auto sim = gameObject->sim.lock();
+		const glm::vec3 rayOrigin = sim->getCameraPosition();
+		const glm::vec3 mousePosition3D = sim->mousePosition3D;
+		const glm::vec3 rayDirection = glm::normalize(mousePosition3D - rayOrigin);
 
-		float planeY = 0.0f;
-		float t = (planeY - rayOrigin.y) / rayDirection.y;
-		glm::vec3 intersectionPoint = rayOrigin + t * rayDirection;
+		constexpr float planeY = 0.0f;
+		const float t = (planeY - rayOrigin.y) / rayDirection.y;
+		const glm::vec3 intersectionPoint = rayOrigin + t * rayDirection;
 
 		LOG(INFO) << glm::to_string(intersectionPoint) << std::endl;
 

@@ -15,16 +15,14 @@ Simulation::Simulation(GLFWwindow* window)
 	mousePosition3D = glm::vec3();
 	projection = glm::mat4();
 	view = glm::mat4();
-
-
 }
 
-void Simulation::init()
+void Simulation::init(const std::weak_ptr<Simulation>& sim)
 {
-	scene = new Scene(this);
+	scene = std::make_unique<Scene>(sim);
 }
 
-void Simulation::update(float deltaTime)
+void Simulation::update(float deltaTime) const
 {
 	scene->update(deltaTime);
 }
@@ -59,13 +57,11 @@ void Simulation::draw()
 
 }
 
-// Extract camera position from the inverse of the view matrix
-glm::vec3 Simulation::getCameraPosition()
+// Extract camera position from the inverse of the view matrix.
+glm::vec3 Simulation::getCameraPosition() const
 {
 	glm::mat4 inverseView = glm::inverse(view);
-	glm::vec3 cameraPosition = glm::vec3(inverseView[3]);
+	const glm::vec3 cameraPosition = glm::vec3(inverseView[3]);
 
 	return cameraPosition;
 }
-
-
