@@ -44,8 +44,8 @@ Traffic Tactician is a training program made in C++ for a uni assignment. The so
 - [GLM](https://github.com/g-truc/glm/) - OpenGL Mathematics (GLM)
 - [GLEW](https://github.com/nigels-com/glew/) - The OpenGL Extension Wrangler Library
 - [Easylogging++](https://github.com/abumq/easyloggingpp/) - Single header efficient logging library for C++ applications
-- [JSON](https://github.com/nlohmann/json/) - JSON for Modern C++
 - [json2hpp](https://github.com/KaixoCode/json2hpp/) - CMake module that converts a json file straight into a C++ header containing a constexpr object
+- [utest.h](https://github.com/sheredom/utest.h) - Single header unit testing framework for C and C++
 
 ## ✍️ Authors <a name = "authors"></a>
 - [@OnsPetruske](https://github.com/pkg-dot-zip)
