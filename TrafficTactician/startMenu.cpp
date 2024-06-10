@@ -8,6 +8,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtx/string_cast.hpp>
 
+#include "stb_image.h"
 #include "backends/imgui_impl_opengl3.h"
 
 namespace mainMenu
@@ -20,6 +21,15 @@ namespace mainMenu
 	bool shouldRunMenu()
 	{
 		return menu_should_run;
+	}
+
+	void setWindowIcon()
+	{
+		LOG(INFO) << "Setting window icon for main menu." << std::endl;
+		GLFWimage image;
+		image.pixels = stbi_load("./images/windowIcons/traffic_tactician_round_icon.png", &image.width, &image.height, 0, 4); //rgba channels
+		glfwSetWindowIcon(window, 1, &image);
+		stbi_image_free(image.pixels);
 	}
 
 	// Slightly altered from: https://github.com/ocornut/imgui/issues/707#issuecomment-252413954
@@ -96,6 +106,8 @@ namespace mainMenu
 		ImGui_ImplOpenGL3_Init("#version 330");
 
 		applyMainMenuStyling();
+
+		setWindowIcon();
 	}
 
 	void onShutdown()
