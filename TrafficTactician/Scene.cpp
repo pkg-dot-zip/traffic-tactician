@@ -11,6 +11,7 @@
 #include "RouteComponent.h"
 #include "ControllerComponent.h"
 #include "easylogging++.h"
+#include "RandomModelGrabber.h"
 #include "Texture.h"
 #include "TextureCache.h"
 
@@ -92,8 +93,7 @@ std::shared_ptr<GameObject> Scene::createCar(Pose pose)
 	auto carObject = std::make_shared<GameObject>("car", sim);
 	carObject->scale = 0.4f * carObject->scale;
 
-	// TODO: Use random car model.
-	carObject->addComponent(std::make_shared<ModelComponent>("models/car_kit/ambulance.obj"));
+	carObject->addComponent(std::make_shared<ModelComponent>(randomModelGrabber::getRandomCarModelPathAsString()));
 
 	std::vector<glm::vec3> route = routeCache[pose];
 	carObject->position = route.front(); // Set spawn point to the first node.
