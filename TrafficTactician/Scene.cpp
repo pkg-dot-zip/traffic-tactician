@@ -120,6 +120,33 @@ void Scene::update(float deltaTime)
 		objects.push_back(createCar());
 		currentCarObject = objects.back();
 		LOG(INFO) << "Spawned new car in scene." << std::endl;
+
+		// Then we set the correct texture for the visual cue sign on the topleft of the screen.
+		std::string textureToRetrieve;
+		Pose poseToDo = currentCarObject.lock()->getComponent<ControllerComponent>().value()->correctPose;
+		switch (poseToDo)
+		{
+		case POSE_MOVE_RIGHT:
+			textureToRetrieve = "rightSign";
+			break;
+		case POSE_MOVE_LEFT:
+			textureToRetrieve = "leftSign";
+			break;
+		case POSE_MOVE_FORWARD:
+			textureToRetrieve = "forwardSign";
+			break;
+		case POSE_STOP:
+			textureToRetrieve = "stopSign";
+			break;
+		case POSE_OTHER:
+			LOG(WARNING) << "Looking for texture for POSE_OTHER. This should not happen. Did you intend this?" << std::endl;
+			break;
+		default:
+			LOG(ERROR) << "No sign texture implemented for current pose. Throwing." << std::endl;
+			throw std::exception("No sign texture implemented for current pose. Throwing.");
+		}
+
+		data.currentSignTexture = &data.textures[textureToRetrieve];
 	} else
 	{
 		const std::shared_ptr<GameObject> carGameObject = currentCarObject.lock();
