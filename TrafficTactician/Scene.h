@@ -34,5 +34,6 @@ private:
 
 	void initWorld(int worldSize);
 	void initRouteCache();
+	std::shared_ptr<GameObject> createCar();
 	std::shared_ptr<GameObject> createCar(Pose pose);
 };

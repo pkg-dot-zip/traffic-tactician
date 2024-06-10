@@ -23,6 +23,7 @@ UTEST_STATE();
 
 int main(int argc, const char* const argv[])
 {
+	srand(5); // Set seed for rand() calls.
 	setupLogger(); // MUST go first before any log entries are submitted.
 
 #ifdef _POSE_DEBUG

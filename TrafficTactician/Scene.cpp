@@ -25,7 +25,7 @@ Scene::Scene(const std::weak_ptr<Simulation>& sim, int worldSize)
 	data.currentSignTexture = &data.textures["stopSign"];
 
 	// Create a car object with the given pose.
-	currentCarObject = createCar(POSE_MOVE_RIGHT);
+	currentCarObject = createCar();
 	objects.push_back(currentCarObject);
 }
 
@@ -73,7 +73,14 @@ void Scene::initRouteCache()
 		glm::vec3(-0.5, 0.000000, 6.000000)
 	};
 
-	// TODO: add more routes
+	// TODO: Add route and support for POSE_STOP
+}
+
+// Get random required pose for the car.
+std::shared_ptr<GameObject> Scene::createCar()
+{
+	const Pose randomPose = static_cast<Pose>(rand() % (Pose::POSE_OTHER - 1)); // POSE_OTHER is the last enum value, however it is not one you should require the user to do. This is important!
+	return createCar(randomPose);
 }
 
 // TODO: add more routes
@@ -87,9 +94,7 @@ std::shared_ptr<GameObject> Scene::createCar(Pose pose)
 	// TODO: Add random car model.
 	carObject->addComponent(std::make_shared<ModelComponent>("models/car_kit/ambulance.obj"));
 
-
-	// TODO: Add more routes.
-	std::vector<glm::vec3> route = routeCache[Pose::POSE_MOVE_FORWARD];
+	std::vector<glm::vec3> route = routeCache[pose];
 	carObject->position = route.front(); // set spawn point to the first node
 
 	constexpr float speed = 1.5;
