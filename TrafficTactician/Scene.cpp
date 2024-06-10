@@ -54,7 +54,6 @@ void Scene::initWorld(int worldSize)
 
 void Scene::initRouteCache()
 {
-	// TOP to halt point nodes
 	routeCache[Pose::POSE_MOVE_RIGHT] = {
 		glm::vec3(-0.5, 0.000000, -6.864396),
 		glm::vec3(-0.5, 0.000000, -1.55),
@@ -80,30 +79,27 @@ void Scene::initRouteCache()
 	// TODO: Add route and support for POSE_STOP
 }
 
-// Get random required pose for the car.
+// Creates car with random pose.
 std::shared_ptr<GameObject> Scene::createCar()
 {
 	const Pose randomPose = static_cast<Pose>(rand() % (Pose::POSE_OTHER - 1)); // POSE_OTHER is the last enum value, however it is not one you should require the user to do. This is important!
 	return createCar(randomPose);
 }
 
-// TODO: add more routes
-// TODO: add random car model
-// Create a car object with the given pose
+// Create a car object with the given pose.
 std::shared_ptr<GameObject> Scene::createCar(Pose pose)
 {
 	auto carObject = std::make_shared<GameObject>("car", sim);
 	carObject->scale = 0.4f * carObject->scale;
 
-	// TODO: Add random car model.
+	// TODO: Use random car model.
 	carObject->addComponent(std::make_shared<ModelComponent>("models/car_kit/ambulance.obj"));
 
 	std::vector<glm::vec3> route = routeCache[pose];
-	carObject->position = route.front(); // set spawn point to the first node
+	carObject->position = route.front(); // Set spawn point to the first node.
 
 	constexpr float speed = 1.5;
 	carObject->addComponent(std::make_shared<RouteComponent>(speed, route));
-
 	carObject->addComponent(std::make_shared<ControllerComponent>(pose, this));
 
 	return carObject;
@@ -131,7 +127,7 @@ void Scene::update(float deltaTime)
 		{
 			std::erase(objects, carGameObject);
 			currentCarObject.reset();
-			LOG(INFO) << "Removed car from scene cause the car finished its route." << std::endl;
+			LOG(INFO) << "Removed current car from the scene because the car finished its route." << std::endl;
 		}
 	}
 }

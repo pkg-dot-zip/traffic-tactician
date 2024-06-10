@@ -213,7 +213,7 @@ void updateImGui() {
 	ImGui::Text(poseString.c_str());
 
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.25f)); // Set the window background color to semi-transparent black
-	showStatus(sim); // TODO: Pass car as parameter here!!!
+	showStatus(sim);
 
 	ImGui::PopStyleColor(); // Reset the window background color to the default.
 }
