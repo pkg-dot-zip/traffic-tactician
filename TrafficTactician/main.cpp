@@ -3,6 +3,7 @@
 #include "TrafficTactician.h"
 #include "utest.h"
 #include "poseRetriever.h"
+#include "startMenu.h"
 
 #ifdef _DEBUG
 #pragma comment (lib, "opencv_world490d.lib")
@@ -29,6 +30,7 @@ int main(int argc, const char* const argv[])
 #elif _TESTING_CONFIG
 	return utest_main(argc, argv);
 #else
+	mainMenu::runMenu();
 	return runApp();
 #endif
 }
