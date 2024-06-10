@@ -58,6 +58,21 @@ void Scene::initRouteCache()
 		glm::vec3(8, 0.000000, 0.600000)
 	};
 
+	// TODO: Make sure the car drives on the other lane!
+	routeCache[Pose::POSE_MOVE_LEFT] = {
+		glm::vec3(-0.5, 0.000000, -6.864396),
+		glm::vec3(-0.5, 0.000000, -1.55),
+		glm::vec3(-0.662630, 0.000000, 0.600000),
+		glm::vec3(-8, 0.000000, 0.600000)
+	};
+
+	routeCache[Pose::POSE_MOVE_FORWARD] = {
+		glm::vec3(-0.5, 0.000000, -6.864396),
+		glm::vec3(-0.5, 0.000000, -1.55),
+		glm::vec3(-0.5, 0.000000, 0.600000),
+		glm::vec3(-0.5, 0.000000, 6.000000)
+	};
+
 	// TODO: add more routes
 }
 
@@ -74,7 +89,7 @@ std::shared_ptr<GameObject> Scene::createCar(Pose pose)
 
 
 	// TODO: Add more routes.
-	std::vector<glm::vec3> route = routeCache[Pose::POSE_MOVE_RIGHT];
+	std::vector<glm::vec3> route = routeCache[Pose::POSE_MOVE_FORWARD];
 	carObject->position = route.front(); // set spawn point to the first node
 
 	constexpr float speed = 1.5;
