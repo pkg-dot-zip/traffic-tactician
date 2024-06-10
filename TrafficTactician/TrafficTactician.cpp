@@ -45,7 +45,7 @@ void loadTextures();
 int width = GetGraphicSettings().screenWidth, height = GetGraphicSettings().screenHeight;
 double lastFrameTime = 0;
 
-std::array<float, 4> clearColor = { 0.3f, 0.4f, 0.6f, 1.0f };
+std::array clearColor = { 0.3f, 0.4f, 0.6f, 1.0f };
 
 void resize(GLFWwindow*, int w, int h) {
 	width = w;
@@ -53,6 +53,8 @@ void resize(GLFWwindow*, int w, int h) {
 }
 
 int runApp() {
+	srand(5); // Set seed for rand() calls.
+
 	if (GetGraphicSettings().mxaaEnabled) glfwWindowHint(GLFW_SAMPLES, 4); // Multisample anti-aliasing.
 
 	if (!glfwInit()) throw std::exception("Could not initialize glwf");
