@@ -41,8 +41,7 @@ void Timer::update(float deltaTime) {
 		rolloverCount++;
 		timeElapsed -= rolloverTime;
 
-		// TODO: Check if callback is nullptr.
-		if (callback) {
+		if (callback != nullptr) {
 			LOG(INFO) << "Timer passed. Running callback." << std::endl;
 			callback();
 		}

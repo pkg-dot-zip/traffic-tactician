@@ -108,7 +108,7 @@
     <ClCompile Include="KeyboardInputHandler.cpp">
       <Filter>Source Files\inputSystem</Filter>
     </ClCompile>
-    <ClCompile Include="InputHandler.cpp">
+    <ClCompile Include="CameraInputHandler.cpp">
       <Filter>Source Files\inputSystem</Filter>
     </ClCompile>
     <ClCompile Include="SoundHandler.cpp">
@@ -269,7 +269,7 @@
     <ClInclude Include="KeypointLocationStrings.h">
       <Filter>Header Files\poseDetection</Filter>
     </ClInclude>
-    <ClInclude Include="InputHandler.h">
+    <ClInclude Include="CameraInputHandler.h">
       <Filter>Header Files\inputSystem</Filter>
     </ClInclude>
     <ClInclude Include="log.h">

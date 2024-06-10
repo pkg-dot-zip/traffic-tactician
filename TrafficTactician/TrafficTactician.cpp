@@ -5,7 +5,7 @@
 #include <iostream>
 #include <memory>
 
-#include "InputHandler.h"
+#include "CameraInputHandler.h"
 #include "KeyBoardInputHandler.h"
 #include "TextureCache.h"
 #include "SettingsRetriever.h"
@@ -40,17 +40,11 @@ void initImGui();
 void updateImGui();
 
 std::shared_ptr<Simulation> sim;
-void loadTextures();
 
 int width = GetGraphicSettings().screenWidth, height = GetGraphicSettings().screenHeight;
 double lastFrameTime = 0;
 
 std::array clearColor = { 0.3f, 0.4f, 0.6f, 1.0f };
-
-void resize(GLFWwindow*, int w, int h) {
-	width = w;
-	height = h;
-}
 
 int runApp() {
 	srand(5); // Set seed for rand() calls.
@@ -67,7 +61,11 @@ int runApp() {
 
 	glfwMakeContextCurrent(window);
 	if (GetGraphicSettings().mxaaEnabled) glEnable(GL_MULTISAMPLE);
-	glfwSetWindowSizeCallback(window, resize);
+	glfwSetWindowSizeCallback(window, [](GLFWwindow*, int w, int h)
+	{
+		width = w;
+		height = h;
+	});
 
 	tigl::init();
 	sim = std::make_shared<Simulation>(window);
@@ -126,15 +124,9 @@ void init() {
 	tigl::shader->setShinyness(0);
 	initFog();
 
-	loadTextures();
-
+	TextureCache::preloadTextures();
 	initImGui();
-	LOG(INFO) << "Initialized ImGui window." << std::endl;
-
 	sim->init(sim);
-	LOG(INFO) << "Initialized simulation." << std::endl;
-
-
 	initKeyCallback(window);
 }
 
@@ -195,7 +187,6 @@ void updateImGui() {
 			LOG(ERROR) << "Error: Can not update UI when no RouteComponent can be found." << std::endl;
 			throw std::exception("Error: Can not update UI when no RouteComponent can be found.");
 		}
-
 	}
 
 	if (car->getComponent<ControllerComponent>().has_value()) {
@@ -208,12 +199,11 @@ void updateImGui() {
 		throw std::exception("Error: Can not update UI when no ControllerComponent can be found.");
 	}
 
-
-	const std::string poseString = "Pose: " + getPoseString(getInputPose());
+	const std::string poseString = "Pose: " + getPoseString(cameraInputHandler::getInputPose());
 	ImGui::Text(poseString.c_str());
 
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.25f)); // Set the window background color to semi-transparent black
-	showStatus(sim);
+	statusHandler::showStatus(sim);
 
 	ImGui::PopStyleColor(); // Reset the window background color to the default.
 }
@@ -258,14 +248,4 @@ void onDestroy() {
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui::DestroyContext();
 	glfwTerminate();
-}
-
-// preload textures
-void loadTextures()
-{
-	TextureCache::loadTexture("score_logo.png");
-	TextureCache::loadTexture("sign_stop.png");
-	TextureCache::loadTexture("sign_forward.png");
-	TextureCache::loadTexture("sign_left.png");
-	TextureCache::loadTexture("sign_right.png");
 }

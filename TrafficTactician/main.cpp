@@ -1,6 +1,6 @@
 #include "log.h"
 #include "easylogging++.h"
-#include "InputHandler.h"
+#include "CameraInputHandler.h"
 #include "TrafficTactician.h"
 #include "utest.h"
 #include "poseRetriever.h"
@@ -31,7 +31,7 @@ int main(int argc, const char* const argv[])
 #elif _TESTING_CONFIG
 	return utest_main(argc, argv);
 #else
-	initCameraInput();
+	cameraInputHandler::initCameraInput();
 	mainMenu::runMenu();
 	return runApp();
 #endif

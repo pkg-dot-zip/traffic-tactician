@@ -13,4 +13,5 @@ class TextureCache
 public:
 	static Texture* loadTexture(const std::string& fileName);
 	static Texture* loadMaterialTexture(const std::string& fileName, const glm::vec3& color);
+	static void preloadTextures();
 };

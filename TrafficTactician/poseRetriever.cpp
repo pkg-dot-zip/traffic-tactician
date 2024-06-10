@@ -12,7 +12,7 @@
 #include<set>
 #include<cmath>
 
-#include "InputHandler.h"
+#include "CameraInputHandler.h"
 #include "keyPoint.h"
 #include "poseChecker.h"
 #include "poseEstimation.h"
@@ -139,8 +139,8 @@ int runPoseRetriever()
 		
 		cv::imshow("Detected Pose", outputFrame);
 		cv::waitKey(1);
-	
-		setInputPose(getPose(keyPoints));
+
+		cameraInputHandler::setInputPose(getPose(keyPoints));
 	
 		clearPoseEstimationKeyPointsMap(); // DON'T FORGET TO CLEAR MAP; THIS LINE IS IMPORTANT!
 	}

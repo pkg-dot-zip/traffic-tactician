@@ -1,8 +1,6 @@
 /*
  * Docs used to create this file: https://learn.microsoft.com/en-us/previous-versions/dd743680(v=vs.85)
  */
-
-
 #include "SoundHandler.h"
 
 #include <Windows.h>
