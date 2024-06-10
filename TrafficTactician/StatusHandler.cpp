@@ -28,23 +28,29 @@ void showStatus(const std::shared_ptr<Simulation>& sim)
 
 		ImGui::Text("%d", score); // Display the text and integer
 
-		if (sim->scene->currentCarObject->getComponent<RouteComponent>().has_value())
+		if (!sim->scene->currentCarObject.expired())
 		{
-			if (sim->scene->currentCarObject->getComponent<RouteComponent>().value()->state == RouteComponent::RouteState::Idle)
+			std::shared_ptr<GameObject> car = sim->scene->currentCarObject.lock();
+			if (car->getComponent<RouteComponent>().has_value())
 			{
-				// Start timer
-				sim->scene->currentCarObject->getComponent<ControllerComponent>().value()->timer->toggleTimer(true);
-
-				char overlay[32];
-				sprintf_s(overlay, "%.2f s", data.remainingTime);
-				ImGui::ProgressBar(data.progress, ImVec2(-1.0f, 0.0f), overlay); // Full width progress bar .
+				if (car->getComponent<RouteComponent>().value()->state == RouteComponent::RouteState::Idle)
+				{
+					// Start timer
+					car->getComponent<ControllerComponent>().value()->timer->toggleTimer(true);
+					
+					char overlay[32];
+					sprintf_s(overlay, "%.2f s", data.remainingTime);
+					ImGui::ProgressBar(data.progress, ImVec2(-1.0f, 0.0f), overlay); // Full width progress bar .
+				}
+			}
+			else
+			{
+				LOG(ERROR) << "Error: Can not update UI when no ControllerComponent can be found." << std::endl;
+				throw std::exception("Error: Can not update UI when no ControllerComponent can be found.");
 			}
 		}
-		else
-		{
-			LOG(ERROR) << "Error: Can not update UI when no ControllerComponent can be found." << std::endl;
-			throw std::exception("Error: Can not update UI when no ControllerComponent can be found.");
-		}
+
+		
 
 		ImGui::End();
 	}
