@@ -87,9 +87,6 @@
     <ClCompile Include="poseChecker.cpp">
       <Filter>Source Files\poseDetection</Filter>
     </ClCompile>
-    <ClCompile Include="detectionMain.cpp">
-      <Filter>Source Files\poseDetection</Filter>
-    </ClCompile>
     <ClCompile Include="poseEstimation.cpp">
       <Filter>Source Files\poseDetection</Filter>
     </ClCompile>
@@ -157,6 +154,12 @@
       <Filter>Source Files\texture</Filter>
     </ClCompile>
     <ClCompile Include="StatusHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TrafficTactician.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="startMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -279,6 +282,12 @@
       <Filter>Header Files\texture</Filter>
     </ClInclude>
     <ClInclude Include="StatusHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TrafficTactician.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="startMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
