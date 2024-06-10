@@ -1,4 +1,6 @@
 #include "TextureCache.h"
+
+#include "easylogging++.h"
 #include "Texture.h"
 
 enum Pose { POSE_MOVE_RIGHT, POSE_MOVE_LEFT, POSE_MOVE_FORWARD, POSE_STOP, POSE_OTHER };
@@ -22,4 +24,15 @@ Texture* TextureCache::loadMaterialTexture(const std::string& colorName, const g
     const auto texture = new Texture(color);
     cache[colorName] = texture;
     return texture;
+}
+
+// Preload textures.
+void TextureCache::preloadTextures()
+{
+	loadTexture("score_logo.png");
+	loadTexture("sign_stop.png");
+	loadTexture("sign_forward.png");
+	loadTexture("sign_left.png");
+	loadTexture("sign_right.png");
+    LOG(INFO) << "Loading all visual cues textures." << std::endl;
 }

@@ -8,7 +8,6 @@ enum PoseDirection { DIRECTION_UNCLEAR, DIRECTION_UP, DIRECTION_RIGHT, DIRECTION
 
 enum Pose { POSE_MOVE_RIGHT, POSE_MOVE_LEFT, POSE_MOVE_FORWARD, POSE_STOP, POSE_OTHER };
 
-void checkPoseForAll(std::map<std::string_view, std::vector<KeyPoint>>& map);
 std::string getDirectionString(PoseDirection pose_direction);
 PoseDirection getDirectionForArmLeft(std::map<std::string_view, std::vector<KeyPoint>>& map);
 PoseDirection getDirectionForArmRight(std::map<std::string_view, std::vector<KeyPoint>>& map);

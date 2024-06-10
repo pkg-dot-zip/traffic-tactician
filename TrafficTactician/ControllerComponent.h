@@ -2,7 +2,7 @@
 #include "Component.h"
 #include <memory>
 #include <string>
-#include "InputHandler.h"
+#include "CameraInputHandler.h"
 #include "Scene.h"
 #include "Timer.h"
 

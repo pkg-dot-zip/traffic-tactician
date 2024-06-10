@@ -26,20 +26,7 @@ PoseDirection getDirectionForArm(float angleInDegrees);
 PoseDirection getDirectionForArmLeft(std::map<std::string_view, std::vector<KeyPoint>>& map);
 PoseDirection getDirectionForArmRight(std::map<std::string_view, std::vector<KeyPoint>>& map);
 
-
-void printDirectionOfArms(std::map<std::string_view, std::vector<KeyPoint>>& map);
-
 std::string getPoseString(Pose pose);
-
-// Method used for debugging prints.
-void checkPoseForAll(std::map<std::string_view, std::vector<KeyPoint>>& map)
-{
-	calculateDegreesOfElbowToWristLeft(map);
-	calculateDegreesOfElbowToWristRight(map);
-
-	printDirectionOfArms(map);
-	LOG(INFO) << "Current pose: " << getPoseString(getPose(map)) << std::endl;
-}
 
 std::string getPoseString(const Pose pose)
 {
@@ -237,7 +224,9 @@ float calculateDegreesBetweenTwoPoints(std::map<std::string_view, std::vector<Ke
 	constexpr float PI = 3.14159265358979323846;
 	const float degrees = angle * 180 / PI;
 
+#ifdef _POSE_DEBUG
 	LOG(INFO) << "Degrees between " << point1 << " & " << point2 << ":\t" << degrees << std::endl;
+#endif
 
 	return degrees;
 }

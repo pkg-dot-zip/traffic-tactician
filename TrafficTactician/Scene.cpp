@@ -56,7 +56,7 @@ void Scene::initWorld(int worldSize)
 
 void Scene::initRouteCache()
 {
-	routeCache[Pose::POSE_MOVE_RIGHT] = {
+	routeCache[POSE_MOVE_RIGHT] = {
 		glm::vec3(-0.5, 0.000000, -6.864396),
 		glm::vec3(-0.5, 0.000000, -1.55),
 		glm::vec3(0.662630, 0.000000, 0.600000),
@@ -64,14 +64,14 @@ void Scene::initRouteCache()
 	};
 
 	// TODO: Make sure the car drives on the other lane!
-	routeCache[Pose::POSE_MOVE_LEFT] = {
+	routeCache[POSE_MOVE_LEFT] = {
 		glm::vec3(-0.5, 0.000000, -6.864396),
 		glm::vec3(-0.5, 0.000000, -1.55),
 		glm::vec3(-0.662630, 0.000000, 0.600000),
 		glm::vec3(-8, 0.000000, 0.600000)
 	};
 
-	routeCache[Pose::POSE_MOVE_FORWARD] = {
+	routeCache[POSE_MOVE_FORWARD] = {
 		glm::vec3(-0.5, 0.000000, -6.864396),
 		glm::vec3(-0.5, 0.000000, -1.55),
 		glm::vec3(-0.5, 0.000000, 0.600000),
@@ -84,8 +84,7 @@ void Scene::initRouteCache()
 // Creates car with random pose.
 std::shared_ptr<GameObject> Scene::createCar()
 {
-	const Pose randomPose = static_cast<Pose>(rand() % (Pose::POSE_OTHER - 1)); // POSE_OTHER is the last enum value, however it is not one you should require the user to do. This is important!
-	return createCar(randomPose);
+	return createCar(static_cast<Pose>(rand() % (POSE_OTHER - 1))); // POSE_OTHER is the last enum value, however it is not one you should require the user to do. This is important!
 }
 
 // Create a car object with the given pose.
@@ -110,8 +109,7 @@ void Scene::updateVisualCueTexture()
 {
 	// Then we set the correct texture for the visual cue sign on the topleft of the screen.
 	std::string textureToRetrieve;
-	Pose poseToDo = currentCarObject.lock()->getComponent<ControllerComponent>().value()->correctPose;
-	switch (poseToDo)
+	switch (currentCarObject.lock()->getComponent<ControllerComponent>().value()->correctPose)
 	{
 	case POSE_MOVE_RIGHT:
 		textureToRetrieve = "rightSign";

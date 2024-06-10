@@ -3,7 +3,7 @@
 #include <ostream>
 
 #include "easylogging++.h"
-#include "InputHandler.h"
+#include "CameraInputHandler.h"
 #include "SoundHandler.h"
 
 bool enableWireframe = false;
@@ -19,27 +19,27 @@ void initKeyCallback(GLFWwindow* window)
 
 			if (key == GLFW_KEY_1 && action == GLFW_RELEASE)
 			{
-				setInputPose(POSE_MOVE_FORWARD);
+				cameraInputHandler::setInputPose(POSE_MOVE_FORWARD);
 			}
 
 			if (key == GLFW_KEY_2 && action == GLFW_RELEASE)
 			{
-				setInputPose(POSE_MOVE_LEFT);
+				cameraInputHandler::setInputPose(POSE_MOVE_LEFT);
 			}
 
 			if (key == GLFW_KEY_3 && action == GLFW_RELEASE)
 			{
-				setInputPose(POSE_MOVE_RIGHT);
+				cameraInputHandler::setInputPose(POSE_MOVE_RIGHT);
 			}
 
 			if (key == GLFW_KEY_4 && action == GLFW_RELEASE)
 			{
-				setInputPose(POSE_STOP);
+				cameraInputHandler::setInputPose(POSE_STOP);
 			}
 
 			if (key == GLFW_KEY_5 && action == GLFW_RELEASE)
 			{
-				setInputPose(POSE_OTHER);
+				cameraInputHandler::setInputPose(POSE_OTHER);
 			}
 
 			if (key == GLFW_KEY_0 && action == GLFW_RELEASE)

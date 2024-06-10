@@ -1,7 +1,7 @@
 #include "ControllerComponent.h"
 #include "GameObject.h"
 #include "RouteComponent.h"
-#include "InputHandler.h"
+#include "CameraInputHandler.h"
 #include <iostream>
 #include <memory>
 
@@ -16,7 +16,7 @@ ControllerComponent::ControllerComponent(Pose pose, Scene* scene) : scene(scene)
 
 bool ControllerComponent::checkPose() const
 {
-	return getInputPose() == correctPose;
+	return cameraInputHandler::getInputPose() == correctPose;
 }
 
 void ControllerComponent::timerCallback() const

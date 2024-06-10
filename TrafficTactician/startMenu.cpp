@@ -6,7 +6,6 @@
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
 #include <GLFW/glfw3.h>
-#include <glm/gtx/string_cast.hpp>
 
 #include "stb_image.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -96,7 +95,6 @@ namespace mainMenu
 			return;
 		}
 		glfwMakeContextCurrent(window);
-
 		ImGui::CreateContext();
 
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -106,7 +104,6 @@ namespace mainMenu
 		ImGui_ImplOpenGL3_Init("#version 330");
 
 		applyMainMenuStyling();
-
 		setWindowIcon();
 	}
 
@@ -129,8 +126,6 @@ namespace mainMenu
 	}
 
 	void runMenu() {
-		// TODO: Implement menu skip.
-
 		init();
 
 		LOG(INFO) << "Running main menu" << std::endl;
@@ -149,7 +144,6 @@ namespace mainMenu
 			// Make gui fullscreen.
 			ImGui::SetNextWindowPos({ 0, 0 });
 			ImGui::SetNextWindowSize({ ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y });
-
 
 			ImGui::Begin("MainMenu", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration);
 			{
