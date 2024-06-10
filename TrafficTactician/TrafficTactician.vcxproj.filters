@@ -99,13 +99,7 @@
     <ClCompile Include="Simulation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ModelComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WorldComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PoseUnitTests.cpp">
@@ -159,8 +153,17 @@
     <ClCompile Include="TrafficTactician.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="startMenu.cpp">
+    <ClCompile Include="StartMenu.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RandomModelGrabber.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldComponent.cpp">
+      <Filter>components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -287,7 +290,13 @@
     <ClInclude Include="TrafficTactician.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="startMenu.h">
+    <ClInclude Include="StartMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RandomModelGrabber.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

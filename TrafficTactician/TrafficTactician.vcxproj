@@ -297,7 +297,7 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="PoseUnitTests.cpp" />
     <ClCompile Include="SoundHandler.cpp" />
-    <ClCompile Include="startMenu.cpp" />
+    <ClCompile Include="StartMenu.cpp" />
     <ClCompile Include="StatusHandler.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureCache.cpp" />
@@ -326,7 +326,7 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     <ClInclude Include="Simulation.h" />
     <ClInclude Include="KeypointLocationStrings.h" />
     <ClInclude Include="SoundHandler.h" />
-    <ClInclude Include="startMenu.h" />
+    <ClInclude Include="StartMenu.h" />
     <ClInclude Include="StatusHandler.h" />
     <ClInclude Include="TextureCache.h" />
     <ClInclude Include="stb_image.h" />
