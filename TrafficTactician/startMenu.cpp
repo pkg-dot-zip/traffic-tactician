@@ -1,5 +1,6 @@
 #include <iostream>
 #include <memory>
+#include <filesystem>
 
 #include "easylogging++.h"
 #include <imgui.h>
@@ -11,6 +12,8 @@
 
 namespace mainMenu
 {
+	constexpr const char* _SOLUTIONDIR = R"($(SolutionDir))";
+
 	GLFWwindow* window;
 
 	bool menu_should_run = true;
@@ -99,6 +102,18 @@ namespace mainMenu
 				{
 					LOG(INFO) << "Pressed Start button." << std::endl;
 					menu_should_run = false;
+				}
+
+				if (ImGui::SmallButton("Open instruction video"))
+				{
+					LOG(INFO) << "Pressed Open Instruction Video button." << std::endl;
+
+					std::filesystem::path videoFile = L"./videos/instructionVideo.mp4";
+
+					std::filesystem::path a = "." / videoFile;
+
+					LOG(INFO) << "Trying to open video at " << a.string() << "." << std::endl;
+					ShellExecute(0, 0, a.c_str(), 0, 0, SW_SHOW);
 				}
 
 				if (ImGui::SmallButton("Quit"))
