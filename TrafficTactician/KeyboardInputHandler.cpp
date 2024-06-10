@@ -6,6 +6,8 @@
 #include "InputHandler.h"
 #include "SoundHandler.h"
 
+bool enableWireframe = false;
+
 void initKeyCallback(GLFWwindow* window)
 {
 	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -48,6 +50,12 @@ void initKeyCallback(GLFWwindow* window)
 			if (key == GLFW_KEY_9 && action == GLFW_RELEASE)
 			{
 				SoundHandler::getInstance().forceStopSound();
+			}
+
+			if (key == GLFW_KEY_8 && action == GLFW_RELEASE)
+			{
+				enableWireframe = !enableWireframe;
+				glPolygonMode(GL_FRONT_AND_BACK, enableWireframe ? GL_FILL : GL_LINE);
 			}
 		});
 
