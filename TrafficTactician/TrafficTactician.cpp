@@ -172,16 +172,23 @@ void updateImGui() {
 
 	ImGui::SetNextWindowPos(ImVec2(0, 0)); // Set the window position to the top left corner
 	ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, 100)); // Set the window width to the display width and height to 100
-	const std::shared_ptr<GameObject> car = sim->scene->currentCarObject;
+
+	if (sim->scene->currentCarObject.expired())
+	{
+		LOG(WARNING) << "No car found to update UI for. Returning." << std::endl;
+		return;
+	}
+
+	const std::shared_ptr<GameObject> car = sim->scene->currentCarObject.lock();
 	ImGui::Text("CarPosition: %f, %f, %f", car->position.x, car->position.y, car->position.z);
 	ImGui::SliderAngle("CarRotation:", &car->rotation.y);
 	bool continueRoute = false;
 	if (ImGui::Checkbox("Continue route", &continueRoute)) {
 
-		if (sim->scene->currentCarObject->getComponent<RouteComponent>().has_value())
+		if (car->getComponent<RouteComponent>().has_value())
 		{
-			sim->scene->currentCarObject->getComponent<RouteComponent>().value()->state = RouteComponent::RouteState::Moving;
-			sim->scene->currentCarObject->getComponent<RouteComponent>().value()->crossed = true;
+			car->getComponent<RouteComponent>().value()->state = RouteComponent::RouteState::Moving;
+			car->getComponent<RouteComponent>().value()->crossed = true;
 		}
 		else
 		{
@@ -191,8 +198,8 @@ void updateImGui() {
 
 	}
 
-	if (sim->scene->currentCarObject->getComponent<ControllerComponent>().has_value()) {
-		const auto correctPose = sim->scene->currentCarObject->getComponent<ControllerComponent>().value()->correctPose;
+	if (car->getComponent<ControllerComponent>().has_value()) {
+		const auto correctPose = car->getComponent<ControllerComponent>().value()->correctPose;
 		ImGui::Text("Correct Pose: %s", getPoseString(correctPose).c_str());
 	}
 	else
@@ -206,7 +213,7 @@ void updateImGui() {
 	ImGui::Text(poseString.c_str());
 
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.25f)); // Set the window background color to semi-transparent black
-	showStatus(sim);
+	showStatus(sim); // TODO: Pass car as parameter here!!!
 
 	ImGui::PopStyleColor(); // Reset the window background color to the default.
 }

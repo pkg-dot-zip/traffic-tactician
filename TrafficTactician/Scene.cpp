@@ -1,12 +1,16 @@
 #include <GL/glew.h>
 
 #include "Scene.h"
+
+#include <ostream>
+
 #include "GameObject.h"
 
 #include "ModelComponent.h"
 #include "WorldComponent.h"
 #include "RouteComponent.h"
 #include "ControllerComponent.h"
+#include "easylogging++.h"
 #include "Texture.h"
 #include "TextureCache.h"
 
@@ -24,9 +28,9 @@ Scene::Scene(const std::weak_ptr<Simulation>& sim, int worldSize)
 	data.textures["rightSign"] = TextureCache::loadTexture("sign_right.png")->id;
 	data.currentSignTexture = &data.textures["stopSign"];
 
-	// Create a car object with the given pose.
-	currentCarObject = createCar();
-	objects.push_back(currentCarObject);
+	// Init first car.
+	objects.push_back(createCar());
+	currentCarObject = objects.back();
 }
 
 void Scene::initWorld(int worldSize)
@@ -106,16 +110,35 @@ std::shared_ptr<GameObject> Scene::createCar(Pose pose)
 }
 
 
-void Scene::update(float deltaTime) const
+void Scene::update(float deltaTime)
 {
+	// First update all the gameObjects.
 	for (const auto& o : objects) {
 		o->update(deltaTime);
+	}
+
+	// Then update the car spawning mechanism.
+	if (currentCarObject.expired())
+	{
+		LOG(INFO) << "No cars currently in the scene. Spawning new one." << std::endl;
+		objects.push_back(createCar());
+		currentCarObject = objects.back();
+		LOG(INFO) << "Spawned new car in scene." << std::endl;
+	} else
+	{
+		const std::shared_ptr<GameObject> carGameObject = currentCarObject.lock();
+		if (carGameObject->getComponent<RouteComponent>().value()->state == RouteComponent::RouteState::Finished)
+		{
+			std::erase(objects, carGameObject);
+			currentCarObject.reset();
+			LOG(INFO) << "Removed car from scene cause the car finished its route." << std::endl;
+		}
 	}
 }
 
 void Scene::draw() const
 {
-	for (auto& o : objects) {
+	for (const auto& o : objects) {
 		o->draw();
 	}
 }

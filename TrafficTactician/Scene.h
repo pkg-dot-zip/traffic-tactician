@@ -12,7 +12,7 @@ class Scene
 public:
 	std::weak_ptr<Simulation> sim;
 	std::vector<std::shared_ptr<GameObject>> objects;
-	std::shared_ptr<GameObject> currentCarObject;
+	std::weak_ptr<GameObject> currentCarObject;
 
 	struct OverlayData
 	{
@@ -27,7 +27,7 @@ public:
 
 
 	Scene(const std::weak_ptr<Simulation>& sim, int worldSize = 11);
-	void update(float deltaTime) const;
+	void update(float deltaTime);
 	void draw() const;
 private:
 	std::map<Pose, std::vector<glm::vec3>> routeCache;
