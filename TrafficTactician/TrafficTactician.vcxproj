@@ -252,7 +252,7 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_POSE_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -272,11 +272,6 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     <ClCompile Include="CarComponent.cpp" />
     <ClCompile Include="components\GameObject.cpp" />
     <ClCompile Include="ControllerComponent.cpp" />
-    <ClCompile Include="detectionMain.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='UnitTesting|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="easylogging++.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="KeyboardInputHandler.cpp" />
@@ -290,7 +285,7 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     <ClCompile Include="log.cpp" />
     <ClCompile Include="ModelComponent.cpp" />
     <ClCompile Include="main.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='PoseDetectionRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='PoseDetectionRelease|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="poseChecker.cpp" />
@@ -306,6 +301,7 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     <ClCompile Include="TextureCache.cpp" />
     <ClCompile Include="tigl.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="TrafficTactician.cpp" />
     <ClCompile Include="WorldComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -330,6 +326,7 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     <ClInclude Include="TextureCache.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="TrafficTactician.h" />
     <ClInclude Include="utest.h" />
     <ClInclude Include="WorldComponent.h" />
     <ClInclude Include="keyPoint.h" />
