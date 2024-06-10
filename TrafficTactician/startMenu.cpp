@@ -9,13 +9,12 @@
 
 #include "backends/imgui_impl_opengl3.h"
 
-#define GLSL_VERSION "#version 330"
-
 namespace mainMenu
 {
 	GLFWwindow* window;
 
 	bool menu_should_run = true;
+	bool isQuitting = false;
 
 	bool shouldRunMenu()
 	{
@@ -49,7 +48,7 @@ namespace mainMenu
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
-		ImGui_ImplOpenGL3_Init(GLSL_VERSION);
+		ImGui_ImplOpenGL3_Init("#version 330");
 	}
 
 	void onShutdown()
@@ -61,6 +60,13 @@ namespace mainMenu
 
 		glfwDestroyWindow(window);
 		glfwTerminate();
+
+		// Force close the entire process.
+		if (isQuitting)
+		{
+			LOG(INFO) << "Shutting down entire process." << std::endl;
+			exit(0);
+		}
 	}
 
 	void runMenu() {
@@ -81,13 +87,25 @@ namespace mainMenu
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
-			ImGui::Begin("Window");
+			// Make gui fullscreen.
+			ImGui::SetNextWindowPos({ 0, 0 });
+			ImGui::SetNextWindowSize({ ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y });
+			ImGui::GetStyle().WindowRounding = 0.0f;
+
+
+			ImGui::Begin("MainMenu", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration);
 			{
-				ImGui::Text("Hello, Dear ImGUI!");
 				if (ImGui::SmallButton("Start"))
 				{
 					LOG(INFO) << "Pressed Start button." << std::endl;
 					menu_should_run = false;
+				}
+
+				if (ImGui::SmallButton("Quit"))
+				{
+					LOG(INFO) << "Pressed Quit button." << std::endl;
+					menu_should_run = false;
+					isQuitting = true;
 				}
 			}
 			ImGui::End();
