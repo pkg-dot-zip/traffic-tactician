@@ -13,7 +13,6 @@
 using tigl::Vertex;
 
 #include "easylogging++.h"
-#include "log.h"
 
 #include <imgui.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -135,7 +134,6 @@ void init() {
 
 
 	initKeyCallback(window);
-	initCameraInput();
 }
 
 void initFog()
