@@ -404,8 +404,6 @@ void getCalculatedPose(std::map<std::string_view, std::vector<KeyPoint>>& keyPoi
 		keyPointsList.insert(keyPointsList.end(), keyPoints.begin(), keyPoints.end());
 	}
 
-	checkPoseForAll(keyPointsToUseInCalculation);
-
 	std::vector<cv::Scalar> colors;
 
 	if (GetDNNSettings().useColorsForPose)
@@ -463,7 +461,9 @@ std::map<std::string_view, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap
 	cv::resize(input, input, { GetDNNSettings().downscaleTargetWidth, GetDNNSettings().downscaleTargetHeight}, 0, 0, cv::INTER_AREA);
 	// INTER_AREA is better than the default (INTER_LINEAR) for camera views, according to a Stackoverflow user. TODO: CHECK IF THIS IS TRUE.
 
+#ifdef _POSE_DEBUG
 	LOG(INFO) << "InputFrame size: " << input.cols << " | " << input.rows << std::endl;
+#endif
 
 	// Then we retrieve the estimationpoints.
 	const int64 timeStart = cv::getTickCount();
@@ -478,11 +478,12 @@ std::map<std::string_view, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap
 	cv::resize(outputFrame, outputFrame, { GetDNNSettings().upscaleTargetWidth, GetDNNSettings().upscaleTargetHeight});
 	cv::flip(outputFrame, outputFrame, 1);
 
+#ifdef _POSE_DEBUG
 	LOG(INFO) << "Outputframe size: " << outputFrame.cols << " | " << outputFrame.rows << std::endl;
+#endif
 
 	return poseEstimationKeyPoints;
 }
-
 
 // Clears the keypoints map.
 void clearPoseEstimationKeyPointsMap()
