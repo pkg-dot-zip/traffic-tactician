@@ -315,6 +315,7 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     <ClInclude Include="easylogging++.h" />
     <ClInclude Include="graphicSettings.h" />
     <ClInclude Include="InputHandler.h" />
+    <ClInclude Include="json.h" />
     <ClInclude Include="KeyboardInputHandler.h" />
     <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="RouteComponent.h" />
