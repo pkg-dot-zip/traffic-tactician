@@ -44,7 +44,6 @@ void ControllerComponent::timerCallback() const
 	}
 
 
-
 	// If pose was wrong, points ++.
 	changeCarState(RouteComponent::RouteState::Moving);
 	timer->toggleTimer(false);

@@ -74,13 +74,13 @@ void Scene::initRouteCache()
 	routeCache[POSE_MOVE_FORWARD] = {
 		glm::vec3(-0.5, 0.000000, -6.864396),
 		glm::vec3(-0.5, 0.000000, -1.55),
-		glm::vec3(-0.5, 0.000000, 0.600000),
 		glm::vec3(-0.5, 0.000000, 6.000000)
 	};
 
 	routeCache[POSE_STOP] = {
 		glm::vec3(-0.5, 0.000000, -6.864396),
 		glm::vec3(-0.5, 0.000000, -1.55),
+		glm::vec3(-0.5, 0.000000, 6.0),
 	};
 }
 
@@ -105,6 +105,7 @@ std::shared_ptr<GameObject> Scene::createCar(Pose pose)
 	carObject->addComponent(std::make_shared<RouteComponent>(speed, route));
 	carObject->addComponent(std::make_shared<ControllerComponent>(pose, this));
 
+	SoundHandler::getInstance().playSoundSnippet("sounds/car/Car_Acceleration_2.wav");
 	return carObject;
 }
 
@@ -153,7 +154,6 @@ void Scene::update(float deltaTime)
 		LOG(INFO) << "Spawned new car in scene." << std::endl;
 
 		updateVisualCueTexture();
-		SoundHandler::getInstance().playSoundSnippet("sounds/car/Car_Acceleration_2.wav");
 	} else
 	{
 		const std::shared_ptr<GameObject> carGameObject = currentCarObject.lock();
