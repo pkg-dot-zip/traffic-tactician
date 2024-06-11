@@ -6,6 +6,7 @@
 
 #include "easylogging++.h"
 #include "Scene.h"
+#include "SoundHandler.h"
 #include "Timer.h"
 
 ControllerComponent::ControllerComponent(Pose pose, Scene* scene) : scene(scene), correctPose(pose)
@@ -34,25 +35,30 @@ void ControllerComponent::changeCarState(RouteComponent::RouteState state) const
 
 void ControllerComponent::timerCallback() const
 {
-	// When the STOP pose is detected, the car should stop moving
-	// and the route should be finished.
-	// This is a special case that was implemented later to teach the STOP command.
-	if (cameraInputHandler::getInputPose() == POSE_STOP)  {
-		changeCarState(RouteComponent::RouteState::Finished);
-		timer->toggleTimer(false);
-		scene->data.points++;
-		return;
-	}
-
+	// If pose was wrong, points --.
 	if (!checkPose())
 	{
 		scene->data.points--;
+		SoundHandler::getInstance().playSoundSnippet("sounds/points_minus.wav");
 		return;
 	}
 
+	// When the STOP pose is detected, the car should stop moving
+	// and the route should be finished.
+	// This is a special case that was implemented later to teach the STOP command.
+	if (cameraInputHandler::getInputPose() == POSE_STOP) {
+		changeCarState(RouteComponent::RouteState::Finished);
+		timer->toggleTimer(false);
+		scene->data.points++;
+		SoundHandler::getInstance().playSoundSnippet("sounds/points_plus.wav");
+		return;
+	}
+
+	// If pose was wrong, points ++.
 	changeCarState(RouteComponent::RouteState::Moving);
 	timer->toggleTimer(false);
 	scene->data.points++;
+	SoundHandler::getInstance().playSoundSnippet("sounds/points_plus.wav");
 }
 
 void ControllerComponent::update(float deltaTime)

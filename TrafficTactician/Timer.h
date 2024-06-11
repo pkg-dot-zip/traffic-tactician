@@ -5,6 +5,7 @@ class Timer
 {
 public:
 	float rolloverTime = 0.0f;
+	float soundPassTime = 0.0f;
 
 	Timer(const std::function<void()>& callback = nullptr, float rolloverTime = 3.0f);
 	~Timer() = default;
@@ -18,6 +19,7 @@ public:
 private:
 	std::function<void()> callback;
 	bool isTimerOn = false;
+	bool alternateSound = false;
 	float timeElapsed = 0.0f;
 	int rolloverCount = 0;
 };

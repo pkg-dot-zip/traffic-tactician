@@ -12,6 +12,7 @@
 #include "ControllerComponent.h"
 #include "easylogging++.h"
 #include "RandomModelGrabber.h"
+#include "SoundHandler.h"
 #include "Texture.h"
 #include "TextureCache.h"
 
@@ -80,14 +81,13 @@ void Scene::initRouteCache()
 	routeCache[POSE_STOP] = {
 		glm::vec3(-0.5, 0.000000, -6.864396),
 		glm::vec3(-0.5, 0.000000, -1.55),
-
 	};
 }
 
 // Creates car with random pose.
 std::shared_ptr<GameObject> Scene::createCar()
 {
-	return createCar(static_cast<Pose>(rand() % (POSE_OTHER - 1))); // POSE_OTHER is the last enum value, however it is not one you should require the user to do. This is important!
+	return createCar(static_cast<Pose>(rand() % (POSE_OTHER))); // POSE_OTHER is the last enum value, however it is not one you should require the user to do. This is important!
 }
 
 // Create a car object with the given pose.
@@ -153,8 +153,8 @@ void Scene::update(float deltaTime)
 		LOG(INFO) << "Spawned new car in scene." << std::endl;
 
 		updateVisualCueTexture();
-	}
-	else
+		SoundHandler::getInstance().playSoundSnippet("sounds/car/Car_Acceleration_2.wav");
+	} else
 	{
 		const std::shared_ptr<GameObject> carGameObject = currentCarObject.lock();
 		if (carGameObject->getComponent<RouteComponent>().value()->state == RouteComponent::RouteState::Finished)
