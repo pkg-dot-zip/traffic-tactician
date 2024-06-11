@@ -7,6 +7,7 @@
 #include <backends/imgui_impl_glfw.h>
 #include <GLFW/glfw3.h>
 
+#include "SoundHandler.h"
 #include "stb_image.h"
 #include "backends/imgui_impl_opengl3.h"
 
@@ -152,6 +153,7 @@ namespace mainMenu
 				{
 					LOG(INFO) << "Pressed Start button." << std::endl;
 					menu_should_run = false;
+					SoundHandler::getInstance().playSoundSnippet("sounds/menu_click.wav");
 				}
 
 				if (ImGui::Button("Open instruction video", buttonSize))
@@ -164,6 +166,7 @@ namespace mainMenu
 
 					LOG(INFO) << "Trying to open video at " << a.string() << "." << std::endl;
 					ShellExecute(0, 0, a.c_str(), 0, 0, SW_SHOW);
+					SoundHandler::getInstance().playSoundSnippet("sounds/menu_click.wav");
 				}
 
 				if (ImGui::Button("Quit", buttonSize))
@@ -171,6 +174,7 @@ namespace mainMenu
 					LOG(INFO) << "Pressed Quit button." << std::endl;
 					menu_should_run = false;
 					isQuitting = true;
+					SoundHandler::getInstance().playSoundSnippet("sounds/menu_click.wav");
 				}
 			}
 			ImGui::End();
