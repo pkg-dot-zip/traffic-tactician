@@ -9,11 +9,10 @@ namespace statusHandler
 {
 	void showStatus(const std::shared_ptr<Simulation>& sim)
 	{
-		if (ImGui::Begin("Status", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar))
+		if (ImGui::Begin("Status", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoScrollWithMouse))
 		{
-
 			Scene::OverlayData data = sim->scene->data;
-			ImGui::Image((void*)(intptr_t)*data.currentSignTexture, ImVec2(31, 31), { 0,1 }, { 1,0 }); // Display the icon
+			ImGui::Image((void*)(intptr_t)*data.currentSignTexture, ImVec2(65, 65), { 0,1 }, { 1,0 }); // Display the icon
 
 			ImGui::SameLine(); // Keep the following items on the same line with an offset
 
