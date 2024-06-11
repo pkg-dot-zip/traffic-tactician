@@ -63,12 +63,11 @@ void Scene::initRouteCache()
 		glm::vec3(8, 0.000000, 0.600000)
 	};
 
-	// TODO: Make sure the car drives on the other lane!
 	routeCache[POSE_MOVE_LEFT] = {
 		glm::vec3(-0.5, 0.000000, -6.864396),
 		glm::vec3(-0.5, 0.000000, -1.55),
-		glm::vec3(-0.662630, 0.000000, 0.600000),
-		glm::vec3(-8, 0.000000, 0.600000)
+		glm::vec3(-0.662630, 0.000000, -0.600000),
+		glm::vec3(-8, 0.000000, -0.600000)
 	};
 
 	routeCache[POSE_MOVE_FORWARD] = {
@@ -78,7 +77,11 @@ void Scene::initRouteCache()
 		glm::vec3(-0.5, 0.000000, 6.000000)
 	};
 
-	// TODO: Add route and support for POSE_STOP
+	routeCache[POSE_STOP] = {
+		glm::vec3(-0.5, 0.000000, -6.864396),
+		glm::vec3(-0.5, 0.000000, -1.55),
+
+	};
 }
 
 // Creates car with random pose.
@@ -150,7 +153,8 @@ void Scene::update(float deltaTime)
 		LOG(INFO) << "Spawned new car in scene." << std::endl;
 
 		updateVisualCueTexture();
-	} else
+	}
+	else
 	{
 		const std::shared_ptr<GameObject> carGameObject = currentCarObject.lock();
 		if (carGameObject->getComponent<RouteComponent>().value()->state == RouteComponent::RouteState::Finished)

@@ -47,7 +47,8 @@ double lastFrameTime = 0;
 std::array clearColor = { 0.3f, 0.4f, 0.6f, 1.0f };
 
 int runApp() {
-	srand(5); // Set seed for rand() calls.
+	// TODO: create a hash function for the random number generator to make a reproducible test
+	srand((unsigned int)time(NULL)); // Set seed to for rand() calls. 
 
 	if (GetGraphicSettings().mxaaEnabled) glfwWindowHint(GLFW_SAMPLES, 4); // Multisample anti-aliasing.
 

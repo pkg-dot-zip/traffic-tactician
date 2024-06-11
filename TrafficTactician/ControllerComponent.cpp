@@ -1,6 +1,5 @@
 #include "ControllerComponent.h"
 #include "GameObject.h"
-#include "RouteComponent.h"
 #include "CameraInputHandler.h"
 #include <iostream>
 #include <memory>
@@ -19,25 +18,39 @@ bool ControllerComponent::checkPose() const
 	return cameraInputHandler::getInputPose() == correctPose;
 }
 
-void ControllerComponent::timerCallback() const
+void ControllerComponent::changeCarState(RouteComponent::RouteState state) const
 {
-	if (!checkPose())
-	{
-		scene->data.points--;
-		return;
-	}
-
 	if (gameObject->getComponent<RouteComponent>().has_value())
 	{
 		gameObject->getComponent<RouteComponent>().value()->crossed = true;
-		gameObject->getComponent<RouteComponent>().value()->state = RouteComponent::RouteState::Moving;
+		gameObject->getComponent<RouteComponent>().value()->state = state;
 	}
 	else
 	{
 		LOG(ERROR) << "Error: Can not update UI when no RouteComponent can be found." << std::endl;
 		throw std::exception("Error: Can not update UI when no RouteComponent can be found.");
 	}
+}
 
+void ControllerComponent::timerCallback() const
+{
+	// When the STOP pose is detected, the car should stop moving
+	// and the route should be finished.
+	// This is a special case that was implemented later to teach the STOP command.
+	if (cameraInputHandler::getInputPose() == POSE_STOP)  {
+		changeCarState(RouteComponent::RouteState::Finished);
+		timer->toggleTimer(false);
+		scene->data.points++;
+		return;
+	}
+
+	if (!checkPose())
+	{
+		scene->data.points--;
+		return;
+	}
+
+	changeCarState(RouteComponent::RouteState::Moving);
 	timer->toggleTimer(false);
 	scene->data.points++;
 }
