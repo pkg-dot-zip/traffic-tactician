@@ -4,8 +4,8 @@
 
 #include "easylogging++.h"
 #include "CameraInputHandler.h"
-#include "SoundHandler.h"
 
+extern bool drawDebugMenu;
 bool enableWireframe = false;
 
 void initKeyCallback(GLFWwindow* window)
@@ -46,6 +46,11 @@ void initKeyCallback(GLFWwindow* window)
 			{
 				enableWireframe = !enableWireframe;
 				glPolygonMode(GL_FRONT_AND_BACK, enableWireframe ? GL_FILL : GL_LINE);
+			}
+
+			if (key == GLFW_KEY_9 && action == GLFW_RELEASE)
+			{
+				drawDebugMenu = !drawDebugMenu;
 			}
 		});
 

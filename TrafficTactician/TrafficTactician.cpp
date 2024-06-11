@@ -44,6 +44,9 @@ std::shared_ptr<Simulation> sim;
 int width = GetGraphicSettings().screenWidth, height = GetGraphicSettings().screenHeight;
 double lastFrameTime = 0;
 
+bool drawStatus = true;
+bool drawDebugMenu = false;
+
 std::array clearColor = { 0.3f, 0.4f, 0.6f, 1.0f };
 
 int runApp() {
@@ -163,34 +166,41 @@ void initFog()
 
 void updateImGui() {
 
-	ImGui::SetNextWindowPos(ImVec2(0, 0)); // Set the window position to the top left corner
-	ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, 100)); // Set the window width to the display width and height to 100
-
-	if (sim->scene->currentCarObject.expired())
+	if (drawDebugMenu)
 	{
-		LOG(WARNING) << "No car found to update UI for. Returning." << std::endl;
-		return;
-	}
+		ImGui::SetNextWindowPos(ImVec2(0, 0)); // Set the window position to the top left corner
+		ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, 100)); // Set the window width to the display width and height to 100
 
-	const std::shared_ptr<GameObject> car = sim->scene->currentCarObject.lock();
-	ImGui::Text("CarPosition: %f, %f, %f", car->position.x, car->position.y, car->position.z);
-	ImGui::SliderAngle("CarRotation:", &car->rotation.y);
+		if (sim->scene->currentCarObject.expired())
+		{
+			LOG(WARNING) << "No car found to update UI for. Returning." << std::endl;
+			return;
+		}
 
-	if (car->getComponent<ControllerComponent>().has_value()) {
-		const auto correctPose = car->getComponent<ControllerComponent>().value()->correctPose;
-		ImGui::Text("Correct Pose: %s", getPoseString(correctPose).c_str());
-	}
-	else
-	{
-		LOG(ERROR) << "Error: Can not update UI when no ControllerComponent can be found." << std::endl;
-		throw std::exception("Error: Can not update UI when no ControllerComponent can be found.");
-	}
+		const std::shared_ptr<GameObject> car = sim->scene->currentCarObject.lock();
+		ImGui::Text("CarPosition: %f, %f, %f", car->position.x, car->position.y, car->position.z);
+		ImGui::SliderAngle("CarRotation:", &car->rotation.y);
 
-	const std::string poseString = "Pose: " + getPoseString(cameraInputHandler::getInputPose());
-	ImGui::Text(poseString.c_str());
+		if (car->getComponent<ControllerComponent>().has_value()) {
+			const auto correctPose = car->getComponent<ControllerComponent>().value()->correctPose;
+			ImGui::Text("Correct Pose: %s", getPoseString(correctPose).c_str());
+		}
+		else
+		{
+			LOG(ERROR) << "Error: Can not update UI when no ControllerComponent can be found." << std::endl;
+			throw std::exception("Error: Can not update UI when no ControllerComponent can be found.");
+		}
+
+		const std::string poseString = "Pose: " + getPoseString(cameraInputHandler::getInputPose());
+		ImGui::Text(poseString.c_str());
+	}
 
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.25f)); // Set the window background color to semi-transparent black
-	statusHandler::showStatus(sim);
+
+	if (drawStatus)
+	{
+		statusHandler::showStatus(sim);
+	}
 
 	ImGui::PopStyleColor(); // Reset the window background color to the default.
 }
