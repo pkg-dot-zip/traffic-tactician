@@ -12,6 +12,7 @@
 #include "ControllerComponent.h"
 #include "easylogging++.h"
 #include "RandomModelGrabber.h"
+#include "SoundHandler.h"
 #include "Texture.h"
 #include "TextureCache.h"
 
@@ -150,6 +151,7 @@ void Scene::update(float deltaTime)
 		LOG(INFO) << "Spawned new car in scene." << std::endl;
 
 		updateVisualCueTexture();
+		SoundHandler::getInstance().playSoundSnippet("sounds/car/Car_Acceleration_2.wav");
 	} else
 	{
 		const std::shared_ptr<GameObject> carGameObject = currentCarObject.lock();

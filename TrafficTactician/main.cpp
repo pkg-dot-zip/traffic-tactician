@@ -4,6 +4,7 @@
 #include "TrafficTactician.h"
 #include "utest.h"
 #include "poseRetriever.h"
+#include "SoundHandler.h"
 #include "startMenu.h"
 
 #ifdef _DEBUG
@@ -31,6 +32,7 @@ int main(int argc, const char* const argv[])
 #elif _TESTING_CONFIG
 	return utest_main(argc, argv);
 #else
+	SoundHandler::getInstance().playSoundSnippet("sounds/Start_Sounds_013.wav"); // First sound is delayed so we play a sound at application boot.
 	cameraInputHandler::initCameraInput();
 	mainMenu::runMenu();
 	return runApp();

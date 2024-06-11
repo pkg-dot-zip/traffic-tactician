@@ -3,6 +3,8 @@
 #include <easylogging++.h>
 #include <glm/gtx/string_cast.hpp>
 
+#include "SoundHandler.h"
+
 RouteComponent::RouteComponent(float speed, const std::vector<vec3>& nodesRoute)
 {
 	this->speed = speed;
@@ -24,6 +26,7 @@ void RouteComponent::update(float deltaTime) {
 	constexpr float range = 2.0f;
 	if (distanceToCenter < range && !crossed) {
 		state = RouteState::Idle;
+		SoundHandler::getInstance().playSoundSnippet("sounds/car/Car_Parking_Brake.wav");
 		return;
 	}
 
@@ -56,6 +59,7 @@ void RouteComponent::update(float deltaTime) {
 			// Handle reaching the end of the route (loop, stop, etc.)
 				currentRoute.clear();
 				state = RouteState::Finished;
+				SoundHandler::getInstance().playSoundSnippet("sounds/car/Car_Engine_Turning_Off.wav");
 				return;
 		}
 	}

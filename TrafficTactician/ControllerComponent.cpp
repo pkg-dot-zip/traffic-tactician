@@ -7,6 +7,7 @@
 
 #include "easylogging++.h"
 #include "Scene.h"
+#include "SoundHandler.h"
 #include "Timer.h"
 
 ControllerComponent::ControllerComponent(Pose pose, Scene* scene) : scene(scene), correctPose(pose)
@@ -21,12 +22,15 @@ bool ControllerComponent::checkPose() const
 
 void ControllerComponent::timerCallback() const
 {
+	// If pose was wrong, points --.
 	if (!checkPose())
 	{
 		scene->data.points--;
+		SoundHandler::getInstance().playSoundSnippet("sounds/points_minus.wav");
 		return;
 	}
 
+	// If pose was right, points ++.
 	if (gameObject->getComponent<RouteComponent>().has_value())
 	{
 		gameObject->getComponent<RouteComponent>().value()->crossed = true;
@@ -40,6 +44,7 @@ void ControllerComponent::timerCallback() const
 
 	timer->toggleTimer(false);
 	scene->data.points++;
+	SoundHandler::getInstance().playSoundSnippet("sounds/points_plus.wav");
 }
 
 void ControllerComponent::update(float deltaTime)

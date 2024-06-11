@@ -3,6 +3,7 @@
 #include <ostream>
 
 #include "easylogging++.h"
+#include "SoundHandler.h"
 
 Timer::Timer(const std::function<void()>& callback, float rolloverTime)
 {
@@ -37,6 +38,16 @@ void Timer::update(float deltaTime) {
 	if (!isTimerOn) return;
 	timeElapsed += deltaTime;
 
+	// PlaySound logic.
+	soundPassTime += deltaTime;
+	if (soundPassTime >= 1.0F)
+	{
+		SoundHandler::getInstance().playSoundSnippet(alternateSound ? "sounds/tick_1.wav" : "sounds/tick_2.wav");
+		soundPassTime -= 1.0F;
+		alternateSound = !alternateSound;
+	}
+
+	// If timer passed.
 	if (timeElapsed >= rolloverTime) {
 		rolloverCount++;
 		timeElapsed -= rolloverTime;
