@@ -42,16 +42,6 @@ void initKeyCallback(GLFWwindow* window)
 				cameraInputHandler::setInputPose(POSE_OTHER);
 			}
 
-			if (key == GLFW_KEY_0 && action == GLFW_RELEASE)
-			{
-				SoundHandler::getInstance().playSoundSnippet("test.wav");
-			}
-
-			if (key == GLFW_KEY_9 && action == GLFW_RELEASE)
-			{
-				SoundHandler::getInstance().forceStopSound();
-			}
-
 			if (key == GLFW_KEY_8 && action == GLFW_RELEASE)
 			{
 				enableWireframe = !enableWireframe;
