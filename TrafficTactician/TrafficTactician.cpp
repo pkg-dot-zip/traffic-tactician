@@ -175,20 +175,6 @@ void updateImGui() {
 	const std::shared_ptr<GameObject> car = sim->scene->currentCarObject.lock();
 	ImGui::Text("CarPosition: %f, %f, %f", car->position.x, car->position.y, car->position.z);
 	ImGui::SliderAngle("CarRotation:", &car->rotation.y);
-	bool continueRoute = false;
-	if (ImGui::Checkbox("Continue route", &continueRoute)) {
-
-		if (car->getComponent<RouteComponent>().has_value())
-		{
-			car->getComponent<RouteComponent>().value()->state = RouteComponent::RouteState::Moving;
-			car->getComponent<RouteComponent>().value()->crossed = true;
-		}
-		else
-		{
-			LOG(ERROR) << "Error: Can not update UI when no RouteComponent can be found." << std::endl;
-			throw std::exception("Error: Can not update UI when no RouteComponent can be found.");
-		}
-	}
 
 	if (car->getComponent<ControllerComponent>().has_value()) {
 		const auto correctPose = car->getComponent<ControllerComponent>().value()->correctPose;
