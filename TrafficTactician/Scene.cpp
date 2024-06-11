@@ -64,28 +64,30 @@ void Scene::initRouteCache()
 		glm::vec3(8, 0.000000, 0.600000)
 	};
 
-	// TODO: Make sure the car drives on the other lane!
 	routeCache[POSE_MOVE_LEFT] = {
 		glm::vec3(-0.5, 0.000000, -6.864396),
 		glm::vec3(-0.5, 0.000000, -1.55),
-		glm::vec3(-0.662630, 0.000000, 0.600000),
-		glm::vec3(-8, 0.000000, 0.600000)
+		glm::vec3(-0.662630, 0.000000, -0.600000),
+		glm::vec3(-8, 0.000000, -0.600000)
 	};
 
 	routeCache[POSE_MOVE_FORWARD] = {
 		glm::vec3(-0.5, 0.000000, -6.864396),
 		glm::vec3(-0.5, 0.000000, -1.55),
-		glm::vec3(-0.5, 0.000000, 0.600000),
 		glm::vec3(-0.5, 0.000000, 6.000000)
 	};
 
-	// TODO: Add route and support for POSE_STOP
+	routeCache[POSE_STOP] = {
+		glm::vec3(-0.5, 0.000000, -6.864396),
+		glm::vec3(-0.5, 0.000000, -1.55),
+		glm::vec3(-0.5, 0.000000, 6.0),
+	};
 }
 
 // Creates car with random pose.
 std::shared_ptr<GameObject> Scene::createCar()
 {
-	return createCar(static_cast<Pose>(rand() % (POSE_OTHER - 1))); // POSE_OTHER is the last enum value, however it is not one you should require the user to do. This is important!
+	return createCar(static_cast<Pose>(rand() % (POSE_OTHER))); // POSE_OTHER is the last enum value, however it is not one you should require the user to do. This is important!
 }
 
 // Create a car object with the given pose.
@@ -103,6 +105,7 @@ std::shared_ptr<GameObject> Scene::createCar(Pose pose)
 	carObject->addComponent(std::make_shared<RouteComponent>(speed, route));
 	carObject->addComponent(std::make_shared<ControllerComponent>(pose, this));
 
+	SoundHandler::getInstance().playSoundSnippet("sounds/car/Car_Acceleration_2.wav");
 	return carObject;
 }
 
@@ -151,7 +154,6 @@ void Scene::update(float deltaTime)
 		LOG(INFO) << "Spawned new car in scene." << std::endl;
 
 		updateVisualCueTexture();
-		SoundHandler::getInstance().playSoundSnippet("sounds/car/Car_Acceleration_2.wav");
 	} else
 	{
 		const std::shared_ptr<GameObject> carGameObject = currentCarObject.lock();

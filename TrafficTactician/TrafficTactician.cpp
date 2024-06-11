@@ -47,7 +47,8 @@ double lastFrameTime = 0;
 std::array clearColor = { 0.3f, 0.4f, 0.6f, 1.0f };
 
 int runApp() {
-	srand(5); // Set seed for rand() calls.
+	// TODO: create a hash function for the random number generator to make a reproducible test
+	srand((unsigned int)time(NULL)); // Set seed to for rand() calls. 
 
 	if (GetGraphicSettings().mxaaEnabled) glfwWindowHint(GLFW_SAMPLES, 4); // Multisample anti-aliasing.
 
@@ -174,20 +175,6 @@ void updateImGui() {
 	const std::shared_ptr<GameObject> car = sim->scene->currentCarObject.lock();
 	ImGui::Text("CarPosition: %f, %f, %f", car->position.x, car->position.y, car->position.z);
 	ImGui::SliderAngle("CarRotation:", &car->rotation.y);
-	bool continueRoute = false;
-	if (ImGui::Checkbox("Continue route", &continueRoute)) {
-
-		if (car->getComponent<RouteComponent>().has_value())
-		{
-			car->getComponent<RouteComponent>().value()->state = RouteComponent::RouteState::Moving;
-			car->getComponent<RouteComponent>().value()->crossed = true;
-		}
-		else
-		{
-			LOG(ERROR) << "Error: Can not update UI when no RouteComponent can be found." << std::endl;
-			throw std::exception("Error: Can not update UI when no RouteComponent can be found.");
-		}
-	}
 
 	if (car->getComponent<ControllerComponent>().has_value()) {
 		const auto correctPose = car->getComponent<ControllerComponent>().value()->correctPose;

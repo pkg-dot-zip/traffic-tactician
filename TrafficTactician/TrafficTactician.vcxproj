@@ -269,7 +269,6 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CarComponent.cpp" />
     <ClCompile Include="components\GameObject.cpp" />
     <ClCompile Include="ControllerComponent.cpp" />
     <ClCompile Include="easylogging++.cpp" />
@@ -307,10 +306,10 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     <ClCompile Include="WorldComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CarComponent.h" />
     <ClInclude Include="components\Component.h" />
     <ClInclude Include="components\DrawComponent.h" />
     <ClInclude Include="components\GameObject.h" />
+    <ClInclude Include="ControllerComponent.h" />
     <ClInclude Include="dnnMathSettings.h" />
     <ClInclude Include="dnnSettings.h" />
     <ClInclude Include="easylogging++.h" />

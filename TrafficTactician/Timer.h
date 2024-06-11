@@ -7,7 +7,7 @@ public:
 	float rolloverTime = 0.0f;
 	float soundPassTime = 0.0f;
 
-	Timer(const std::function<void()>& callback = nullptr, float rolloverTime = 5.0f);
+	Timer(const std::function<void()>& callback = nullptr, float rolloverTime = 3.0f);
 	~Timer() = default;
 
 	void setCallback(const std::function<void()>& cb);

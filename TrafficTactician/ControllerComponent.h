@@ -5,6 +5,8 @@
 #include "CameraInputHandler.h"
 #include "Scene.h"
 #include "Timer.h"
+#include "RouteComponent.h"
+
 
 class ControllerComponent : public Component
 {
@@ -17,6 +19,7 @@ public:
 	~ControllerComponent() = default;
 
 	bool checkPose() const;
+	void changeCarState(RouteComponent::RouteState state) const;
 	void timerCallback() const;
 
 	virtual void update(float deltaTime) override;

@@ -1,6 +1,5 @@
 #include "ControllerComponent.h"
 #include "GameObject.h"
-#include "RouteComponent.h"
 #include "CameraInputHandler.h"
 #include <iostream>
 #include <memory>
@@ -20,6 +19,20 @@ bool ControllerComponent::checkPose() const
 	return cameraInputHandler::getInputPose() == correctPose;
 }
 
+void ControllerComponent::changeCarState(RouteComponent::RouteState state) const
+{
+	if (gameObject->getComponent<RouteComponent>().has_value())
+	{
+		gameObject->getComponent<RouteComponent>().value()->crossed = true;
+		gameObject->getComponent<RouteComponent>().value()->state = state;
+	}
+	else
+	{
+		LOG(ERROR) << "Error: Can not update UI when no RouteComponent can be found." << std::endl;
+		throw std::exception("Error: Can not update UI when no RouteComponent can be found.");
+	}
+}
+
 void ControllerComponent::timerCallback() const
 {
 	// If pose was wrong, points --.
@@ -30,18 +43,9 @@ void ControllerComponent::timerCallback() const
 		return;
 	}
 
-	// If pose was right, points ++.
-	if (gameObject->getComponent<RouteComponent>().has_value())
-	{
-		gameObject->getComponent<RouteComponent>().value()->crossed = true;
-		gameObject->getComponent<RouteComponent>().value()->state = RouteComponent::RouteState::Moving;
-	}
-	else
-	{
-		LOG(ERROR) << "Error: Can not update UI when no RouteComponent can be found." << std::endl;
-		throw std::exception("Error: Can not update UI when no RouteComponent can be found.");
-	}
 
+	// If pose was wrong, points ++.
+	changeCarState(RouteComponent::RouteState::Moving);
 	timer->toggleTimer(false);
 	scene->data.points++;
 	SoundHandler::getInstance().playSoundSnippet("sounds/points_plus.wav");
