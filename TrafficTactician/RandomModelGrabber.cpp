@@ -1,5 +1,6 @@
 #include <array>
 #include <string_view>
+#include "RandomNumberGenerator.h"
 
 namespace randomModelGrabber
 {
@@ -25,6 +26,8 @@ namespace randomModelGrabber
 
 	std::string getRandomCarModelPathAsString()
 	{
-		return randomCarModels[rand() % randomCarModels.size()];
+		RandomNumberGenerator randomGenerator(0, randomCarModels.size() - 1);
+		int index = randomGenerator.getRandomNumber();
+		return randomCarModels[index];
 	}
 }
