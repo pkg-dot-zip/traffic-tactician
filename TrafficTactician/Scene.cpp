@@ -20,7 +20,7 @@
 Scene::Scene(const std::weak_ptr<Simulation>& sim, int worldSize)
 {
 	this->sim = sim;
-	poseBag = std::make_shared<RandomPoseBag>(2);
+	poseBag = std::make_shared<RandomPoseBag>(3);
 	initRouteCache();
 	initWorld(worldSize);
 

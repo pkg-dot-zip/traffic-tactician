@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <random>
 #include <easylogging++.h>
+
+// sets the distribution of poses to be generated
 RandomPoseBag::RandomPoseBag(const int left, const int right, const int forward, const int stop)
 {
 	poseCount[POSE_MOVE_LEFT] = left;
@@ -12,22 +14,13 @@ RandomPoseBag::RandomPoseBag(const int left, const int right, const int forward,
 	generate();
 }
 
-RandomPoseBag::RandomPoseBag(const int sameSize)
+// set the distribution of poses to be generated to the same size
+RandomPoseBag::RandomPoseBag(const int sameSize = 2)
 {
 	poseCount[POSE_MOVE_LEFT] = sameSize;
 	poseCount[POSE_MOVE_RIGHT] = sameSize;
 	poseCount[POSE_MOVE_FORWARD] = sameSize;
 	poseCount[POSE_STOP] = sameSize;
-
-	generate();
-}
-
-RandomPoseBag::RandomPoseBag()
-{
-	poseCount[POSE_MOVE_LEFT] = 3;
-	poseCount[POSE_MOVE_RIGHT] = 3;
-	poseCount[POSE_MOVE_FORWARD] = 3;
-	poseCount[POSE_STOP] = 3;
 
 	generate();
 }
