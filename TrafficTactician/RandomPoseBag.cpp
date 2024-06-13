@@ -1,72 +1,51 @@
 #include "RandomPoseBag.h"
-#include <algorithm>
-#include <random>
 #include <easylogging++.h>
+#include <RandomNumberGenerator.h>
 
-// sets the distribution of poses to be generated
-RandomPoseBag::RandomPoseBag(const int left, const int right, const int forward, const int stop)
+
+RandomPoseBag::RandomPoseBag(int size = 100)
 {
-	poseCount[POSE_MOVE_LEFT] = left;
-	poseCount[POSE_MOVE_RIGHT] = right;
-	poseCount[POSE_MOVE_FORWARD] = forward;
-	poseCount[POSE_STOP] = stop;
-
-	generate();
-}
-
-// set the distribution of poses to be generated to the same size
-RandomPoseBag::RandomPoseBag(const int sameSize = 2)
-{
-	poseCount[POSE_MOVE_LEFT] = sameSize;
-	poseCount[POSE_MOVE_RIGHT] = sameSize;
-	poseCount[POSE_MOVE_FORWARD] = sameSize;
-	poseCount[POSE_STOP] = sameSize;
-
-	generate();
+	if (size <= 4)
+	{
+		LOG(ERROR) << "RandomPoseBag size must be greater than 4. Defaulting to 100." << std::endl;
+		size = 100;
+	}
+	generate(size);
 }
 
 RandomPoseBag::~RandomPoseBag() = default;
 
 Pose RandomPoseBag::getPose()
 {
-
-	if (!bag.empty())
+	if (bag.size() < 4)
 	{
-		Pose pose = bag.back(); // get the last element
-		bag.pop_back(); // remove the last element
-		return pose;
+		LOG(ERROR) << "RandomPoseBag has less than 4 poses. Refilling bag." << std::endl;
+		generate(100);
 	}
-	else
-	{
-		LOG(INFO) << "RandomPoseBag is empty. Refilling bag." << std::endl;
-		generate();
 
-		return getPose();
-	}
-	return Pose();
+	Pose pose = bag.back();
+	bag.pop_back();
+
+	return pose;
 }
 
-void RandomPoseBag::generate()
+void RandomPoseBag::generate(int bagSize)
 {
-	// create a random pose bag using the distribution of poseCount
-	for (const auto& element : poseCount) {
-		std::cout << element.first << ": " << element.second << std::endl;
-		Pose pose = element.first;
-		int count = element.second;
-		for (size_t i = 0; i < count; i++)
-		{
-			bag.push_back(pose);
-		}
-	}
+	addToBag(POSE_MOVE_LEFT, bagSize / 4);
+	addToBag(POSE_MOVE_RIGHT, bagSize / 4);
+	addToBag(POSE_MOVE_FORWARD, bagSize / 4);
+	addToBag(POSE_STOP, bagSize / 4);
 
-	// Create a random number generator object
-	std::random_device rd;
-	std::mt19937 gen(rd());
-
-	// Shuffle the vector using std::shuffle
-	std::shuffle(bag.begin(), bag.end(), gen);
+	// shuffle the bag
+	RandomNumberGenerator randomGenerator(0, bag.size() - 1);
+	std::shuffle(bag.begin(), bag.end(), randomGenerator.getGenerator());
 
 	LOG(INFO) << "RandomPoseBag has been refilled." << std::endl;
 }
 
+void RandomPoseBag::addToBag(Pose pose, int count) {
+	for (int i = 0; i < count; ++i) {
+		bag.push_back(pose);
+	}
+}
 
