@@ -20,6 +20,7 @@
 Scene::Scene(const std::weak_ptr<Simulation>& sim, int worldSize)
 {
 	this->sim = sim;
+	poseBag = std::make_shared<RandomPoseBag>(2);
 	initRouteCache();
 	initWorld(worldSize);
 
@@ -87,7 +88,7 @@ void Scene::initRouteCache()
 // Creates car with random pose.
 std::shared_ptr<GameObject> Scene::createCar()
 {
-	return createCar(static_cast<Pose>(rand() % (POSE_OTHER))); // POSE_OTHER is the last enum value, however it is not one you should require the user to do. This is important!
+	return createCar(static_cast<Pose>(poseBag->getPose()));
 }
 
 // Create a car object with the given pose.

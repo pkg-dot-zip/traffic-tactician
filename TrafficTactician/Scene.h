@@ -6,6 +6,7 @@
 #include "GameObject.h"
 #include "Simulation.h"
 #include "poseChecker.h"
+#include <RandomPoseBag.h>
 
 class Scene
 {
@@ -31,7 +32,7 @@ public:
 	void draw() const;
 private:
 	std::map<Pose, std::vector<glm::vec3>> routeCache;
-
+	std::shared_ptr<RandomPoseBag> poseBag;
 	void initWorld(int worldSize);
 	void initRouteCache();
 	void updateVisualCueTexture();
