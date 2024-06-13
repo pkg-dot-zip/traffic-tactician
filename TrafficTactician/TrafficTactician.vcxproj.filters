@@ -129,9 +129,6 @@
     <ClCompile Include="ControllerComponent.cpp">
       <Filter>components</Filter>
     </ClCompile>
-    <ClCompile Include="CarComponent.cpp">
-      <Filter>components</Filter>
-    </ClCompile>
     <ClCompile Include="WorldComponent.cpp">
       <Filter>components</Filter>
     </ClCompile>
@@ -164,6 +161,9 @@
     </ClCompile>
     <ClCompile Include="WorldComponent.cpp">
       <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="RandomGenerator.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -251,9 +251,6 @@
     <ClInclude Include="Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CarComponent.h">
-      <Filter>components</Filter>
-    </ClInclude>
     <ClInclude Include="WorldComponent.h">
       <Filter>components</Filter>
     </ClInclude>
@@ -297,6 +294,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RandomModelGrabber.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RandomGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

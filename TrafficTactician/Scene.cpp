@@ -15,12 +15,11 @@
 #include "SoundHandler.h"
 #include "Texture.h"
 #include "TextureCache.h"
-
+#include "RandomGenerator.h"
 
 Scene::Scene(const std::weak_ptr<Simulation>& sim, int worldSize)
 {
 	this->sim = sim;
-	poseBag = std::make_shared<RandomPoseBag>(3);
 	initRouteCache();
 	initWorld(worldSize);
 
@@ -88,7 +87,7 @@ void Scene::initRouteCache()
 // Creates car with random pose.
 std::shared_ptr<GameObject> Scene::createCar()
 {
-	return createCar(static_cast<Pose>(poseBag->getPose()));
+	return createCar(static_cast<Pose>(RandomGenerator::getRandomNumber(POSE_MOVE_RIGHT, POSE_STOP)));
 }
 
 // Create a car object with the given pose.
