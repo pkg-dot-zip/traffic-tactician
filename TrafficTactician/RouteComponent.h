@@ -18,7 +18,7 @@ public:
 
 	RouteComponent(
 		float speed = 1,
-		const std::vector<vec3>& nodesRoute1 = std::vector<vec3>()
+		const std::vector<vec3>& nodesRoute = std::vector<vec3>()
 	);
 
 	~RouteComponent() = default;
@@ -26,8 +26,6 @@ public:
 	virtual void update(float deltaTime) override;
 
 private:
-	std::vector<vec3> nodesRoute1;
-	std::vector<vec3> nodesRoute2;
 	float speed;
 	float tolerance = 0;
 	std::vector<vec3> currentRoute;
