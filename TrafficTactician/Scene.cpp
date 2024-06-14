@@ -71,17 +71,17 @@ void Scene::initRouteCache()
 		glm::vec3(-8, 0.000000, -0.600000)
 		}, 20);
 
-	routeCache[POSE_MOVE_FORWARD] = smoothPathWithBezier({
+	routeCache[POSE_MOVE_FORWARD] = {
 		glm::vec3(-0.5, 0.000000, -6.864396),
 		glm::vec3(-0.5, 0.000000, -1.55),
 		glm::vec3(-0.5, 0.000000, 6.000000)
-		});
+	};
 
-	routeCache[POSE_STOP] = smoothPathWithBezier({
+	routeCache[POSE_STOP] = {
 		glm::vec3(-0.5, 0.000000, -6.864396),
 		glm::vec3(-0.5, 0.000000, -1.55),
 		glm::vec3(-0.5, 0.000000, 6.0),
-		});
+	};
 }
 
 // Creates car with random pose.
@@ -125,7 +125,7 @@ glm::vec3 Scene::bezierPoint(const glm::vec3& p0, const glm::vec3& p1, const glm
 std::vector<glm::vec3> Scene::smoothPathWithBezier(const std::vector<glm::vec3>& points, int numPointsPerSegment)
 {
 	std::vector<glm::vec3> interpolatedPoints;
-	float controlPointMultiplier = 0.2f;
+	constexpr float controlPointMultiplier = 0.2f;
 
 	for (size_t i = 0; i < points.size() - 1; ++i) {
 		glm::vec3 p0 = points[i];
@@ -141,7 +141,7 @@ std::vector<glm::vec3> Scene::smoothPathWithBezier(const std::vector<glm::vec3>&
 		glm::vec3 p2 = p3 - controlPointMultiplier * distance2 * glm::normalize(direction2);
 
 		for (int j = 0; j <= numPointsPerSegment; ++j) {
-			float t = float(j) / numPointsPerSegment;
+			float t = static_cast<float>(j) / numPointsPerSegment;
 			glm::vec3 point = bezierPoint(p0, p1, p2, p3, t);
 			interpolatedPoints.push_back(point);
 		}
