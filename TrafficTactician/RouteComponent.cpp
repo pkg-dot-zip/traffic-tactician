@@ -19,6 +19,7 @@ void RouteComponent::update(float deltaTime) {
 
 	if (state != RouteState::Moving) return;
 
+	// check if object is in radius of crossroads
 	constexpr glm::vec3 center = glm::vec3(0.0f);
 	const float distanceToCenter = glm::abs(glm::length(center - gameObject->position));
 	constexpr float range = 2.0f;

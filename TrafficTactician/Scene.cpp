@@ -118,6 +118,7 @@ glm::vec3 Scene::bezierPoint(const glm::vec3& p0, const glm::vec3& p1, const glm
 	float uuu = uu * u;
 	float ttt = tt * t;
 
+	// Compute the point on the cubic Bezier curve using the Bernstein polynomials
 	glm::vec3 point = (uuu * p0) + (3 * uu * t * p1) + (3 * u * tt * p2) + (ttt * p3);
 	return point;
 }
@@ -131,9 +132,12 @@ std::vector<glm::vec3> Scene::smoothPathWithBezier(const std::vector<glm::vec3>&
 		glm::vec3 p0 = points[i];
 		glm::vec3 p3 = points[i + 1];
 
+		// Calculate direction vectors for control points
 		glm::vec3 direction1 = (i == 0) ? (points[i + 1] - points[i]) : (points[i + 1] - points[i - 1]);
 		glm::vec3 direction2 = (i + 1 == points.size() - 1) ? (points[i + 1] - points[i]) : (points[i + 2] - points[i]);
 
+
+		// Compute the control points based on it's direction and distance
 		float distance1 = glm::length(p3 - p0);
 		glm::vec3 p1 = p0 + controlPointMultiplier * distance1 * glm::normalize(direction1);
 
