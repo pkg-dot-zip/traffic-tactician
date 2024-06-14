@@ -5,50 +5,6 @@
 
 #include "SoundHandler.h"
 
-
-//// Function to compute a point on a cubic Bezier curve
-//glm::vec3 bezierPoint(const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, float t) {
-//	float u = 1.0f - t;
-//	float tt = t * t;
-//	float uu = u * u;
-//	float uuu = uu * u;
-//	float ttt = tt * t;
-//
-//	glm::vec3 point = (uuu * p0) + (3 * uu * t * p1) + (3 * u * tt * p2) + (ttt * p3);
-//	return point;
-//}
-//
-//// Function to generate a smoothed path using cubic Bezier curves with adjusted control points
-//std::vector<glm::vec3> bezierCurve(const std::vector<glm::vec3>& points, int numPointsPerSegment) {
-//	std::vector<glm::vec3> interpolatedPoints;
-//	float controlPointMultiplier = 0.2f;
-//
-//	for (size_t i = 0; i < points.size() - 1; ++i) {
-//		glm::vec3 p0 = points[i];
-//		glm::vec3 p3 = points[i + 1];
-//
-//		glm::vec3 direction1 = (i == 0) ? (points[i + 1] - points[i]) : (points[i + 1] - points[i - 1]);
-//		glm::vec3 direction2 = (i + 1 == points.size() - 1) ? (points[i + 1] - points[i]) : (points[i + 2] - points[i]);
-//
-//		float distance1 = glm::length(p3 - p0);
-//		glm::vec3 p1 = p0 + controlPointMultiplier * distance1 * glm::normalize(direction1);
-//
-//		float distance2 = glm::length(p3 - p0);
-//		glm::vec3 p2 = p3 - controlPointMultiplier * distance2 * glm::normalize(direction2);
-//
-//		for (int j = 0; j <= numPointsPerSegment; ++j) {
-//			float t = float(j) / numPointsPerSegment;
-//			glm::vec3 point = bezierPoint(p0, p1, p2, p3, t);
-//			interpolatedPoints.push_back(point);
-//		}
-//	}
-//
-//	// Ensure the last point is included
-//	interpolatedPoints.push_back(points.back());
-//
-//	return interpolatedPoints;
-//}
-
 RouteComponent::RouteComponent(float speed, const std::vector<glm::vec3>& nodesRoute)
 {
 	this->speed = speed;
