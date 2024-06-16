@@ -52,9 +52,6 @@ mono_crash.*
 # Pose Model
 TrafficTactician/pose/
 
-# ImGui
-TrafficTactician/imgui.ini
-
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
