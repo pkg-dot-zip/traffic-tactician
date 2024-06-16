@@ -20,10 +20,10 @@ namespace cameraInputHandler
 		return currentPose;
 	}
 
-	void initCameraInput()
+	void initCameraInput(int cameraDevice = -1)
 	{
 		LOG(INFO) << "Launching thread for camera detection." << std::endl;
-		std::thread thread_object(runPoseRetriever);
+		std::thread thread_object(runPoseRetriever, cameraDevice);
 		thread_object.detach();
 	}
 }

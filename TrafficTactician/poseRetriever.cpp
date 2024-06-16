@@ -29,9 +29,13 @@ static void doExternalOptimizations()
 }
 
 // Attempts to initialize the camera, then returns true if cameraCapture was successfully opened.
-static bool initCamera(cv::VideoCapture& camera)
+static bool initCamera(cv::VideoCapture& camera, int cameraDevice = -1)
 {
-	camera = cv::VideoCapture(GetDNNSettings().cameraToUse);
+	if (cameraDevice < 0) {
+		cameraDevice = GetDNNSettings().cameraToUse;
+	}
+
+	camera = cv::VideoCapture(cameraDevice);
 	return camera.isOpened();
 }
 
@@ -97,13 +101,13 @@ void displayCurrentOrientation(const cv::Mat& outputFrame, std::map<std::string_
 }
 
 // Start the thread for pose estimation. 
-int runPoseRetriever()
+int runPoseRetriever(int cameraDevice = -1)
 {
 	doExternalOptimizations();
 
 	// Try to initialize the camera. If it fails, we return and never touch anything related to the camera and/or pose estimation for the remainder of this process.
 	cv::VideoCapture camera;
-	if (!initCamera(camera))
+	if (!initCamera(camera, cameraDevice))
 	{
 		LOG(INFO) << "Could not initialize camera. Will continue without pose estimation." << std::endl;
 		isPoseEstimationEnabled = false;

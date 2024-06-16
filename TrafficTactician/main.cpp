@@ -33,8 +33,7 @@ int main(int argc, const char* const argv[])
 	return utest_main(argc, argv);
 #else
 	SoundHandler::getInstance().playSoundSnippet("sounds/Start_Sounds_013.wav"); // First sound is delayed so we play a sound at application boot.
-	cameraInputHandler::initCameraInput();
-	mainMenu::runMenu();
+	cameraInputHandler::initCameraInput(mainMenu::runMenu());
 	return runApp();
 #endif
 }
