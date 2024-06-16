@@ -162,9 +162,6 @@
     <ClCompile Include="WorldComponent.cpp">
       <Filter>components</Filter>
     </ClCompile>
-    <ClCompile Include="MouseDebugComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="components\Component.h">
@@ -298,9 +295,6 @@
     </ClInclude>
     <ClInclude Include="ControllerComponent.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MouseDebugComponent.h">
-      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
