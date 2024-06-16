@@ -37,4 +37,6 @@ private:
 	void updateVisualCueTexture();
 	std::shared_ptr<GameObject> createCar();
 	std::shared_ptr<GameObject> createCar(Pose pose);
+	glm::vec3 bezierPoint(const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, float t);
+	std::vector<glm::vec3> smoothPathWithBezier(const std::vector<glm::vec3>& points, int numPointsPerSegment = 2);
 };

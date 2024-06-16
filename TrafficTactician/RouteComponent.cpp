@@ -5,7 +5,7 @@
 
 #include "SoundHandler.h"
 
-RouteComponent::RouteComponent(float speed, const std::vector<vec3>& nodesRoute)
+RouteComponent::RouteComponent(float speed, const std::vector<glm::vec3>& nodesRoute)
 {
 	this->speed = speed;
 	this->currentRoute = nodesRoute;
@@ -17,12 +17,11 @@ void RouteComponent::update(float deltaTime) {
 
 	if (state == RouteState::Idle || state == RouteState::Finished || currentRoute.empty()) return;
 
-	// check if allowed to continue on the second route
 	if (state != RouteState::Moving) return;
 
-	// check if object is in radius to center of crossroads.
-	constexpr vec3 center = vec3(0.0f);
-	const float distanceToCenter = std::abs(glm::length(center - gameObject->position));
+	// check if object is in radius of crossroads
+	constexpr glm::vec3 center = glm::vec3(0.0f);
+	const float distanceToCenter = glm::abs(glm::length(center - gameObject->position));
 	constexpr float range = 2.0f;
 	if (distanceToCenter < range && !crossed) {
 		state = RouteState::Idle;
@@ -45,9 +44,8 @@ void RouteComponent::update(float deltaTime) {
 			movement = distance; // Avoid overshooting the waypoint.
 		}
 
-		gameObject->position = vec3(currentPosition + movement * direction);
+		gameObject->position += movement * direction;
 
-		// change the angle according to the direction vector
 		// to create a "turning motion".
 		const float targetAngle = glm::atan(direction.x, direction.z);
 		gameObject->rotation.y = targetAngle;
@@ -55,12 +53,12 @@ void RouteComponent::update(float deltaTime) {
 	else {
 		// Reached the waypoint, handle waypoint change (optional)
 		currentWaypointIndex++;
-		if (std::distance(currentRoute.begin(), currentRoute.end()) <= currentWaypointIndex) {
+		if (currentWaypointIndex >= currentRoute.size()) {
 			// Handle reaching the end of the route (loop, stop, etc.)
-				currentRoute.clear();
-				state = RouteState::Finished;
-				SoundHandler::getInstance().playSoundSnippet("sounds/car/Car_Engine_Turning_Off.wav");
-				return;
+			currentRoute.clear();
+			state = RouteState::Finished;
+			SoundHandler::getInstance().playSoundSnippet("sounds/car/Car_Engine_Turning_Off.wav");
+			return;
 		}
 	}
 }

@@ -57,19 +57,19 @@ void Scene::initWorld(int worldSize)
 
 void Scene::initRouteCache()
 {
-	routeCache[POSE_MOVE_RIGHT] = {
+	routeCache[POSE_MOVE_RIGHT] = smoothPathWithBezier({
 		glm::vec3(-0.5, 0.000000, -6.864396),
 		glm::vec3(-0.5, 0.000000, -1.55),
 		glm::vec3(0.662630, 0.000000, 0.600000),
 		glm::vec3(8, 0.000000, 0.600000)
-	};
+		}, 20);
 
-	routeCache[POSE_MOVE_LEFT] = {
+	routeCache[POSE_MOVE_LEFT] = smoothPathWithBezier({
 		glm::vec3(-0.5, 0.000000, -6.864396),
 		glm::vec3(-0.5, 0.000000, -1.55),
 		glm::vec3(-0.662630, 0.000000, -0.600000),
 		glm::vec3(-8, 0.000000, -0.600000)
-	};
+		}, 20);
 
 	routeCache[POSE_MOVE_FORWARD] = {
 		glm::vec3(-0.5, 0.000000, -6.864396),
@@ -107,6 +107,54 @@ std::shared_ptr<GameObject> Scene::createCar(Pose pose)
 
 	SoundHandler::getInstance().playSoundSnippet("sounds/car/Car_Acceleration_2.wav");
 	return carObject;
+}
+
+glm::vec3 Scene::bezierPoint(const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3,
+	float t)
+{
+	float u = 1.0f - t;
+	float tt = t * t;
+	float uu = u * u;
+	float uuu = uu * u;
+	float ttt = tt * t;
+
+	// Compute the point on the cubic Bezier curve using the Bernstein polynomials
+	glm::vec3 point = (uuu * p0) + (3 * uu * t * p1) + (3 * u * tt * p2) + (ttt * p3);
+	return point;
+}
+
+std::vector<glm::vec3> Scene::smoothPathWithBezier(const std::vector<glm::vec3>& points, int numPointsPerSegment)
+{
+	std::vector<glm::vec3> interpolatedPoints;
+	constexpr float controlPointMultiplier = 0.2f;
+
+	for (size_t i = 0; i < points.size() - 1; ++i) {
+		glm::vec3 p0 = points[i];
+		glm::vec3 p3 = points[i + 1];
+
+		// Calculate direction vectors for control points
+		glm::vec3 direction1 = (i == 0) ? (points[i + 1] - points[i]) : (points[i + 1] - points[i - 1]);
+		glm::vec3 direction2 = (i + 1 == points.size() - 1) ? (points[i + 1] - points[i]) : (points[i + 2] - points[i]);
+
+
+		// Compute the control points based on it's direction and distance
+		float distance1 = glm::length(p3 - p0);
+		glm::vec3 p1 = p0 + controlPointMultiplier * distance1 * glm::normalize(direction1);
+
+		float distance2 = glm::length(p3 - p0);
+		glm::vec3 p2 = p3 - controlPointMultiplier * distance2 * glm::normalize(direction2);
+
+		for (int j = 0; j <= numPointsPerSegment; ++j) {
+			float t = static_cast<float>(j) / numPointsPerSegment;
+			glm::vec3 point = bezierPoint(p0, p1, p2, p3, t);
+			interpolatedPoints.push_back(point);
+		}
+	}
+
+	// Ensure the last point is included
+	interpolatedPoints.push_back(points.back());
+
+	return interpolatedPoints;
 }
 
 void Scene::updateVisualCueTexture()
@@ -154,7 +202,8 @@ void Scene::update(float deltaTime)
 		LOG(INFO) << "Spawned new car in scene." << std::endl;
 
 		updateVisualCueTexture();
-	} else
+	}
+	else
 	{
 		const std::shared_ptr<GameObject> carGameObject = currentCarObject.lock();
 		if (carGameObject->getComponent<RouteComponent>().value()->state == RouteComponent::RouteState::Finished)
