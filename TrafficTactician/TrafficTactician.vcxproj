@@ -286,6 +286,7 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     <ClCompile Include="main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='PoseDetectionRelease|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="MouseDebugComponent.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="poseChecker.cpp" />
     <ClCompile Include="poseEstimation.cpp" />
@@ -317,6 +318,7 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     <ClInclude Include="CameraInputHandler.h" />
     <ClInclude Include="json.h" />
     <ClInclude Include="KeyboardInputHandler.h" />
+    <ClInclude Include="MouseDebugComponent.h" />
     <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="RandomModelGrabber.h" />
     <ClInclude Include="RouteComponent.h" />
