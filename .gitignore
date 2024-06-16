@@ -52,6 +52,9 @@ mono_crash.*
 # Pose Model
 TrafficTactician/pose/
 
+# ImGui
+TrafficTactician/imgui.ini
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -69,6 +72,8 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+
+*.recipe
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
