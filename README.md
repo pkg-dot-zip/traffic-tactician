@@ -28,12 +28,11 @@
 ## 🧐 About <a name = "about"></a>
 Traffic Tactician is a training program made in C++ for a uni assignment. The software uses <a href="https://opencv.org/">OpenCV</a> & <a href="https://www.opengl.org/">OpenGL</a>.
 
+⚠ Note: Ensure that your environment variables are configured correctly for OpenCV. This includes a variable "OPENCV" that leads to your OpenCV build folder (e.g. *C:\opencv*). Your Path variable should also contain the *C:\opencv\build\x64\vc16\bin* directory or equivalent.
 
-⚠ Note: Make sure to add an environment variable called "OPENCV" that leads to to your OpenCV build folder (e.g. *C:\opencv\opencv\build*).
+⚠ Note: Make sure to download the *pose_iter_440000.caffemodel* from the [CMU School of Computer Science](https://www.cs.cmu.edu/), and put it in *${SolutionDir}\TrafficTactician\pose\coco*.
 
-⚠ Note: Make sure to download the *pose_iter_440000.caffemodel* from the [CMU School of Computer Science](https://www.cs.cmu.edu/), and put it in *${SolutionDir}\TrafficTactician\pose\coco\\*.
-
-⚠ Note: In case of getting the "could not find opencv_world490d.lib" error, ensure you have installed (the right version of) OpenCV correctly, and have configured it in your system environment variables. Alternatively, you can drag the .dll files manually into *${SolutionDir}\TrafficTactician\x64\${ConfigurationName}*.
+⚠ Note: In case of getting the "could not find opencv_world490d.lib" error, check that you have installed (the right version of) OpenCV correctly, and have configured it in your environment variables. Alternatively, you can drag the .dll files manually into *${SolutionDir}\TrafficTactician\x64\${ConfigurationName}*.
 
 ⚠ Note: Make sure to build the solution when making changes to *settings.json* to ensure having the updated header file.
 
