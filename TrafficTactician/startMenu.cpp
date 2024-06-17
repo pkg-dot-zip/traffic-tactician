@@ -7,6 +7,7 @@
 #include <backends/imgui_impl_glfw.h>
 #include <GLFW/glfw3.h>
 
+#include "CameraInputHandler.h"
 #include "SoundHandler.h"
 #include "stb_image.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -87,7 +88,7 @@ namespace mainMenu
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-		window = glfwCreateWindow(600, 48 * 3 + 24, "Main Menu",
+		window = glfwCreateWindow(600, 48 * 3 + 24 * 2, "Main Menu",
 			nullptr, nullptr);
 
 		if (window == nullptr) {
@@ -126,11 +127,35 @@ namespace mainMenu
 		}
 	}
 
+	// Intermediary ImGui 'InputInt' function which corrects negative input to the last valid value.
+	bool InputIntNonNegative(const char* label, int* v, int step, int step_fast, ImGuiInputTextFlags flags) {
+		int originalValue = *v;
+
+		// Call the original ImGui function
+		bool valueChanged = ImGui::InputInt(label, v, step, step_fast, flags);
+
+		// Check if the input value is negative and correct it to the original value
+		if (*v < 0) {
+			*v = originalValue;
+			valueChanged = false;
+		}
+
+		return valueChanged;
+	}
+
+	int cameraDevice = 0;
+
+	void applySettings()
+	{
+		LOG(INFO) << "Applying settings from main menu." << std::endl;
+		cameraInputHandler::setCameraToUse(cameraDevice);
+	}
+
 	void runMenu() {
 		init();
 
-		LOG(INFO) << "Running main menu" << std::endl;
-
+		LOG(INFO) << "Running main menu." << std::endl;
+		
 		while (shouldRunMenu())
 		{
 			glfwPollEvents();
@@ -155,6 +180,8 @@ namespace mainMenu
 					menu_should_run = false;
 					SoundHandler::getInstance().playSoundSnippet("sounds/menu_click.wav");
 				}
+
+				InputIntNonNegative("Camera device", &cameraDevice, 1, 1, 0);
 
 				if (ImGui::Button("Open instruction video", buttonSize))
 				{
@@ -185,6 +212,7 @@ namespace mainMenu
 			glfwSwapBuffers(window);
 		}
 
+		applySettings();
 		onShutdown();
 	}
 }

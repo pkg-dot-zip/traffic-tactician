@@ -2,7 +2,9 @@
 #include "poseChecker.h"
 namespace cameraInputHandler
 {
+	int getCameraToUse();
+	void setCameraToUse(int camera);
 	void setInputPose(const Pose& poseToSetTo);
 	Pose& getInputPose();
-	void initCameraInput();
+	void initCameraInput(int cameraDevice);
 }
