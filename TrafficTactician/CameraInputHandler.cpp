@@ -2,12 +2,26 @@
 #include "easylogging++.h"
 #include "poseChecker.h"
 #include "poseRetriever.h"
+#include "SettingsRetriever.h"
 
 Pose currentPose;
 std::mutex mtx;
 
 namespace cameraInputHandler
 {
+	int cameraToUseForInput = GetDNNSettings().cameraToUse;
+
+	int getCameraToUse()
+	{
+		return cameraToUseForInput;
+	}
+
+	void setCameraToUse(int camera)
+	{
+		LOG(INFO) << "Setting camera to initialize the input with to camera " << cameraToUseForInput << "!" << std::endl;
+		cameraToUseForInput = camera;
+	}
+
 	void setInputPose(const Pose& poseToSetTo)
 	{
 		std::lock_guard lck(mtx);

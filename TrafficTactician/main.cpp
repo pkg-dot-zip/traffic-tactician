@@ -29,13 +29,13 @@ int main(int argc, const char* const argv[])
 	setupLogger(); // MUST go first before any log entries are submitted.
 
 #ifdef _POSE_DEBUG
-	return runPoseRetriever(GetDNNSettings().cameraToUse);
+	return runPoseRetriever(cameraInputHandler::getCameraToUse());
 #elif _TESTING_CONFIG
 	return utest_main(argc, argv);
 #else
 	SoundHandler::getInstance().playSoundSnippet("sounds/Start_Sounds_013.wav"); // First sound is delayed so we play a sound at application boot.
 	mainMenu::runMenu();
-	cameraInputHandler::initCameraInput(0);
+	cameraInputHandler::initCameraInput(cameraInputHandler::getCameraToUse());
 	return runApp();
 #endif
 }

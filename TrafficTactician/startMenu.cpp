@@ -7,6 +7,7 @@
 #include <backends/imgui_impl_glfw.h>
 #include <GLFW/glfw3.h>
 
+#include "CameraInputHandler.h"
 #include "SoundHandler.h"
 #include "stb_image.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -144,10 +145,16 @@ namespace mainMenu
 
 	int cameraDevice = 0;
 
+	void applySettings()
+	{
+		LOG(INFO) << "Applying settings from main menu." << std::endl;
+		cameraInputHandler::setCameraToUse(cameraDevice);
+	}
+
 	void runMenu() {
 		init();
 
-		LOG(INFO) << "Running main menu" << std::endl;
+		LOG(INFO) << "Running main menu." << std::endl;
 		
 		while (shouldRunMenu())
 		{
@@ -205,6 +212,7 @@ namespace mainMenu
 			glfwSwapBuffers(window);
 		}
 
+		applySettings();
 		onShutdown();
 	}
 }
