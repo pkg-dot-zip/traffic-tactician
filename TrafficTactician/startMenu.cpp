@@ -142,12 +142,12 @@ namespace mainMenu
 		return valueChanged;
 	}
 
-	int runMenu() {
+	int cameraDevice = 0;
+
+	void runMenu() {
 		init();
 
 		LOG(INFO) << "Running main menu" << std::endl;
-
-		int cameraDevice = 0;
 		
 		while (shouldRunMenu())
 		{
@@ -206,6 +206,5 @@ namespace mainMenu
 		}
 
 		onShutdown();
-		return cameraDevice;
 	}
 }
