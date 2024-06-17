@@ -4,6 +4,7 @@
 #include "TrafficTactician.h"
 #include "utest.h"
 #include "poseRetriever.h"
+#include "SettingsRetriever.h"
 #include "SoundHandler.h"
 #include "startMenu.h"
 
@@ -28,7 +29,7 @@ int main(int argc, const char* const argv[])
 	setupLogger(); // MUST go first before any log entries are submitted.
 
 #ifdef _POSE_DEBUG
-	return runPoseRetriever();
+	return runPoseRetriever(GetDNNSettings().cameraToUse);
 #elif _TESTING_CONFIG
 	return utest_main(argc, argv);
 #else
