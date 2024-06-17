@@ -93,7 +93,7 @@ ModelComponent::ModelComponent(const std::string& fileName)
 
 	if (!pFile.is_open())
 	{
-		LOG(INFO) << "Could not open file " << fileName << std::endl;
+		LOG(WARNING) << "Could not open file " << fileName << std::endl;
 		return;
 	}
 
@@ -166,7 +166,7 @@ ModelComponent::ModelComponent(const std::string& fileName)
 				}
 			}
 			if (currentGroup->materialIndex == -1)
-				LOG(INFO) << "Could not find material name " << params[1] << std::endl;
+				LOG(WARNING) << "Could not find material name " << params[1] << std::endl;
 		}
 	}
 	groups.push_back(currentGroup);
@@ -209,7 +209,7 @@ void ModelComponent::loadMaterialFile(const std::string& fileName, const std::st
 	std::ifstream pFile(fileName.c_str());
 	if (!pFile.is_open())
 	{
-		LOG(INFO) << "Could not open file " << fileName << std::endl;
+		LOG(WARNING) << "Could not open file " << fileName << std::endl;
 		return;
 	}
 

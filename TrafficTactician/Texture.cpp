@@ -14,7 +14,7 @@ Texture::Texture(const std::string& fileName)
 	unsigned char* data = stbi_load(fileName.c_str(), &w, &h, &comp, 4);
 	if (!data)
 	{
-		LOG(INFO) << fileName.c_str() << " -> " << stbi_failure_reason() << std::endl;
+		LOG(ERROR) << fileName.c_str() << " -> " << stbi_failure_reason() << std::endl;
 		exit(0);
 	}
 

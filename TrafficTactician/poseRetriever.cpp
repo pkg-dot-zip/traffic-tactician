@@ -109,7 +109,7 @@ int runPoseRetriever(int cameraDevice = -1)
 	cv::VideoCapture camera;
 	if (!initCamera(camera, cameraDevice))
 	{
-		LOG(INFO) << "Could not initialize camera. Will continue without pose estimation." << std::endl;
+		LOG(WARNING) << "Could not initialize camera. Will continue without pose estimation." << std::endl;
 		isPoseEstimationEnabled = false;
 		return 0;
 	}
@@ -119,8 +119,8 @@ int runPoseRetriever(int cameraDevice = -1)
 	
 	if (!loadDnnModel(inputNet))
 	{
-		LOG(INFO) << "Could not initialize dnn model. Will continue without pose estimation." << std::endl;
-		LOG(INFO) << "Did you check whether the models are in right directory? (./pose/coco/...)." << std::endl;
+		LOG(WARNING) << "Could not initialize dnn model. Will continue without pose estimation." << std::endl;
+		LOG(WARNING) << "Did you check whether the models are in right directory? (./pose/coco/...)." << std::endl;
 		isPoseEstimationEnabled = false;
 		return 0;
 	}

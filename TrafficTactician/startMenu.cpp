@@ -92,7 +92,7 @@ namespace mainMenu
 			nullptr, nullptr);
 
 		if (window == nullptr) {
-			LOG(INFO) << "Could not create GLFW window" << std::endl;
+			LOG(ERROR) << "Could not create GLFW window" << std::endl;
 			glfwTerminate();
 			return;
 		}
