@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TrafficTactician", "TrafficTactician.vcxproj", "{283D0B97-987B-40BB-8F02-4833283B8D4F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		PoseDetectionRelease|x64 = PoseDetectionRelease|x64
+		PoseDetectionRelease|x86 = PoseDetectionRelease|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+		UnitTesting|x64 = UnitTesting|x64
+		UnitTesting|x86 = UnitTesting|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.Debug|x64.ActiveCfg = Debug|x64
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.Debug|x64.Build.0 = Debug|x64
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.Debug|x86.ActiveCfg = Debug|Win32
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.Debug|x86.Build.0 = Debug|Win32
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.PoseDetectionRelease|x64.ActiveCfg = PoseDetectionRelease|x64
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.PoseDetectionRelease|x64.Build.0 = PoseDetectionRelease|x64
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.PoseDetectionRelease|x86.ActiveCfg = PoseDetectionRelease|Win32
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.PoseDetectionRelease|x86.Build.0 = PoseDetectionRelease|Win32
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.Release|x64.ActiveCfg = Release|x64
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.Release|x64.Build.0 = Release|x64
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.Release|x86.ActiveCfg = Release|Win32
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.Release|x86.Build.0 = Release|Win32
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.UnitTesting|x64.ActiveCfg = UnitTesting|x64
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.UnitTesting|x64.Build.0 = UnitTesting|x64
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.UnitTesting|x86.ActiveCfg = UnitTesting|Win32
+		{283D0B97-987B-40BB-8F02-4833283B8D4F}.UnitTesting|x86.Build.0 = UnitTesting|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {592BDC04-DB53-44C0-8639-FEB2C1CD884D}
+	EndGlobalSection
+EndGlobal

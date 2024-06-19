@@ -1,0 +1,10 @@
+{
+	"screenWidth": 1600,
+	"screenHeight": 900,
+	"useFog": true,
+	"fogType": "exp2",
+	"fogExponentialDensity": 0.02,
+	"fogLinearNear": 0.0,
+	"fogLinearFar": 0.0,
+	"mxaaEnabled": true
+}

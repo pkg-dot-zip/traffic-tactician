@@ -1,0 +1,18 @@
+{
+	"cameraToUse": 0,
+	"preferredDevice": "cpu",
+	"prototxt": "./pose/coco/pose_deploy_linevec.prototxt",
+	"caffemodel": "./pose/coco/pose_iter_440000.caffemodel",
+	"upscaleTargetWidth": 1024,
+	"upscaleTargetHeight": 768,
+	"downscaleTargetWidth": 256,
+	"downscaleTargetHeight": 192,
+	"useRealTimePriority": true,
+	"useColorsForPose": true,
+	"anglesForDirectionCalculationTolerance": 20.0,
+	"heightDifferenceBetweenShoulderAndWristTolerance": 40.0,
+	"toleranceWristNearShoulderDistanceX": 30.0,
+	"toleranceWristNearShoulderDistanceY": 60.0,
+	"toleranceWristNearShoulderDistanceLeftAndDown": 5.0,
+	"personOrientationShoulderTolerance": 20.0,
+}
