@@ -12,10 +12,11 @@
 #include<set>
 #include<cmath>
 
+#include "CameraInputHandler.h"
 #include "keyPoint.h"
 #include "poseChecker.h"
 #include "poseEstimation.h"
-#include "settingsFromJson.h"
+#include "SettingsRetriever.h"
 
 
 bool isPoseEstimationEnabled = true;
@@ -23,25 +24,29 @@ bool isPoseEstimationEnabled = true;
 // This forces higher priority on your windows system. You can check this in task manager -> details.
 static void doExternalOptimizations()
 {
-	SetThreadPriority(GetCurrentThread(), settings.useRealTimePriority ? REALTIME_PRIORITY_CLASS : HIGH_PRIORITY_CLASS);
-	SetPriorityClass(GetCurrentProcess(), settings.useRealTimePriority ? REALTIME_PRIORITY_CLASS : HIGH_PRIORITY_CLASS);
+	SetThreadPriority(GetCurrentThread(), GetDNNSettings().useRealTimePriority ? REALTIME_PRIORITY_CLASS : HIGH_PRIORITY_CLASS);
+	SetPriorityClass(GetCurrentProcess(), GetDNNSettings().useRealTimePriority ? REALTIME_PRIORITY_CLASS : HIGH_PRIORITY_CLASS);
 }
 
 // Attempts to initialize the camera, then returns true if cameraCapture was successfully opened.
-static bool initCamera(cv::VideoCapture& camera)
+static bool initCamera(cv::VideoCapture& camera, int cameraDevice = -1)
 {
-	camera = cv::VideoCapture(settings.cameraToUse);
+	if (cameraDevice < 0) {
+		cameraDevice = GetDNNSettings().cameraToUse;
+	}
+
+	camera = cv::VideoCapture(cameraDevice);
 	return camera.isOpened();
 }
 
 static void setCpuOrGpu(cv::dnn::Net& inputNet)
 {
-	if (settings.preferredDevice == "cpu")
+	if (GetDNNSettings().preferredDevice == "cpu")
 	{
 		LOG(INFO) << "Attempting to use CPU device!" << std::endl;
 		inputNet.setPreferableBackend(cv::dnn::DNN_TARGET_CPU);
 	}
-	else if (settings.preferredDevice == "gpu") // NOTE: Requires custom OpenCV built with CUDA sdk.
+	else if (GetDNNSettings().preferredDevice == "gpu") // NOTE: Requires custom OpenCV built with CUDA sdk.
 	{
 		LOG(INFO) << "Attempting to use GPU device!" << std::endl;
 		inputNet.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
@@ -54,8 +59,8 @@ bool loadDnnModel(cv::dnn::Net& inputNet)
 {
 	try
 	{
-		inputNet = cv::dnn::readNetFromCaffe(static_cast<std::string>(settings.prototxt),
-		                                     static_cast<std::string>(settings.caffemodel));
+		inputNet = cv::dnn::readNetFromCaffe(static_cast<std::string>(GetDNNSettings().prototxt),
+		                                     static_cast<std::string>(GetDNNSettings().caffemodel));
 	}
 	catch (cv::Exception e)
 	{
@@ -77,7 +82,7 @@ void displayCurrentPose(const cv::Mat& outputFrame, std::map<std::string_view, s
 	const cv::Scalar color = {0, 0, 0, 0};
 
 	cv::putText(outputFrame, baseString.append(poseString),
-	            {offset, settings.upscaleTargetHeight - offset},
+	            {offset, GetDNNSettings().upscaleTargetHeight - offset},
 	            fontFace, fontScale, color);
 }
 
@@ -96,26 +101,26 @@ void displayCurrentOrientation(const cv::Mat& outputFrame, std::map<std::string_
 }
 
 // Start the thread for pose estimation. 
-int runPoseRetriever()
+int runPoseRetriever(int cameraDevice = -1)
 {
 	doExternalOptimizations();
 
 	// Try to initialize the camera. If it fails, we return and never touch anything related to the camera and/or pose estimation for the remainder of this process.
 	cv::VideoCapture camera;
-	if (!initCamera(camera))
+	if (!initCamera(camera, cameraDevice))
 	{
-		LOG(INFO) << "Could not initialize camera. Will continue without pose estimation." << std::endl;
+		LOG(WARNING) << "Could not initialize camera. Will continue without pose estimation." << std::endl;
 		isPoseEstimationEnabled = false;
 		return 0;
 	}
 
 	// Then we try to load the model. If it fails, we return and never touch anything related to the camera and/or pose estimation for the remainder of this process.
 	cv::dnn::Net inputNet;
-
+	
 	if (!loadDnnModel(inputNet))
 	{
-		LOG(INFO) << "Could not initialize dnn model. Will continue without pose estimation." << std::endl;
-		LOG(INFO) << "Did you check whether the models are in right directory? (./pose/coco/...)." << std::endl;
+		LOG(WARNING) << "Could not initialize dnn model. Will continue without pose estimation." << std::endl;
+		LOG(WARNING) << "Did you check whether the models are in right directory? (./pose/coco/...)." << std::endl;
 		isPoseEstimationEnabled = false;
 		return 0;
 	}
@@ -123,21 +128,24 @@ int runPoseRetriever()
 	setCpuOrGpu(inputNet);
 
 	// Main loop.
-	while (true)
+	while (isPoseEstimationEnabled)
 	{
 		cv::Mat inputFrame;
 		cv::Mat outputFrame;
 		camera.read(inputFrame); // Get camera frame and put it into valid matrix.
-
+	
 		std::map<std::string_view, std::vector<KeyPoint>>& keyPoints = getPoseEstimationKeyPointsMap(
 			inputFrame, outputFrame, inputNet);
-
+	
+	
 		displayCurrentPose(outputFrame, keyPoints);
 		displayCurrentOrientation(outputFrame, keyPoints);
-
+		
 		cv::imshow("Detected Pose", outputFrame);
 		cv::waitKey(1);
 
+		cameraInputHandler::setInputPose(getPose(keyPoints));
+	
 		clearPoseEstimationKeyPointsMap(); // DON'T FORGET TO CLEAR MAP; THIS LINE IS IMPORTANT!
 	}
 

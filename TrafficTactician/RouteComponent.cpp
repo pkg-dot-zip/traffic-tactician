@@ -1,55 +1,64 @@
 #include "RouteComponent.h"
 #include "GameObject.h"
+#include <easylogging++.h>
+#include <glm/gtx/string_cast.hpp>
 
-RouteComponent::RouteComponent(float speed)
+#include "SoundHandler.h"
+
+RouteComponent::RouteComponent(float speed, const std::vector<glm::vec3>& nodesRoute)
 {
-    this->speed = speed;
-	routeNodes = {
-		vec3(1.081668, 0.000000, -6.142860),
-		vec3(1.111798, 0.000000, -3.522040),
-		vec3(1.224573, 0.000000, -1.149999),
-		vec3(3.659592, 0.000000, -1.280130)
-	};
+	this->speed = speed;
+	this->currentRoute = nodesRoute;
+
+	state = RouteState::Moving;
 }
 
-RouteComponent::~RouteComponent()
-{
-}
+void RouteComponent::update(float deltaTime) {
 
-void RouteComponent::update(float elapsedTime)
-{
+	if (state == RouteState::Idle || state == RouteState::Finished || currentRoute.empty()) return;
 
+	if (state != RouteState::Moving) return;
 
-    //float xDistance = position.x - gameObject->position.x;
-    //float yDistance = position.y - gameObject->position.y;
-    //float zDistance = position.z - gameObject->position.z;
+	// check if object is in radius of crossroads
+	constexpr glm::vec3 center = glm::vec3(0.0f);
+	const float distanceToCenter = glm::abs(glm::length(center - gameObject->position));
+	constexpr float range = 2.0f;
+	if (distanceToCenter < range && !crossed) {
+		state = RouteState::Idle;
+		SoundHandler::getInstance().playSoundSnippet("sounds/car/Car_Parking_Brake.wav");
+		return;
+	}
 
-    //// Calculate steps, but first check for zero distances to avoid division by zero
-    //float xStep = (xDistance != 0) ? (xDistance / std::abs(xDistance)) * elapsedTime * speed : 0;
-    //float yStep = (yDistance != 0) ? (yDistance / std::abs(yDistance)) * elapsedTime * speed : 0;
-    //float zStep = (zDistance != 0) ? (zDistance / std::abs(zDistance)) * elapsedTime * speed : 0;
+	// Get the current waypoint and object's position.
+	const glm::vec3 currentWaypoint = currentRoute[currentWaypointIndex];
+	const glm::vec3 currentPosition = gameObject->position;
 
-    ////update x coördinate
-    //if (std::abs(xDistance) < std::abs(xStep)) {
-    //    gameObject->position.x = position.x;
-    //}
-    //else {
-    //    gameObject->position.x += xStep;
-    //}
+	// Calculate the direction vector towards the waypoint.
+	const glm::vec3 direction = glm::normalize(currentWaypoint - currentPosition);
 
-    ////update y coördinate
-    //if (std::abs(yDistance) < std::abs(yStep)) {
-    //    gameObject->position.y = position.y;
-    //}
-    //else {
-    //    gameObject->position.y += yStep;
-    //}
+	// Move the object towards the waypoint based on speed and deltaTime.
+	const float distance = glm::length(currentWaypoint - currentPosition);
+	if (distance > tolerance) { // Check if within tolerance (optional).
+		float movement = speed * deltaTime;
+		if (movement > distance) {
+			movement = distance; // Avoid overshooting the waypoint.
+		}
 
-    ////update z coördinate
-    //if (std::abs(zDistance) < std::abs(zStep)) {
-    //    gameObject->position.z = position.z;
-    //}
-    //else {
-    //    gameObject->position.z += zStep;
-    //}
+		gameObject->position += movement * direction;
+
+		// to create a "turning motion".
+		const float targetAngle = glm::atan(direction.x, direction.z);
+		gameObject->rotation.y = targetAngle;
+	}
+	else {
+		// Reached the waypoint, handle waypoint change (optional)
+		currentWaypointIndex++;
+		if (currentWaypointIndex >= currentRoute.size()) {
+			// Handle reaching the end of the route (loop, stop, etc.)
+			currentRoute.clear();
+			state = RouteState::Finished;
+			SoundHandler::getInstance().playSoundSnippet("sounds/car/Car_Engine_Turning_Off.wav");
+			return;
+		}
+	}
 }

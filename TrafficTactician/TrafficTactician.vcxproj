@@ -201,7 +201,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>$(ProjectDir)json2hpp.exe "settings" "settings.json" "settingsFromJson.h"</Command>
+      <Command>$(ProjectDir)json2hpp.exe "graphsettings" "settings/graphicSettings.json" "graphicSettings.h"
+$(ProjectDir)json2hpp.exe "dnnmathsettings" "settings/dnnMathSettings.json" "dnnMathSettings.h"
+$(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings.h"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='UnitTesting|x64'">
@@ -217,7 +219,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>$(ProjectDir)json2hpp.exe "settings" "settings.json" "settingsFromJson.h"</Command>
+      <Command>$(ProjectDir)json2hpp.exe "graphsettings" "settings/graphicSettings.json" "graphicSettings.h"
+$(ProjectDir)json2hpp.exe "dnnmathsettings" "settings/dnnMathSettings.json" "dnnMathSettings.h"
+$(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings.h"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -237,7 +241,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>$(ProjectDir)json2hpp.exe "settings" "settings.json" "settingsFromJson.h"</Command>
+      <Command>$(ProjectDir)json2hpp.exe "graphsettings" "settings/graphicSettings.json" "graphicSettings.h"
+$(ProjectDir)json2hpp.exe "dnnmathsettings" "settings/dnnMathSettings.json" "dnnMathSettings.h"
+$(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings.h"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='PoseDetectionRelease|x64'">
@@ -246,7 +252,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_POSE_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -257,23 +263,17 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>$(ProjectDir)json2hpp.exe "settings" "settings.json" "settingsFromJson.h"</Command>
+      <Command>$(ProjectDir)json2hpp.exe "graphsettings" "settings/graphicSettings.json" "graphicSettings.h"
+$(ProjectDir)json2hpp.exe "dnnmathsettings" "settings/dnnMathSettings.json" "dnnMathSettings.h"
+$(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings.h"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CarComponent.cpp" />
-    <ClCompile Include="components\BoundingBoxComponent.cpp" />
-    <ClCompile Include="components\Component.cpp" />
-    <ClCompile Include="components\CubeComponent.cpp" />
-    <ClCompile Include="components\DrawComponent.cpp" />
     <ClCompile Include="components\GameObject.cpp" />
-    <ClCompile Include="components\PlayerComponent.cpp" />
-    <ClCompile Include="detectionMain.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='UnitTesting|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="ControllerComponent.cpp" />
     <ClCompile Include="easylogging++.cpp" />
+    <ClCompile Include="CameraInputHandler.cpp" />
+    <ClCompile Include="KeyboardInputHandler.cpp" />
     <ClCompile Include="lib\imgui-docking\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="lib\imgui-docking\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="lib\imgui-docking\imgui.cpp" />
@@ -284,38 +284,55 @@
     <ClCompile Include="log.cpp" />
     <ClCompile Include="ModelComponent.cpp" />
     <ClCompile Include="main.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='PoseDetectionRelease|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='PoseDetectionRelease|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="poseChecker.cpp" />
     <ClCompile Include="poseEstimation.cpp" />
     <ClCompile Include="poseRetriever.cpp" />
+    <ClCompile Include="RandomModelGrabber.cpp" />
     <ClCompile Include="RouteComponent.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="PoseUnitTests.cpp" />
-    <ClCompile Include="SpinComponent.cpp" />
+    <ClCompile Include="SoundHandler.cpp" />
+    <ClCompile Include="StartMenu.cpp" />
+    <ClCompile Include="StatusHandler.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureCache.cpp" />
     <ClCompile Include="tigl.cpp" />
+    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="TrafficTactician.cpp" />
     <ClCompile Include="WorldComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CarComponent.h" />
-    <ClInclude Include="components\BoundingBoxComponent.h" />
     <ClInclude Include="components\Component.h" />
-    <ClInclude Include="components\CubeComponent.h" />
     <ClInclude Include="components\DrawComponent.h" />
     <ClInclude Include="components\GameObject.h" />
-    <ClInclude Include="components\PlayerComponent.h" />
+    <ClInclude Include="ControllerComponent.h" />
+    <ClInclude Include="dnnMathSettings.h" />
+    <ClInclude Include="dnnSettings.h" />
     <ClInclude Include="easylogging++.h" />
+    <ClInclude Include="graphicSettings.h" />
+    <ClInclude Include="CameraInputHandler.h" />
+    <ClInclude Include="json.h" />
+    <ClInclude Include="KeyboardInputHandler.h" />
     <ClInclude Include="MoveComponent.h" />
+    <ClInclude Include="RandomModelGrabber.h" />
     <ClInclude Include="RouteComponent.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SettingsRetriever.h" />
     <ClInclude Include="Simulation.h" />
     <ClInclude Include="KeypointLocationStrings.h" />
+    <ClInclude Include="SoundHandler.h" />
+    <ClInclude Include="StartMenu.h" />
+    <ClInclude Include="StatusHandler.h" />
+    <ClInclude Include="TextureCache.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="TrafficTactician.h" />
     <ClInclude Include="utest.h" />
     <ClInclude Include="WorldComponent.h" />
-    <ClInclude Include="json.h" />
     <ClInclude Include="keyPoint.h" />
     <ClInclude Include="lib\imgui-docking\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="lib\imgui-docking\imconfig.h" />
@@ -329,8 +346,6 @@
     <ClInclude Include="poseChecker.h" />
     <ClInclude Include="poseEstimation.h" />
     <ClInclude Include="poseRetriever.h" />
-    <ClInclude Include="settingsFromJson.h" />
-    <ClInclude Include="SpinComponent.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="tigl.h" />
   </ItemGroup>

@@ -54,7 +54,7 @@ private:
 	void loadMaterialFile(const std::string& fileName, const std::string& dirName);
 public:
 	ModelComponent(const std::string& filename);
-	~ModelComponent(void);
+	~ModelComponent() = default;
 
 	virtual void draw(glm::mat4 parentMatrix) override;
 };

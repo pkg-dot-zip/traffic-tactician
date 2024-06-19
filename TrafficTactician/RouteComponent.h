@@ -7,13 +7,27 @@ using glm::vec3;
 
 class RouteComponent : public Component
 {
-	std::vector<vec3> routeNodes;
-	float direction;
-	float speed;
 public:
-	RouteComponent(float speed);
-	~RouteComponent();
+	enum class RouteState {
+		Idle,  // Not moving
+		Moving, // Moving
+		Finished  // Reached the last node
+	};
+	RouteState state = RouteState::Idle;
+	bool crossed = false;
 
-	virtual void update(float elapsedTime) override;
+	RouteComponent(
+		float speed = 1,
+		const std::vector<vec3>& nodesRoute = std::vector<vec3>()
+	);
+
+	~RouteComponent() = default;
+
+	virtual void update(float deltaTime) override;
+
+private:
+	float speed;
+	float tolerance = 0;
+	std::vector<vec3> currentRoute;
+	int currentWaypointIndex = 0;
 };
-

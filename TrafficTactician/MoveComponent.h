@@ -8,9 +8,8 @@ class MoveComponent : public Component
 public:
 	glm::vec3 direction;
 	MoveComponent(const glm::vec3& direction);
-	~MoveComponent();
+	~MoveComponent() = default;
 
 	void nextDirection(const glm::vec3& direction);
 	virtual void update(float elapsedTime) override;
 };
-

@@ -4,26 +4,27 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-class Scene; 
+#include "Scene.h"
+#include "SettingsRetriever.h"
+
+class Scene;
 
 class Simulation 
-
 {
-private:
-	GLFWwindow* window;
-	int width = 1600;
-	int height = 900;
-	glm::mat4 projection;
-	glm::mat4 view;
 public:
-	Scene* scene;
+	std::unique_ptr<Scene> scene;
 	glm::vec3 mousePosition3D;
 
 	Simulation(GLFWwindow* window);
-	void init();
-	void update(float deltaTime);
+	void init(const std::weak_ptr<Simulation>& sim);
+	void update(float deltaTime) const;
 	void draw();
 
-	glm::vec3 getCameraPosition();
+	glm::vec3 getCameraPosition() const;
+private:
+	GLFWwindow* window;
+	int width = GetGraphicSettings().screenWidth;
+	int height = GetGraphicSettings().screenHeight;
+	glm::mat4 projection;
+	glm::mat4 view;
 };
-

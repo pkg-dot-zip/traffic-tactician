@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <list>
 #include <memory>
+#include <optional>
 #include <string>
 
 class Simulation;
@@ -17,31 +18,30 @@ class GameObject
 	std::list<std::shared_ptr<Component>> components;
 
 public:
-	GameObject(const std::string &name, Simulation* sim);
+	GameObject(const std::string &name, const std::weak_ptr<Simulation>& sim);
 	~GameObject();
 
 	std::string name;
-	Simulation* sim;
+	std::weak_ptr<Simulation> sim;
 
 	glm::vec3 position = glm::vec3(0.0f);
 	glm::vec3 rotation = glm::vec3(0, 0, 0);
 	glm::vec3 scale = glm::vec3(1, 1, 1);
 
-	void addComponent(std::shared_ptr<Component> component);
-	void removeComponent(std::shared_ptr<Component> component);
-	std::list<std::shared_ptr<Component>> getComponents();
-	void update(float deltaTime);
-	void draw(const glm::mat4 & = glm::mat4(1.0f));
+	void addComponent(const std::shared_ptr<Component>& component);
+	void removeComponent(const std::shared_ptr<Component>& component);
+	std::list<std::shared_ptr<Component>>& getComponents();
+	void update(float deltaTime) const;
+	void draw(const glm::mat4 & = glm::mat4(1.0f)) const;
 
 	template <class T>
-	std::shared_ptr<T> getComponent()
+	std::optional<std::shared_ptr<T>> getComponent()
 	{
 		for (auto c : components)
 		{
-			std::shared_ptr<T> t = dynamic_pointer_cast<T>(c);
-			if (t) return t;
+			if (std::shared_ptr<T> t = dynamic_pointer_cast<T>(c)) return t;
 		}
-		return nullptr;
+		return std::nullopt;
 	}
 
 	template <class T>

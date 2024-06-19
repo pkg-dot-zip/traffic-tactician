@@ -23,7 +23,7 @@
 #include "keyPoint.h"
 #include "KeypointLocationStrings.h"
 #include "poseChecker.h"
-#include "settingsFromJson.h"
+#include "settingsRetriever.h"
 
 ////////////////////////////////
 std::ostream& operator <<(std::ostream& os, const KeyPoint& kp)
@@ -112,9 +112,9 @@ const std::vector<std::pair<int, int>> posePairs = {
 
 static void getKeyPoints(cv::Mat& probMap, const double threshold, std::vector<KeyPoint>& keyPoints)
 {
-	const auto ksize = cv::Size(settings.blurKSize, settings.blurKSize);
-	constexpr int sigmaX = settings.blurSigmaX;
-	constexpr int sigmaY = settings.blurSigmaY;
+	const auto ksize = cv::Size(GetDNNMathSettings().blurKSize, GetDNNMathSettings().blurKSize);
+	constexpr int sigmaX = GetDNNMathSettings().blurSigmaX;
+	constexpr int sigmaY = GetDNNMathSettings().blurSigmaY;
 
 	cv::Mat smoothProbMap;
 	cv::GaussianBlur(probMap, smoothProbMap, ksize, sigmaX, sigmaY);
@@ -206,9 +206,9 @@ void getValidPairs(const std::vector<cv::Mat>& netOutputParts,
                    std::vector<std::vector<ValidPair>>& validPairs,
                    std::set<int>& invalidPairs)
 {
-	constexpr int nInterpSamples = settings.nInterpSamples;
-	constexpr float pafScoreTh = settings.pafScoreTh;
-	constexpr float confTh = settings.confTh;
+	constexpr int nInterpSamples = GetDNNMathSettings().nInterpSamples;
+	constexpr float pafScoreTh = GetDNNMathSettings().pafScoreTh;
+	constexpr float confTh = GetDNNMathSettings().confTh;
 
 	for (int k = 0; k < mapIdx.size(); ++k)
 	{
@@ -314,7 +314,7 @@ void getPersonwiseKeypoints(const std::vector<std::vector<ValidPair>>& validPair
 {
 	for (int k = 0; k < mapIdx.size(); ++k)
 	{
-		if (invalidPairs.find(k) != invalidPairs.end()) continue;
+		if (invalidPairs.contains(k)) continue;
 
 		const std::vector<ValidPair>& localValidPairs(validPairs[k]);
 
@@ -353,7 +353,7 @@ void getPersonwiseKeypoints(const std::vector<std::vector<ValidPair>>& validPair
 	} /* k */
 }
 
-constexpr int spatialSizeFactor = settings.spatialSizeFactor;
+constexpr int spatialSizeFactor = GetDNNMathSettings().spatialSizeFactor;
 // Typically larger, we however don't need good accuracy at all and will probably not go over 200.
 
 // TODO: Look into usage if UMAT & MATEXPR to see if we can optimize this further. -> Benchmark.
@@ -366,7 +366,7 @@ void getCalculatedPose(std::map<std::string_view, std::vector<KeyPoint>>& keyPoi
 	// 1. https://pyimagesearch.com/2017/11/06/deep-learning-opencvs-blobfromimage-works/
 	// 2. https://docs.opencv.org/3.4/d6/d0f/group__dnn.html#ga33d1b39b53a891e98a654fdeabba22eb
 	constexpr double scaleFactor = 1.0 / 255.0;
-	constexpr int spatialSizeWidth = spatialSizeFactor * settings.downscaleTargetWidth / settings.downscaleTargetHeight;
+	constexpr int spatialSizeWidth = spatialSizeFactor * GetDNNSettings().downscaleTargetWidth / GetDNNSettings().downscaleTargetHeight;
 	constexpr int spatialSizeHeight = spatialSizeFactor;
 	const auto mean = cv::Scalar(0, 0, 0);
 
@@ -379,7 +379,7 @@ void getCalculatedPose(std::map<std::string_view, std::vector<KeyPoint>>& keyPoi
 	cv::Mat netOutputBlob = inputNet.forward();
 
 	std::vector<cv::Mat> netOutputParts;
-	splitNetOutputBlobToParts(netOutputBlob, {settings.downscaleTargetWidth, settings.downscaleTargetHeight},
+	splitNetOutputBlobToParts(netOutputBlob, { GetDNNSettings().downscaleTargetWidth, GetDNNSettings().downscaleTargetHeight},
 	                          netOutputParts);
 
 
@@ -391,9 +391,7 @@ void getCalculatedPose(std::map<std::string_view, std::vector<KeyPoint>>& keyPoi
 	{
 		std::vector<KeyPoint> keyPoints;
 
-		getKeyPoints(netOutputParts[i], settings.confidenceMapThreshold, keyPoints);
-
-		// LOG(INFO) << "Keypoints - " << keypointsMapping[i] << " : " << keyPoints << std::endl;
+		getKeyPoints(netOutputParts[i], GetDNNMathSettings().confidenceMapThreshold, keyPoints);
 
 		keyPointsToUseInCalculation.insert(std::make_pair(keypointsMapping[i], keyPoints));
 
@@ -406,11 +404,9 @@ void getCalculatedPose(std::map<std::string_view, std::vector<KeyPoint>>& keyPoi
 		keyPointsList.insert(keyPointsList.end(), keyPoints.begin(), keyPoints.end());
 	}
 
-	checkPoseForAll(keyPointsToUseInCalculation);
-
 	std::vector<cv::Scalar> colors;
 
-	if (settings.useColorsForPose)
+	if (GetDNNSettings().useColorsForPose)
 	{
 		populateRandomColorPalette(colors, nPoints);
 	}
@@ -462,8 +458,12 @@ std::map<std::string_view, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap
                                                                             cv::dnn::Net& inputNet)
 {
 	// First we downscale the image.
-	cv::resize(input, input, {settings.downscaleTargetWidth, settings.downscaleTargetHeight}, 0, 0, cv::INTER_AREA);
+	cv::resize(input, input, { GetDNNSettings().downscaleTargetWidth, GetDNNSettings().downscaleTargetHeight}, 0, 0, cv::INTER_AREA);
 	// INTER_AREA is better than the default (INTER_LINEAR) for camera views, according to a Stackoverflow user. TODO: CHECK IF THIS IS TRUE.
+
+#ifdef _POSE_DEBUG
+	LOG(INFO) << "InputFrame size: " << input.cols << " | " << input.rows << std::endl;
+#endif
 
 	// Then we retrieve the estimationpoints.
 	const int64 timeStart = cv::getTickCount();
@@ -475,12 +475,15 @@ std::map<std::string_view, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap
 	LOG(INFO) << "Time it took to retrieve the poseEstimationKeyPoints: " << time << std::endl;
 
 	// Then we upscale and flip.  We flip the mat here so that our cam view looks more natural; it confuses the user to see his left arm on the right side of his screen.
-	cv::resize(outputFrame, outputFrame, {settings.upscaleTargetWidth, settings.upscaleTargetHeight});
+	cv::resize(outputFrame, outputFrame, { GetDNNSettings().upscaleTargetWidth, GetDNNSettings().upscaleTargetHeight});
 	cv::flip(outputFrame, outputFrame, 1);
-		
+
+#ifdef _POSE_DEBUG
+	LOG(INFO) << "Outputframe size: " << outputFrame.cols << " | " << outputFrame.rows << std::endl;
+#endif
+
 	return poseEstimationKeyPoints;
 }
-
 
 // Clears the keypoints map.
 void clearPoseEstimationKeyPointsMap()

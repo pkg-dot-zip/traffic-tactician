@@ -14,7 +14,7 @@ Texture::Texture(const std::string& fileName)
 	unsigned char* data = stbi_load(fileName.c_str(), &w, &h, &comp, 4);
 	if (!data)
 	{
-		LOG(INFO) << fileName.c_str() << " -> " << stbi_failure_reason() << std::endl;
+		LOG(ERROR) << fileName.c_str() << " -> " << stbi_failure_reason() << std::endl;
 		exit(0);
 	}
 
@@ -30,7 +30,7 @@ Texture::Texture(const std::string& fileName)
 
 Texture::Texture(const glm::vec3& color)
 {
-	int size = 1;
+	constexpr int size = 1;
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);
 	// Create image data for 1x1 with given color
@@ -50,7 +50,17 @@ Texture::Texture(const glm::vec3& color)
 	delete[] data;
 }
 
-void Texture::bind()
+Texture::~Texture() {
+	unbind();
+	glDeleteTextures(1, &id);
+}
+
+void Texture::bind() const
 {
 	glBindTexture(GL_TEXTURE_2D, id);
+}
+
+void Texture::unbind()
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
 }

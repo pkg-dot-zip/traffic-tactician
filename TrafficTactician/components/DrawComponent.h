@@ -8,7 +8,7 @@
 class DrawComponent : public Component
 {
 public:
-	DrawComponent();
-	~DrawComponent();
+	DrawComponent() = default;
+	~DrawComponent() = default;
 	virtual void draw(glm::mat4 parentMatrix = glm::mat4(1.0f)) = 0;
 };
