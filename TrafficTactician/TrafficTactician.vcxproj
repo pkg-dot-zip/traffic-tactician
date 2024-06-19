@@ -261,24 +261,19 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CarComponent.cpp" />
     <ClCompile Include="components\BoundingBoxComponent.cpp" />
-    <ClCompile Include="components\CarComponent.cpp" />
     <ClCompile Include="components\Component.cpp" />
     <ClCompile Include="components\CubeComponent.cpp" />
     <ClCompile Include="components\DrawComponent.cpp" />
-    <ClCompile Include="components\ModelComponent.cpp" />
-    <ClCompile Include="components\MoveComponent.cpp" />
+    <ClCompile Include="components\GameObject.cpp" />
     <ClCompile Include="components\PlayerComponent.cpp" />
-    <ClCompile Include="components\RouteComponent.cpp" />
-    <ClCompile Include="components\SpinComponent.cpp" />
-    <ClCompile Include="components\WorldComponent.cpp" />
-    <ClCompile Include="DetectionMain.cpp">
+    <ClCompile Include="detectionMain.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='UnitTesting|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="easylogging++.cpp" />
-    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="lib\imgui-docking\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="lib\imgui-docking\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="lib\imgui-docking\imgui.cpp" />
@@ -287,42 +282,41 @@
     <ClCompile Include="lib\imgui-docking\imgui_tables.cpp" />
     <ClCompile Include="lib\imgui-docking\imgui_widgets.cpp" />
     <ClCompile Include="log.cpp" />
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="ModelComponent.cpp" />
+    <ClCompile Include="main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='PoseDetectionRelease|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="pose\PoseChecker.cpp" />
-    <ClCompile Include="pose\PoseEstimation.cpp" />
-    <ClCompile Include="pose\PoseRetriever.cpp" />
-    <ClCompile Include="pose\PoseUnitTests.cpp" />
+    <ClCompile Include="MoveComponent.cpp" />
+    <ClCompile Include="poseChecker.cpp" />
+    <ClCompile Include="poseEstimation.cpp" />
+    <ClCompile Include="poseRetriever.cpp" />
+    <ClCompile Include="RouteComponent.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Simulation.cpp" />
+    <ClCompile Include="PoseUnitTests.cpp" />
+    <ClCompile Include="SpinComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tigl.cpp" />
+    <ClCompile Include="WorldComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CarComponent.h" />
     <ClInclude Include="components\BoundingBoxComponent.h" />
-    <ClInclude Include="components\CarComponent.h" />
     <ClInclude Include="components\Component.h" />
     <ClInclude Include="components\CubeComponent.h" />
     <ClInclude Include="components\DrawComponent.h" />
-    <ClInclude Include="components\ModelComponent.h" />
-    <ClInclude Include="components\MoveComponent.h" />
+    <ClInclude Include="components\GameObject.h" />
     <ClInclude Include="components\PlayerComponent.h" />
-    <ClInclude Include="components\RouteComponent.h" />
-    <ClInclude Include="components\SpinComponent.h" />
-    <ClInclude Include="components\WorldComponent.h" />
     <ClInclude Include="easylogging++.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="pose\PoseChecker.h" />
-    <ClInclude Include="pose\PoseEstimation.h" />
-    <ClInclude Include="pose\PoseRetriever.h" />
+    <ClInclude Include="MoveComponent.h" />
+    <ClInclude Include="RouteComponent.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Simulation.h" />
     <ClInclude Include="KeypointLocationStrings.h" />
-    <ClInclude Include="stb_image.h" />
     <ClInclude Include="utest.h" />
+    <ClInclude Include="WorldComponent.h" />
     <ClInclude Include="json.h" />
-    <ClInclude Include="KeyPoint.h" />
+    <ClInclude Include="keyPoint.h" />
     <ClInclude Include="lib\imgui-docking\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="lib\imgui-docking\imconfig.h" />
     <ClInclude Include="lib\imgui-docking\imgui.h" />
@@ -331,7 +325,12 @@
     <ClInclude Include="lib\imgui-docking\imstb_textedit.h" />
     <ClInclude Include="lib\imgui-docking\imstb_truetype.h" />
     <ClInclude Include="log.h" />
+    <ClInclude Include="ModelComponent.h" />
+    <ClInclude Include="poseChecker.h" />
+    <ClInclude Include="poseEstimation.h" />
+    <ClInclude Include="poseRetriever.h" />
     <ClInclude Include="settingsFromJson.h" />
+    <ClInclude Include="SpinComponent.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="tigl.h" />
   </ItemGroup>
