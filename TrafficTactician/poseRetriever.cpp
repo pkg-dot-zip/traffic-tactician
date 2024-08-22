@@ -17,7 +17,9 @@
 #include "poseChecker.h"
 #include "poseEstimation.h"
 #include "SettingsRetriever.h"
-
+#include "imgui.h"
+#include "Scene.h"
+#include "PoseFrame.h"
 
 bool isPoseEstimationEnabled = true;
 
@@ -141,7 +143,9 @@ int runPoseRetriever(int cameraDevice = -1)
 		displayCurrentPose(outputFrame, keyPoints);
 		displayCurrentOrientation(outputFrame, keyPoints);
 		
-		cv::imshow("Detected Pose", outputFrame);
+		PoseFrame::getInstance().setFrame(outputFrame);
+
+		//cv::imshow("Detected Pose", outputFrame);
 		cv::waitKey(1);
 
 		cameraInputHandler::setInputPose(getPose(keyPoints));

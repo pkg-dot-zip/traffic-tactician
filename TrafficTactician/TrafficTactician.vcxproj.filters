@@ -162,6 +162,9 @@
     <ClCompile Include="WorldComponent.cpp">
       <Filter>components</Filter>
     </ClCompile>
+    <ClCompile Include="PoseFrame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="components\Component.h">
@@ -294,6 +297,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ControllerComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PoseFrame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

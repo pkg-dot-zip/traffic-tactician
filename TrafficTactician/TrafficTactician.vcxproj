@@ -289,6 +289,7 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="poseChecker.cpp" />
     <ClCompile Include="poseEstimation.cpp" />
+    <ClCompile Include="PoseFrame.cpp" />
     <ClCompile Include="poseRetriever.cpp" />
     <ClCompile Include="RandomModelGrabber.cpp" />
     <ClCompile Include="RouteComponent.cpp" />
@@ -318,6 +319,7 @@ $(ProjectDir)json2hpp.exe "dnnsettings" "settings/dnnSettings.json" "dnnSettings
     <ClInclude Include="json.h" />
     <ClInclude Include="KeyboardInputHandler.h" />
     <ClInclude Include="MoveComponent.h" />
+    <ClInclude Include="PoseFrame.h" />
     <ClInclude Include="RandomModelGrabber.h" />
     <ClInclude Include="RouteComponent.h" />
     <ClInclude Include="Scene.h" />
