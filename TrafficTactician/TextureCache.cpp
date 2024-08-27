@@ -32,5 +32,6 @@ void TextureCache::preloadTextures()
 	loadTexture("sign_forward.png");
 	loadTexture("sign_left.png");
 	loadTexture("sign_right.png");
+	loadTexture("images/windowIcons/traffic_tactician_round_icon.png");
     LOG(INFO) << "Loading all visual cues textures." << std::endl;
 }

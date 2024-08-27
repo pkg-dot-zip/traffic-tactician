@@ -35,27 +35,29 @@ void ControllerComponent::changeCarState(RouteComponent::RouteState state) const
 
 void ControllerComponent::timerCallback() const
 {
-	// If pose was wrong, points --.
-	if (!checkPose())
-	{
-		scene->data.points--;
-		SoundHandler::getInstance().playSoundSnippet("sounds/points_minus.wav");
-		return;
-	}
-
-
-	// If pose was wrong, points ++.
-	changeCarState(RouteComponent::RouteState::Moving);
-	timer->toggleTimer(false);
-	scene->data.points++;
-	SoundHandler::getInstance().playSoundSnippet("sounds/points_plus.wav");
+	// Timer has ended before a correct pose was detected
+	int& points = scene->data.points;
+	if (points > 0) points--;
+	SoundHandler::getInstance().playSoundSnippet("sounds/points_minus.wav");
+	return;
 }
 
 void ControllerComponent::update(float deltaTime)
 {
-	timer->update(deltaTime);
+	if (timer->isOn()) if (checkPose()) {
+		// Pose is correct
+		LOG(INFO) << "Correct pose detected." << std::endl;
+		
+		changeCarState(RouteComponent::RouteState::Moving);
+		timer->toggleTimer(false);
+		scene->data.points++;
+		SoundHandler::getInstance().playSoundSnippet("sounds/points_plus.wav");
+	}
+	else {
+		timer->update(deltaTime);
 
-	// Update overlay data
-	scene->data.remainingTime = timer->getTimeRemaining();
-	scene->data.progress = timer->getTimeRemaining() / timer->rolloverTime;
+		// Update overlay data
+		scene->data.remainingTime = timer->getTimeRemaining();
+		scene->data.progress = timer->getTimeRemaining() / timer->rolloverTime;
+	}
 }

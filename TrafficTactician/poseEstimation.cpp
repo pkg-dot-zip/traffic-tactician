@@ -472,7 +472,9 @@ std::map<std::string_view, std::vector<KeyPoint>>& getPoseEstimationKeyPointsMap
 
 	const double time = (timeEnd - timeStart) / cv::getTickFrequency();
 
+#ifdef _POSE_DEBUG
 	LOG(INFO) << "Time it took to retrieve the poseEstimationKeyPoints: " << time << std::endl;
+#endif
 
 	// Then we upscale and flip.  We flip the mat here so that our cam view looks more natural; it confuses the user to see his left arm on the right side of his screen.
 	cv::resize(outputFrame, outputFrame, { GetDNNSettings().upscaleTargetWidth, GetDNNSettings().upscaleTargetHeight});

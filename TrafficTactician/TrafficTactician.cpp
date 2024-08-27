@@ -8,8 +8,10 @@
 #include "CameraInputHandler.h"
 #include "KeyBoardInputHandler.h"
 #include "TextureCache.h"
+#include "Texture.h"
 #include "SettingsRetriever.h"
 #include "StatusHandler.h"
+#include "SoundHandler.h"
 using tigl::Vertex;
 
 #include "easylogging++.h"
@@ -39,6 +41,11 @@ void onDestroy();
 void initImGui();
 void updateImGui();
 
+int gameLoop();
+void simulationLoop();
+void endScreenLoop();
+void restart();
+
 std::shared_ptr<Simulation> sim;
 
 int width = GetGraphicSettings().screenWidth, height = GetGraphicSettings().screenHeight;
@@ -46,6 +53,12 @@ double lastFrameTime = 0;
 
 bool drawStatus = true;
 bool drawDebugMenu = false;
+bool drawEndScreen = true;
+
+enum EndOption {
+	Quit, Restart, InfinityMode
+};
+EndOption endOption = Quit;
 
 std::array clearColor = { 0.3f, 0.4f, 0.6f, 1.0f };
 
@@ -75,8 +88,44 @@ int runApp() {
 	sim = std::make_shared<Simulation>(window);
 	init();
 
+	return gameLoop();
+}
+
+int gameLoop() {
+	simulationLoop();
+	endScreenLoop();
+
+	if (endOption == Restart) {
+		restart();
+	}
+	else if (endOption == InfinityMode) {
+		LOG(INFO) << "Entering infinity mode." << std::endl;
+		restart();
+	}
+	else {
+		// Quit
+		onDestroy();
+		return 0;
+	}
+}
+
+void restart() {
+	LOG(INFO) << "Restarting game." << std::endl;
+	
+	// Reset state
+	sim->scene->data.points = 0;
+	glfwSetWindowShouldClose(window, false);
+	drawEndScreen = true;
+
+	gameLoop();
+}
+
+void simulationLoop() {
 	while (!glfwWindowShouldClose(window))
 	{
+		// Get score and check if the game should end.
+		if (endOption != InfinityMode && sim->scene->data.points >= 10) glfwSetWindowShouldClose(window, true);
+
 		// Start new ImGui frame.
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -88,10 +137,73 @@ int runApp() {
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+}
 
-	onDestroy();
+void endScreenLoop() {
+	// Show end screen
+	LOG(INFO) << "Entering end screen." << std::endl;
+	while (drawEndScreen)
+	{
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
 
-	return 0;
+		ImGui::SetNextWindowPos({ 0, 0 });
+		ImGui::SetNextWindowSize({ ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y });
+
+		// Build screen
+		ImGui::Begin("End Screen", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoScrollWithMouse);
+
+		Scene::OverlayData data = sim->scene->data;
+		const std::string scoreString = "Your score:";
+		const int score = data.points;
+
+		const float windowWidth = ImGui::GetWindowWidth();
+		const float windowHeight = ImGui::GetWindowHeight();
+		constexpr float imageWidth = 200.0f;
+		const float textWidth = ImGui::CalcTextSize(scoreString.c_str()).x;
+		const float scoreWidth = ImGui::CalcTextSize(std::to_string(score).c_str()).x;
+
+		ImGui::SetCursorPos({ (windowWidth - imageWidth) / 2, (windowHeight - imageWidth) / 2 - imageWidth }); // Center image
+		//ImGui::Image((void*)(intptr_t)data.textures["scoreLogo"], ImVec2(imageWidth, imageWidth), { 0,1 }, { 1,0 }); // Score icon
+		ImGui::Image((void*)(intptr_t)TextureCache::loadTexture("images/windowIcons/traffic_tactician_round_icon.png")->id, ImVec2(imageWidth, imageWidth), { 0,1 }, { 1,0 }); // Score icon
+		ImGui::SetWindowFontScale(2.0f);
+		ImGui::SetCursorPosX((windowWidth - textWidth) / 2); // Center text
+		ImGui::Text(("\n" + scoreString).c_str());
+		ImGui::SetCursorPosX((windowWidth - scoreWidth) / 2); // Center score
+		ImGui::Text("%d", score);
+
+		const ImVec2 buttonSize = { ImGui::GetIO().DisplaySize.x - 16, 48 };
+		if (ImGui::Button("Restart", buttonSize))
+		{
+			LOG(INFO) << "Pressed Restart button." << std::endl;
+			SoundHandler::getInstance().playSoundSnippet("sounds/menu_click.wav");
+			endOption = Restart;
+			drawEndScreen = false;
+		}
+		if (ImGui::Button("Infinity Mode", buttonSize))
+		{
+			LOG(INFO) << "Pressed Infinity Mode button." << std::endl;
+			SoundHandler::getInstance().playSoundSnippet("sounds/menu_click.wav");
+			endOption = InfinityMode;
+			drawEndScreen = false;
+		}
+		if (ImGui::Button("Quit", buttonSize))
+		{
+			LOG(INFO) << "Pressed Quit button." << std::endl;
+			SoundHandler::getInstance().playSoundSnippet("sounds/menu_click.wav");
+			endOption = Quit;
+			drawEndScreen = false;
+		}
+		ImGui::End();
+
+		// Render
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
 }
 
 void initImGui() {

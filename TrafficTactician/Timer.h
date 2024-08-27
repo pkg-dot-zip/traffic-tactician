@@ -16,6 +16,7 @@ public:
 	float getTime() const;
 	float getTotalElapsedTime() const;
 	float getTimeRemaining() const;
+	bool isOn() const;
 private:
 	std::function<void()> callback;
 	bool isTimerOn = false;
