@@ -58,3 +58,7 @@ void Timer::update(float deltaTime) {
 		}
 	}
 }
+
+bool Timer::isOn() const {
+	return isTimerOn;
+}
