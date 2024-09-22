@@ -1,0 +1,17 @@
+# Ignore HTML files
+*.html linguist-ignore
+
+# Ignore Objective-C++ files
+*.mm linguist-ignore
+
+# Ignore Objective-C files
+*.m linguist-ignore
+
+# Ignore Makefiles
+Makefile linguist-ignore
+
+# Ignore other (you can adjust this based on what "Other" refers to)
+*.md linguist-ignore
+*.txt linguist-ignore
+
+# You can add more file types here if needed
