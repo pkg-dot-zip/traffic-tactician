@@ -7,10 +7,9 @@
 
 <div align="center">
 
-  [![Stars](https://img.shields.io/github/stars/SpaceYoshi/traffic-tactician.svg)](https://github.com/SpaceYoshi/traffic-tactician/stargazers)
-  [![GitHub Issues](https://img.shields.io/github/issues/SpaceYoshi/traffic-tactician.svg)](https://github.com/SpaceYoshi/traffic-tactician/issues)
-  [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/SpaceYoshi/traffic-tactician.svg)](https://github.com/SpaceYoshi/traffic-tactician/pulls)
-  [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
+  [![Stars](https://img.shields.io/github/stars/pkg-dot-zip/traffic-tactician.svg)](https://github.com/pkg-dot-zip/traffic-tactician/stargazers)
+  [![GitHub Issues](https://img.shields.io/github/issues/pkg-dot-zip/traffic-tactician.svg)](https://github.com/pkg-dot-zip/traffic-tactician/issues)
+  [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/pkg-dot-zip/traffic-tactician.svg)](https://github.com/pkg-dot-zip/traffic-tactician/pulls)
 
 </div>
 
@@ -55,4 +54,4 @@ Traffic Tactician is a training program made in C++ for a uni assignment. The so
 - [@Sam-D-C](https://github.com/Sam-D-C)
 - [@Yuichi135](https://github.com/Yuichi135)
 
-See also the list of [contributors](https://github.com/SpaceYoshi/traffic-tactician/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/pkg-dot-zip/traffic-tactician/contributors) who participated in this project.
