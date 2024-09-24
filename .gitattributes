@@ -1,17 +1,19 @@
-# Ignore HTML files
-*.html linguist-ignore
+# Mark HTML files as vendored (ignored in language stats)
+*.html linguist-vendored
 
-# Ignore Objective-C++ files
-*.mm linguist-ignore
+# Mark Objective-C++ files as vendored
+*.mm linguist-vendored
 
-# Ignore Objective-C files
-*.m linguist-ignore
+# Mark Objective-C files as vendored
+*.m linguist-vendored
 
-# Ignore Makefiles
-Makefile linguist-ignore
+# Mark Makefiles as vendored
+Makefile linguist-vendored
 
-# Ignore other (you can adjust this based on what "Other" refers to)
-*.md linguist-ignore
-*.txt linguist-ignore
+# Mark markdown files as vendored
+*.md linguist-vendored
 
-# You can add more file types here if needed
+# Mark text files as vendored
+*.txt linguist-vendored
+
+# If you have any other file types you want to ignore, add them here
